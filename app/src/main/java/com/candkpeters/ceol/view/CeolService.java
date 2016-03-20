@@ -30,7 +30,9 @@ public class CeolService extends Service {
     public static final String EXECUTE_COMMAND = "ExecuteCommand";
     public static final String SCREEN_OFF = "ScreenOff";
     public static final String SCREEN_ON = "ScreenOn";
-//    public static final String EXECUTE_COMMAND_NAME = "ExecuteCommandName";
+    public static final String CONFIG_CHANGED = "ConfigChanged";
+    public static final String START_SERVICE = "StartService";
+    //    public static final String EXECUTE_COMMAND_NAME = "ExecuteCommandName";
 //    public static final String EXECUTE_COMMAND_VALUE = "ExecuteCommandValue";
     private Prefs prefs;
     final Context context = this;
@@ -56,13 +58,28 @@ public class CeolService extends Service {
 
     @Override
     public void onCreate() {
+        Log.d(TAG, "onCreate: Entering");
         initializeService();
 // register receiver that handles screen on and screen off logic
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        BroadcastReceiver mReceiver = new ScreenReceiver();
+        filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
+        BroadcastReceiver mReceiver = new CeolServiceReceiver();
         registerReceiver(mReceiver, filter);
     }
+
+    private void updateMacroButtons(RemoteViews views, String[] macroNames) {
+        if ( macroNames.length > 0) {
+            views.setTextViewText(R.id.performMacro1B,macroNames[0]);
+        }
+        if ( macroNames.length > 1) {
+            views.setTextViewText(R.id.performMacro2B,macroNames[1]);
+        }
+        if ( macroNames.length > 2) {
+            views.setTextViewText(R.id.performMacro3B,macroNames[2]);
+        }
+    }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -74,6 +91,10 @@ public class CeolService extends Service {
             Log.i(TAG, "This is the action " + requestedAction);
             if (requestedAction != null) {
                 switch( requestedAction) {
+                    case START_SERVICE:
+                        Log.d(TAG, "onStartCommand: START_SERVICE");
+                        break;
+
                     case EXECUTE_COMMAND:
 
                         int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
@@ -83,17 +104,24 @@ public class CeolService extends Service {
 
                         if (command != null) {
                             ceolCommandManager.execute(command);
+                            updateWidgets(command.toString());
+                        } else {
+                            updateWidgets("No command");
                         }
-
-                        updateWidgets(command.toString());
                         break;
                     case SCREEN_OFF:
+                        Log.d(TAG, "onStartCommand: SCREEN_OFF");
                         stopDeviceUpdates();
                         updateWidgets("Screen off");
                         break;
                     case SCREEN_ON:
+                        Log.d(TAG, "onStartCommand: SCREEN_ON");
                         startDeviceUpdates();
                         updateWidgets("Screen on");
+                        break;
+                    case CONFIG_CHANGED:
+                        Log.d(TAG, "onStartCommand: CONFIG_CHANGED");
+                        updateWidgets("Config changed");
                         break;
                     default:
                         break;
@@ -122,6 +150,8 @@ public class CeolService extends Service {
     private void updateViews(RemoteViews views) {
         long curr = System.currentTimeMillis();
         views.setTextViewText(R.id.textUpdate, updateString + ": " + Long.toString(curr % 10000));
+
+        updateMacroButtons(views,prefs.getMacroNames());
 
         views.setTextViewText(R.id.textTrack, ceolDevice.NetServer.getTrack());
         views.setTextViewText(R.id.textArtist, ceolDevice.NetServer.getArtist());

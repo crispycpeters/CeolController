@@ -43,6 +43,7 @@ public class CeolRemoteWidgerProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
 
+        Log.d(TAG, "onUpdate: Entering");
         if ( prefs == null ) {
             this.prefs = new Prefs(context);
         }
@@ -63,6 +64,8 @@ public class CeolRemoteWidgerProvider extends AppWidgetProvider {
             // You must call updateAppWidget, passing in the widget ID,
             // to "commit" your changes.
             pushWidgetUpdate(context, views);
+
+            startService( context, appWidgetId);
 //            appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }
@@ -93,6 +96,13 @@ public class CeolRemoteWidgerProvider extends AppWidgetProvider {
     }
 */
 
+    private void startService(Context context, int appWidgetId) {
+        Intent intent = new Intent();
+        intent.setAction(CeolService.START_SERVICE);
+        intent.setClass(context, CeolService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        context.startService(intent);
+    }
     public static void pushWidgetUpdate(Context context, RemoteViews views) {
         ComponentName myWidget = new ComponentName(context, CeolRemoteWidgerProvider.class);
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
