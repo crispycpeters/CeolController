@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.candkpeters.chris.ceol">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="com.candkpeters.ceol.view.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.candkpeters.ceol.view.SettingsActivity"
+            android:label="@string/label_settings_activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.candkpeters.ceol.view.MainActivity" />
+        </activity>
+
+        <service android:name="com.candkpeters.ceol.view.CeolService" >
+        </service>
+
+        <receiver
+            android:name="com.candkpeters.ceol.view.CeolRemoteWidgerProvider"
+            android:label="Ceol Remote">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ceolremote_appwidget_info" />
+        </receiver>
+
+    </application>
+
+</manifest>

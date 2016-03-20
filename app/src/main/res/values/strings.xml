@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">Ceol controller</string>
+    <string name="label_settings_activity">Settings</string>
+    <string name="label_ceol_remote">Ceol Remote</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- Preferences -->
+    <!--<bool name="is_debug_mode">false</bool>-->
+    <!--<string name="debug_device_server">10.0.2.2</string>-->
+    <!--<string name="pref_baseurl_title">Ceol Base URL</string>-->
+    <!--<bool name="use_telnet">false</bool>-->
+    <!--<bool name="use_webservice">true</bool>-->
+    <!--<integer name="web_status_repeat_rate_msecs">1900</integer>-->
+    <!-- Monitor repeat rate -->
+    <!--<integer name="end_rate_msecs">60000</integer>-->
+
+    <string-array name="section_page_title">
+        <item>Remote</item>
+        <item>Now playing</item>
+        <item>Section-3</item>
+    </string-array>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Preferences General settings -->
+    <string name="pref_header_general">General</string>
+
+    <!-- Category Server settings -->
+    <string name="pref_category_server">Server</string>
+
+        <string name="pref_key_device_server">com.candkpeters.ceol.Device_Server</string>
+        <string name="pref_title_device_server">CEOL IP address</string>
+        <string name="pref_summary_device_server">The IP address of the CEOL server</string>
+        <string name="pref_default_device_server">192.168.0.3</string>
+
+    <!-- Category Macro settings -->
+    <string name="pref_category_macro">Macros</string>
+    <string name="pref_summary_macro">Enter macro commands</string>
+
+        <string name="pref_key_macro1name">com.candkpeters.ceol.Macro1Name</string>
+        <string name="pref_title_macro1name">Macro 1 Name</string>
+        <string name="pref_key_macro1">com.candkpeters.ceol.Macro1</string>
+        <string name="pref_title_macro1">Macro 1</string>
+
+        <string name="pref_key_macro2name">com.candkpeters.ceol.Macro2Name</string>
+        <string name="pref_title_macro2name">Macro 2 Name</string>
+        <string name="pref_key_macro2">com.candkpeters.ceol.Macro2</string>
+        <string name="pref_title_macro2">Macro 2</string>
+
+    <!-- Preferences Debug settings -->
+    <string name="pref_header_debug">Debug</string>
+
+    <string name="pref_key_debug_mode">com.candkpeters.ceol.Is_Debug_Mode</string>
+    <string name="pref_title_debug">Enable debug</string>
+    <string name="pref_summary_debug">Connect to a test server</string>
+    <bool name="pref_default_debug">false</bool>
+
+    <string name="pref_key_debug_device_server">com.candkpeters.ceol.Debug_Device_Server</string>
+    <string name="pref_title_debug_device_server">Debug server</string>
+    <string name="pref_summary_debug_device_server">The IP address of another server when debugging is enabled</string>
+    <string name="pref_default_debug_device_server">10.0.2.2</string>
+    <string name="pref_default_macro1name">Macro 1</string>
+    <string name="pref_default_macro2name">Macro 2</string>
+
+
+</resources>

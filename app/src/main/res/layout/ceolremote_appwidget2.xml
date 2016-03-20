@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/tlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageButton
+        android:id="@+id/navEnterB"
+        android:src="@drawable/ic_av_stop"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true" />
+
+<!--
+    <ImageButton
+        android:id="@+id/navLeftB"
+        android:src="@drawable/ic_av_stop"
+        style="@style/DarkCircleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/navEnterB"
+        />
+
+    <ImageButton
+        android:id="@+id/navUpB"
+        android:src="@drawable/ic_av_stop"
+        style="@style/DarkCircleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/navEnterB"
+        />
+
+    <ImageButton
+        android:id="@+id/navRightB"
+        android:src="@drawable/ic_av_stop"
+        style="@style/DarkCircleButton"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/navUpB"
+        android:layout_alignStart="@+id/navUpB" />
+
+    <ImageButton
+        android:id="@+id/navDownB"
+        android:src="@drawable/ic_av_stop"
+        style="@style/DarkCircleButton"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/navEnterB"
+        />
+-->
+
+</RelativeLayout>

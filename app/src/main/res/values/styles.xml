@@ -1,0 +1,84 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="PowerButton">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">2.5mm</item>
+        <item name="android:layout_width">6mm</item>
+        <item name="android:layout_height">6mm</item>
+        <item name="android:background">@drawable/button_redcircle_states</item>
+    </style>
+    <style name="WhiteText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+    <style name="DarkRectangleButton">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">@dimen/av_button</item>
+        <item name="android:background">@drawable/button_darkrectangle_states</item>
+        <item name="android:tint">@color/white</item>
+    </style>
+    <style name="DarkRectangleLongButton">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_gravity">fill</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">@dimen/av_button</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">5mm</item>
+        <item name="android:background">@drawable/button_darkrectangle_states</item>
+<!--
+        <item name="android:shadowColor">#A8A8A8</item>
+        <item name="android:shadowDx">4</item>
+        <item name="android:shadowDy">4</item>
+        <item name="android:shadowRadius">5</item>
+-->
+        <item name="android:tint">@color/white</item>
+    </style>
+    <style name="WhiteRectangleButton">
+        <item name="android:textColor">#000</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_width">10mm</item>
+        <item name="android:layout_height">5mm</item>
+        <item name="android:layout_margin">@dimen/av_button</item>
+        <item name="android:background">@drawable/button_whitecircle_states</item>
+    </style>
+    <style name="DarkCircleButton">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_margin">@dimen/av_button</item>
+        <item name="android:background">@drawable/button_blackcircle_states</item>
+        <item name="android:minWidth">6mm</item>
+        <item name="android:layout_width">6mm</item>
+        <item name="android:minHeight">6mm</item>
+        <item name="android:layout_height">6mm</item>
+        <item name="android:tint">@color/white</item>
+    </style>
+    <style name="WhiteCircleButton">
+        <item name="android:textColor">#000</item>
+        <item name="android:layout_margin">@dimen/av_button</item>
+        <item name="android:maxWidth">15mm</item>
+        <item name="android:maxHeight">15mm</item>
+        <item name="android:background">@drawable/button_whitecircle_states</item>
+    </style>
+    <style name="TestButton">
+        <item name="android:textColor">#000</item>
+        <item name="android:layout_margin">2.5mm</item>
+        <item name="android:minWidth">15mm</item>
+        <item name="android:minHeight">15mm</item>
+    </style>
+</resources>
