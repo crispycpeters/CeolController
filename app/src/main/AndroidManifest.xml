@@ -32,14 +32,25 @@
         </service>
 
         <receiver
-            android:name="com.candkpeters.ceol.view.CeolRemoteWidgerProvider"
-            android:label="Ceol Remote">
+            android:name="com.candkpeters.ceol.view.CeolWidgetProviderNavigator"
+            android:label="Ceol Navigator">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/ceolremote_appwidget_info" />
+                android:resource="@xml/ceol_appwidget_navigator" />
+        </receiver>
+
+        <receiver
+            android:name="com.candkpeters.ceol.view.CeolWidgetProviderPlayer"
+            android:label="Ceol Player">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ceol_appwidget_player" />
         </receiver>
 
     </application>

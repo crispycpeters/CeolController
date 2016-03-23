@@ -4,11 +4,11 @@
     android:minHeight="80mm"
     android:minWidth="30mm"
     android:updatePeriodMillis="0"
-    android:initialLayout="@layout/ceolremote_appwidget"
+    android:initialLayout="@layout/ceol_appwidget_layout_navigator"
     android:resizeMode="none"
     >
 </appwidget-provider>
 <!--     android:configure="com.candkpeters.ceol.CeolRemoteWidgetConfigure"
     android:previewImage="@drawable/preview"  use app icon for now
-    android:initialLayout="@layout/ceolremote_appwidget"
+    android:initialLayout="@layout/ceol_appwidget_layout_navigator"
 -->

@@ -45,7 +45,6 @@ public class CeolIntentFactory {
     public static Intent getIntent(Command command) {
         Intent intent = new Intent();
         intent.setAction(CeolService.EXECUTE_COMMAND);
-//        intent.putExtra(CeolService_Old.EXECUTE_COMMAND_NAME, this.getClass().getSimpleName());
         String param = command.getParameterAsString();
         Uri.Builder builder = new Uri.Builder();
         Uri uri = builder.authority("com.candkpeters.ceol")
@@ -53,8 +52,6 @@ public class CeolIntentFactory {
                 .appendPath(param)
                 .build();
         intent.setData(uri);
-//        intent.addCategory(this.getClass().getSimpleName() + ":" + param);    // Done in order to keep intent unique
-//        intent.putExtra(CeolService_Old.EXECUTE_COMMAND_VALUE,param);
         return intent;
     }
 

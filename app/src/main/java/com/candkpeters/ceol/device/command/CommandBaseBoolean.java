@@ -19,12 +19,6 @@ public abstract class CommandBaseBoolean extends Command {
         return this.getClass().getSimpleName() + "(" + value + ")";
     }
 
-/*
-    protected Intent fillIntent(Intent intent) {
-        return intent.putExtra(CeolService_Old.EXECUTE_COMMAND_VALUE,Boolean.toString(value));
-    }
-*/
-
     @Override
     public String getParameterAsString() {
         return Boolean.toString(value);

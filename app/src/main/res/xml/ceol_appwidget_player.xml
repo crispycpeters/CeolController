@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minHeight="40mm"
+    android:minWidth="40mm"
+    android:updatePeriodMillis="0"
+    android:initialLayout="@layout/ceol_appwidget_layout_player"
+    android:resizeMode="none"
+    >
+</appwidget-provider>
+<!--     android:configure="com.candkpeters.ceol.CeolRemoteWidgetConfigure"
+    android:previewImage="@drawable/preview"  use app icon for now
+    android:initialLayout="@layout/ceol_appwidget_layout_navigator"
+-->

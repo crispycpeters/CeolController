@@ -2,6 +2,7 @@ package com.candkpeters.ceol.view;
 
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.candkpeters.ceol.controller.CeolWidgetController;
 import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
@@ -40,7 +42,10 @@ public class CeolService extends Service {
     CeolCommandManager ceolCommandManager = null;
     CeolDevice ceolDevice = null;
 
+    CeolWidgetController ceolWidgetController;
+
     public CeolService() {
+        ceolWidgetController = new CeolWidgetController(this);
     }
 
     @Nullable
@@ -49,37 +54,18 @@ public class CeolService extends Service {
         return null;
     }
 
-    OnCeolStatusChangedListener onCeolStatusChangedListener = new OnCeolStatusChangedListener() {
-        @Override
-        public void onCeolStatusChanged(CeolDevice ceolDevice) {
-            updateWidgets(null);
-        }
-    };
-
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate: Entering");
         initializeService();
-// register receiver that handles screen on and screen off logic
+
+        // register receiver that handles screen on and screen off logic
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
         BroadcastReceiver mReceiver = new CeolServiceReceiver();
         registerReceiver(mReceiver, filter);
     }
-
-    private void updateMacroButtons(RemoteViews views, String[] macroNames) {
-        if ( macroNames.length > 0) {
-            views.setTextViewText(R.id.performMacro1B,macroNames[0]);
-        }
-        if ( macroNames.length > 1) {
-            views.setTextViewText(R.id.performMacro2B,macroNames[1]);
-        }
-        if ( macroNames.length > 2) {
-            views.setTextViewText(R.id.performMacro3B,macroNames[2]);
-        }
-    }
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -94,34 +80,23 @@ public class CeolService extends Service {
                     case START_SERVICE:
                         Log.d(TAG, "onStartCommand: START_SERVICE");
                         break;
-
                     case EXECUTE_COMMAND:
-
                         int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
                         Log.i(TAG, "Package is " + this.getPackageName() + " and the widget is " + widgetId);
                         AppWidgetManager appWidgetMan = AppWidgetManager.getInstance(this);
-                        Command command = CeolIntentFactory.newInstance(intent);
-
-                        if (command != null) {
-                            ceolCommandManager.execute(command);
-                            updateWidgets(command.toString());
-                        } else {
-                            updateWidgets("No command");
-                        }
+                        ceolWidgetController.executeCommand( widgetId, appWidgetMan, intent);
                         break;
                     case SCREEN_OFF:
                         Log.d(TAG, "onStartCommand: SCREEN_OFF");
-                        stopDeviceUpdates();
-                        updateWidgets("Screen off");
+                        ceolWidgetController.executeScreenOff();
                         break;
                     case SCREEN_ON:
                         Log.d(TAG, "onStartCommand: SCREEN_ON");
-                        startDeviceUpdates();
-                        updateWidgets("Screen on");
+                        ceolWidgetController.executeScreenOn();
                         break;
                     case CONFIG_CHANGED:
                         Log.d(TAG, "onStartCommand: CONFIG_CHANGED");
-                        updateWidgets("Config changed");
+                        ceolWidgetController.executeConfigChanged();
                         break;
                     default:
                         break;
@@ -131,85 +106,13 @@ public class CeolService extends Service {
         return START_STICKY;
     }
 
-    private String updateString = "";
-
-    private void updateWidgets(String text) {
-        updateString = text==null?updateString:text;
-        AppWidgetManager appWidgetMan = AppWidgetManager.getInstance(context);
-        ComponentName myWidget = new ComponentName(context, CeolRemoteWidgerProvider.class);
-
-        for (int widgetId : appWidgetMan.getAppWidgetIds(myWidget)) {
-
-            RemoteViews views = CeolRemoteWidgerProvider.buildRemoteView(context, widgetId);
-
-            updateViews(views);
-            CeolRemoteWidgerProvider.pushWidgetUpdate(context, views);
-        }
-    }
-
-    private void updateViews(RemoteViews views) {
-        long curr = System.currentTimeMillis();
-        views.setTextViewText(R.id.textUpdate, updateString + ": " + Long.toString(curr % 10000));
-
-        updateMacroButtons(views,prefs.getMacroNames());
-
-        views.setTextViewText(R.id.textTrack, ceolDevice.NetServer.getTrack());
-        views.setTextViewText(R.id.textArtist, ceolDevice.NetServer.getArtist());
-        views.setTextViewText(R.id.textAlbum, ceolDevice.NetServer.getAlbum());
-
-        setRowView(views, R.id.textRow0, 0);
-        setRowView(views, R.id.textRow1, 1);
-        setRowView(views, R.id.textRow2, 2);
-        setRowView(views, R.id.textRow3, 3);
-        setRowView(views, R.id.textRow4, 4);
-        setRowView(views, R.id.textRow5, 5);
-        setRowView(views, R.id.textRow6, 6);
-        setRowView(views, R.id.textRow7, 7);
-    }
-
-    private void setRowView(RemoteViews views, int viewId, int rowindex) {
-        if (ceolDevice.NetServer.isBrowsing()) {
-            SpannableString s = new SpannableString(ceolDevice.NetServer.getEntries().getBrowseLineText(rowindex));
-            if ( ceolDevice.NetServer.getEntries().getSelectedEntryIndex() == rowindex) {
-                s.setSpan(new StyleSpan(Typeface.BOLD_ITALIC),0, s.length(),0);
-            }
-            views.setTextViewText(viewId, s);
-        } else {
-            views.setTextViewText(viewId, "");
-        }
-
-    }
-    private String getRowText(int row) {
-        String text = "";
-        if ( ceolDevice.NetServer.getEntries().getSelectedEntryIndex() == row) {
-            text += "S: ";
-        }
-        text += ceolDevice.NetServer.getEntries().getBrowseLineText(row);
-        return text;
-    }
-
     @Override
     public void onDestroy() {
-        ceolCommandManager.unregister(onCeolStatusChangedListener);
+        ceolWidgetController.destroy();
     }
 
     private void initializeService() {
-        this.prefs = new Prefs(this);
-        String baseurl = prefs.getBaseUrl();
-
-        ceolCommandManager = CeolCommandManager.getInstance();
-        ceolCommandManager.setDevice(CeolDevice.getInstance(), baseurl, prefs.getMacroNames(), prefs.getMacroValues());
-        ceolDevice = ceolCommandManager.getCeolDevice();
-        startDeviceUpdates();
-
-    }
-
-    private void startDeviceUpdates() {
-        ceolCommandManager.register(onCeolStatusChangedListener);
-    }
-
-    private void stopDeviceUpdates() {
-        ceolCommandManager.register(onCeolStatusChangedListener);
+        ceolWidgetController.initialize();
     }
 
 }

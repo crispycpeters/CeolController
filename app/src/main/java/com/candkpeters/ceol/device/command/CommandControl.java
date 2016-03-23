@@ -99,13 +99,6 @@ public class CommandControl extends Command {
         return currentPlayStatus;
     }
 
-/*
-    @Override
-    protected Intent fillIntent(Intent intent) {
-        return intent.putExtra(CeolService_Old.EXECUTE_COMMAND_VALUE, playStatusType.toString());
-    }
-*/
-
     @Override
     public String getParameterAsString() {
         return playStatusType.toString();

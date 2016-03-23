@@ -108,21 +108,4 @@ public class CommandMacro extends CommandBaseInteger {
         }
     }
 
-/*
-    public static Intent getIntent() {
-        Intent intent = new Intent();
-        intent.setAction(CeolService_Old.EXECUTE_COMMAND);
-        intent.putExtra(CeolService_Old.EXECUTE_COMMAND_NAME,CommandMacro.class.getSimpleName());
-        return intent;
-    }
-*/
-
-/*
-    @Override
-    protected Intent fillIntent(Intent intent) {
-        // TODO - String form of macro
-        return intent;
-    }
-*/
-
 }
