@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
                 } catch (Exception e) {
                     Log.e(TAG, "onCeolStatusChanged: Exception " + e);
+                    e.printStackTrace();
                 }
             }
         });

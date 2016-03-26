@@ -18,6 +18,7 @@ import com.candkpeters.ceol.device.command.CommandSetPower;
 import com.candkpeters.ceol.device.command.CommandSetSI;
 import com.candkpeters.ceol.device.command.CommandSkipBackward;
 import com.candkpeters.ceol.device.command.CommandSkipForward;
+import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.chris.ceol.R;
@@ -47,7 +48,15 @@ public class CeolWidgetHelperPlayer extends CeolWidgetHelper {
     @Override
     protected void updateViews(RemoteViews views, CeolCommandManager ceolCommandManager, Context context, String text) {
         long curr = System.currentTimeMillis();
+        CeolDevice ceolDevice = ceolCommandManager.getCeolDevice();
+
         views.setTextViewText(R.id.textUpdate, updateString + ": " + Long.toString(curr % 10000));
+
+        views.setImageViewBitmap(R.id.imageTrack,ceolDevice.NetServer.getImageBitmap());
+        views.setTextViewText(R.id.textTrack, ceolDevice.NetServer.getTrack());
+        views.setTextViewText(R.id.textArtist, ceolDevice.NetServer.getArtist());
+        views.setTextViewText(R.id.textAlbum, ceolDevice.NetServer.getAlbum());
+
     }
 
     @Override

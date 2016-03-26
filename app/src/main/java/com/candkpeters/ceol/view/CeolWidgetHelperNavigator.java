@@ -80,10 +80,6 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
 
         updateMacroButtons(context,views);
 
-        views.setTextViewText(R.id.textTrack, ceolDevice.NetServer.getTrack());
-        views.setTextViewText(R.id.textArtist, ceolDevice.NetServer.getArtist());
-        views.setTextViewText(R.id.textAlbum, ceolDevice.NetServer.getAlbum());
-
         setRowView(views, ceolDevice, R.id.textRow0, 0);
         setRowView(views, ceolDevice, R.id.textRow1, 1);
         setRowView(views, ceolDevice, R.id.textRow2, 2);

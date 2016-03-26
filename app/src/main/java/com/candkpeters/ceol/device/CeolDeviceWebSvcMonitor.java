@@ -195,9 +195,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 
     public void updateDeviceImage(Bitmap bitmap) {
         synchronized (ceolDevice) {
-            if (bitmap != null) {
-                ceolDevice.NetServer.setImageBitmap(bitmap);
-            }
+            ceolDevice.NetServer.setImageBitmap(bitmap);
         }
     }
 
@@ -261,14 +259,20 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                                         netServer.setBrowseLine(i, responseText.text, responseText.flag);
                                     }
                                 }
-                            } else if (webSvcHttpResponse.type.equals("play")) {
-                                netServer.setTrackInfo(
-                                        texts.get("track").text,
-                                        texts.get("artist").text,
-                                        texts.get("album").text,
-                                        texts.get("format").text,
-                                        texts.get("bitrate").text
-                                );
+                            }
+                            if ( ceolDevice.getPlayStatus() == PlayStatusType.Stop ) {
+                                netServer.setTrackInfo("","","","","");
+                                netServer.setImageBitmap(null);
+                            } else {
+                                if (webSvcHttpResponse.type.equals("play")) {
+                                    netServer.setTrackInfo(
+                                            texts.get("track").text,
+                                            texts.get("artist").text,
+                                            texts.get("album").text,
+                                            texts.get("format").text,
+                                            texts.get("bitrate").text
+                                    );
+                                }
                             }
                         } else {
                             netServer.clear();

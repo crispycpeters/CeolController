@@ -147,30 +147,6 @@
         </TextView>
 
         <TextView
-            android:id="@+id/textArtist"
-            android:layout_marginTop="15dp"
-            style="@android:style/TextAppearance.Small"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Artist" >
-        </TextView>
-        <TextView
-            android:id="@+id/textAlbum"
-            style="@android:style/TextAppearance.Small"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Track" >
-        </TextView>
-        <TextView
-            android:id="@+id/textTrack"
-            style="@android:style/TextAppearance.Medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="Track" >
-        </TextView>
-
-        <TextView
             android:id="@+id/textRow0"
             style="@android:style/TextAppearance.Small"
             android:layout_width="match_parent"

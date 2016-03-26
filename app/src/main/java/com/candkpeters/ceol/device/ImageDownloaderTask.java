@@ -36,10 +36,8 @@ class ImageDownloaderTask extends AsyncTask<Void, Void, Bitmap> {
         if (isCancelled()) {
             bitmap = null;
         } else {
-            if ( bitmap != null) {
-                CeolDeviceWebSvcMonitor ceolDeviceWebSvcMonitor = ceolDeviceWebSvcMonitorRef.get();
-                ceolDeviceWebSvcMonitor.updateDeviceImage(bitmap);
-            }
+            CeolDeviceWebSvcMonitor ceolDeviceWebSvcMonitor = ceolDeviceWebSvcMonitorRef.get();
+            ceolDeviceWebSvcMonitor.updateDeviceImage(bitmap);
         }
 
 /*
