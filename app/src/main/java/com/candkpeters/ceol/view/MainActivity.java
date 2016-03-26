@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.candkpeters.ceol.controller.CeolController;
@@ -109,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
                     TextView albumTB = (TextView) mViewPager.findViewById(R.id.album);
                     albumTB.setText("selentry = " + ceolDevice.NetServer.getSelectedEntry());
 
+                    ImageView imageV = (ImageView) mViewPager.findViewById(R.id.imageV);
+                    imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
                 } catch (Exception e) {
                     Log.e(TAG, "onCeolStatusChanged: Exception " + e);
                 }

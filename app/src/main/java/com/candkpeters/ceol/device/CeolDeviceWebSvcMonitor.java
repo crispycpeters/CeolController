@@ -1,5 +1,7 @@
 package com.candkpeters.ceol.device;
 
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.candkpeters.ceol.model.DeviceStatusType;
@@ -32,9 +34,9 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     private static final int REPEATONCE_MSECS = 600;
 
     private String baseUrl = null;
-    private WebSvcApiService webSvcApiService = null;
+    public WebSvcApiService webSvcApiService = null;
     private UIThreadUpdater uiThreadUpdater;
-    private CeolDevice ceolDevice;
+    public CeolDevice ceolDevice;
 
     // Observer
     private final Object MUTEX = new Object();
@@ -69,6 +71,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             " <cmd id=\"5\">GetTunerStatus</cmd>\n" +
             "</tx>\n";
     TypedString statusQuery_Tuner = new TypedString(statusQueryString_Tuner);
+    ImageDownloaderTask imageDownloaderTask;
 
     public CeolDeviceWebSvcMonitor(String baseUrl) {
         this.baseUrl = baseUrl;
@@ -76,6 +79,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 
         ceolDevice = CeolDevice.getInstance();
         this.observers=new ArrayList<OnCeolStatusChangedListener>();
+        imageDownloaderTask = new ImageDownloaderTask(this);
 
     }
 
@@ -115,6 +119,60 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
         });
     }
 
+/*
+    public void getImage2() {
+
+        webSvcApiService.appGetImageAsync("", new Callback<Response>() {
+
+            @Override
+            public void success(Response response, Response response2) {
+                Log.d(TAG, "image resp: ");
+                try {
+                    //you can now get your file in the InputStream
+                    InputStream is = response.getBody().in();
+                    updateDeviceImage(is);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w(TAG, "Could not connect to CEOL: " + error);
+                updateDeviceErrorStatus();
+                return;
+            }
+        });
+    }
+*/
+
+/*
+    public void getImage3() {
+
+        try {
+            Response response = webSvcApiService.appGetImage();
+
+            //you can now get your file in the InputStream
+            InputStream is = response.getBody().in();
+            updateDeviceImage(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+*/
+
+    public void getImage() {
+
+        try {
+            imageDownloaderTask = new ImageDownloaderTask(this);
+            imageDownloaderTask.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void logResponse(WebSvcHttpResponse webSvcHttpResponse) {
         //Log.d(TAG, "logResponse: " + webSvcHttpResponse.toString());
     }
@@ -134,6 +192,15 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
         }
     }
 
+
+    public void updateDeviceImage(Bitmap bitmap) {
+        synchronized (ceolDevice) {
+            if (bitmap != null) {
+                ceolDevice.NetServer.setImageBitmap(bitmap);
+            }
+        }
+    }
+
     private void updateDeviceErrorStatus() {
         synchronized (ceolDevice) {
             ceolDevice.setDeviceStatus(DeviceStatusType.Connecting);
@@ -145,6 +212,11 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 
     private void updateDeviceStatus(WebSvcHttpResponse webSvcHttpResponse) {
         SIStatusType oldSiStatus = ceolDevice.getSIStatus();
+
+        String oldTrack = ceolDevice.NetServer.getTrack();
+        if (oldTrack == null) {
+            Log.d(TAG, "updateDeviceStatus: oldtrack is null");
+        }
 
         try {
             synchronized (ceolDevice) {
@@ -210,6 +282,11 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             Log.w(TAG, "updateDeviceStatus: Exception in web response: " + e.toString());
             e.printStackTrace();
         }
+
+        if ( !imageDownloaderTask.isRunning() && (oldTrack == null || !ceolDevice.NetServer.getTrack().equalsIgnoreCase(oldTrack))) {
+            getImage();
+        }
+
 //        onCeolStatusChangedListener.onCeolStatusChanged(ceolDevice);
         notifyObservers();
 //        if ( ceol.getSIStatus() != oldSiStatus) {

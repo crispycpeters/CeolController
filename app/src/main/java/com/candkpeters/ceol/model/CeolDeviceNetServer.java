@@ -1,5 +1,7 @@
 package com.candkpeters.ceol.model;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by crisp on 06/01/2016.
  */
@@ -9,6 +11,14 @@ public class CeolDeviceNetServer {
 
     public int getListMax() {
         return entries.getListMax();
+    }
+
+    public Bitmap getImageBitmap() {
+        return imageBitmap;
+    }
+
+    public void setImageBitmap(Bitmap imageBitmap) {
+        this.imageBitmap = imageBitmap;
     }
 
     enum BrowseEntryType {
@@ -33,6 +43,7 @@ public class CeolDeviceNetServer {
     private String format;
     private String bitrate;
 
+    private Bitmap imageBitmap;
 
     public CeolDeviceNetServer() {
         clear();
