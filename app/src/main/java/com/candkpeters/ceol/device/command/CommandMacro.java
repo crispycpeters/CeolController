@@ -25,34 +25,10 @@ public class CommandMacro extends CommandBaseInteger {
     public CommandMacro(int value) {
         super(value);
     }
-//    CeolCommandManager.OnCeolStatusChangedListener onCeolStatusChangedListener;
 
     public static ArrayList<Command> parseCommands(String value) {
         return null;
     }
-
-
-/*        onCeolStatusChangedListener = new CeolCommandManager.OnCeolStatusChangedListener() {
-            @Override
-            public void onCeolStatusChanged(CeolDevice ceolDevice) {
-                checkProgress(ceolDevice);
-            }
-        };
-*/
-//        this.commands = new ArrayList<Command>();
-/*
-        addCommand(new CommandSetPower(true));
-        addCommand(new CommandControl(PlayStatusType.Stop));
-        addCommand(new CommandSetSI(SIStatusType.NetServer));
-        addCommand(new CommandBrowseToRoot());
-        addCommand(new CommandBrowseInto("naspeters2 FLAC",false));
-        addCommand(new CommandBrowseInto("7 Playlists",false));
-        addCommand(new CommandBrowseInto("Random pop 3",true));
-*/
-
-//        commandSize = commands.size();
-
-        //ceolCommandManager.register(onCeolStatusChangedListener);
 
     @Override
     protected void onCeolStatusChangedListener() {

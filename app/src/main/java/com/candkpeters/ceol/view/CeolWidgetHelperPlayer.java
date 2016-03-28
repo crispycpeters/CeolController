@@ -7,6 +7,7 @@ import android.widget.RemoteViews;
 import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.device.command.CommandControl;
 import com.candkpeters.ceol.device.command.CommandControlStop;
+import com.candkpeters.ceol.device.command.CommandControlToggle;
 import com.candkpeters.ceol.device.command.CommandCursor;
 import com.candkpeters.ceol.device.command.CommandCursorEnter;
 import com.candkpeters.ceol.device.command.CommandFastBackward;
@@ -33,7 +34,7 @@ public class CeolWidgetHelperPlayer extends CeolWidgetHelper {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ceol_appwidget_layout_player);
         setOnClickIntent(context, appWidgetId, views, R.id.skipBackwardsB, new CommandSkipBackward());
         setOnClickIntent(context, appWidgetId, views, R.id.skipForwardsB, new CommandSkipForward());
-        setOnClickIntent(context, appWidgetId, views, R.id.playpauseB, new CommandControl());
+        setOnClickIntent(context, appWidgetId, views, R.id.playpauseB, new CommandControlToggle());
         setOnClickIntent(context, appWidgetId, views, R.id.stopB, new CommandControlStop());
         return views;
     }
@@ -52,10 +53,11 @@ public class CeolWidgetHelperPlayer extends CeolWidgetHelper {
 
         views.setTextViewText(R.id.textUpdate, updateString + ": " + Long.toString(curr % 10000));
 
-        views.setImageViewBitmap(R.id.imageTrack,ceolDevice.NetServer.getImageBitmap());
+        views.setImageViewBitmap(R.id.imageTrack, ceolDevice.NetServer.getImageBitmap());
         views.setTextViewText(R.id.textTrack, ceolDevice.NetServer.getTrack());
         views.setTextViewText(R.id.textArtist, ceolDevice.NetServer.getArtist());
         views.setTextViewText(R.id.textAlbum, ceolDevice.NetServer.getAlbum());
+
 
     }
 

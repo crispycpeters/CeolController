@@ -8,7 +8,7 @@ import android.util.Log;
 public class CeolDevice {
 
     private static final String TAG = "CeolDevice";
-    private static final long DEFAULT_WAKEUP_PERIOD_MSECS = 10000;
+    private static final long DEFAULT_WAKEUP_PERIOD_MSECS = 14000;
 
     private static CeolDevice ourInstance = new CeolDevice();
     private long wakeUpPeriodMsecs = DEFAULT_WAKEUP_PERIOD_MSECS;

@@ -10,52 +10,30 @@ import com.candkpeters.ceol.model.DeviceStatusType;
  */
 public class CommandSetPower extends CommandBaseBoolean {
 
-    boolean isToggle = false;
-
     public CommandSetPower() {
         super(false);
-        isToggle = true;
     }
     public CommandSetPower(boolean onOff) {
         super( onOff);
-        isToggle = false;
     }
 
     @Override
     protected boolean isSuccessful() {
-        if ( isToggle) {
-            // TODO Not sure how to achieve this check
-            return true;
-        } else {
-            if (getValue()) {
-                if (ceolDevice.getDeviceStatus() == DeviceStatusType.On) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                if (ceolDevice.getDeviceStatus() == DeviceStatusType.Standby) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
+        boolean result = false;
+
+        if ( getValue() && ceolDevice.getDeviceStatus() == DeviceStatusType.On ) {
+            result = true;
+        } else if ( !getValue() && ceolDevice.getDeviceStatus()==DeviceStatusType.Standby ) {
+            result = true;
         }
+        return result;
     }
 
     @Override
     public void execute() {
         DeviceStatusType status = ceolDevice.getDeviceStatus();
         if ( status != DeviceStatusType.Starting) {
-            if (isToggle) {
-                if (ceolDevice.getDeviceStatus() == DeviceStatusType.On) {
-                    ceolCommandManager.sendCommand("PWSTANDBY");
-                } else {
-                    ceolCommandManager.sendCommand("PWON");
-                }
-            } else {
-                ceolCommandManager.sendCommand(getValue() ? "PWON" : "PWSTANDBY");
-            }
+            ceolCommandManager.sendCommand(getValue() ? "PWON" : "PWSTANDBY");
         }
     }
 

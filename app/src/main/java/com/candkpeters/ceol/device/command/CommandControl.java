@@ -1,5 +1,7 @@
 package com.candkpeters.ceol.device.command;
 
+import android.util.Log;
+
 import com.candkpeters.ceol.model.PlayStatusType;
 
 /**
@@ -7,12 +9,11 @@ import com.candkpeters.ceol.model.PlayStatusType;
  */
 public class CommandControl extends Command {
 
+    private static final String TAG = "CommandControl";
     private PlayStatusType playStatusType;
-    private boolean isToggle = false;
 
     public CommandControl() {
         this( PlayStatusType.Stop);
-        isToggle = true;
     }
 
     public CommandControl(PlayStatusType playStatusType) {
@@ -22,26 +23,7 @@ public class CommandControl extends Command {
 
     @Override
     protected boolean isSuccessful() {
-        if ( isToggle) {
-/*
-            switch ( ceolDevice.getPlayStatus()) {
-                case Unknown:
-                    break;
-                case Play:
-                    break;
-                case Pause:
-                case Stop:
-                    return playStatusType == PlayStatusType.Pause
-                    break;
-            }
-*/
-            return true;
-        }
-        else {
-
-            if (ceolDevice.getPlayStatus() == playStatusType) return true;
-            else return false;
-        }
+        return ceolDevice.getPlayStatus() == playStatusType;
     }
 
     @Override
@@ -60,9 +42,6 @@ public class CommandControl extends Command {
             case IRadio:
                 break;
             case NetServer:
-                if ( isToggle) {
-                    playStatusType = toggleCurrentStatus();
-                }
                 switch (playStatusType) {
                     case Unknown:
                         break;
@@ -81,22 +60,6 @@ public class CommandControl extends Command {
                 break;
         }
         ceolCommandManager.sendCommand(commandString);
-    }
-
-    private PlayStatusType toggleCurrentStatus() {
-        PlayStatusType currentPlayStatus;
-        switch (ceolDevice.getPlayStatus()) {
-            case Play:
-                currentPlayStatus = PlayStatusType.Pause;
-                break;
-            default:
-            case Unknown:
-            case Pause:
-            case Stop:
-                currentPlayStatus = PlayStatusType.Play;
-                break;
-        }
-        return currentPlayStatus;
     }
 
     @Override

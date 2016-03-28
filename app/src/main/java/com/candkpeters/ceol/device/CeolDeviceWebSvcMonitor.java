@@ -232,7 +232,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                         break;
                     case Tuner:
                         CeolDeviceTuner tuner = ceolDevice.Tuner;
-                        ceolDevice.setPlayStatus(PlayStatusType.Play);
+                        ceolDevice.setPlayStatus(PlayStatusType.Stop);
                         tuner.setBand(webSvcHttpResponse.band);
                         tuner.setFrequency(webSvcHttpResponse.frequency);
                         tuner.setName(webSvcHttpResponse.name);

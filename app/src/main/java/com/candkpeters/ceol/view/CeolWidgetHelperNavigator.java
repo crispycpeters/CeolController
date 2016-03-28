@@ -10,6 +10,7 @@ import android.widget.RemoteViews;
 import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.device.command.CommandControl;
 import com.candkpeters.ceol.device.command.CommandControlStop;
+import com.candkpeters.ceol.device.command.CommandControlToggle;
 import com.candkpeters.ceol.device.command.CommandCursor;
 import com.candkpeters.ceol.device.command.CommandCursorEnter;
 import com.candkpeters.ceol.device.command.CommandFastBackward;
@@ -18,6 +19,7 @@ import com.candkpeters.ceol.device.command.CommandMacro;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeDown;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeUp;
 import com.candkpeters.ceol.device.command.CommandSetPower;
+import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
 import com.candkpeters.ceol.device.command.CommandSetSI;
 import com.candkpeters.ceol.device.command.CommandSkipBackward;
 import com.candkpeters.ceol.device.command.CommandSkipForward;
@@ -34,7 +36,7 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
     @Override
     protected RemoteViews buildRemoteView(Context context, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ceol_appwidget_layout_navigator);
-        setOnClickIntent(context, appWidgetId, views, R.id.powerB, new CommandSetPower());
+        setOnClickIntent(context, appWidgetId, views, R.id.powerB, new CommandSetPowerToggle());
         setOnClickIntent(context, appWidgetId, views, R.id.performMacro1B, new CommandMacro(1));
         setOnClickIntent(context, appWidgetId, views, R.id.performMacro2B, new CommandMacro(2));
         setOnClickIntent(context, appWidgetId, views, R.id.performMacro3B, new CommandMacro(3));
@@ -44,7 +46,7 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
         setOnClickIntent(context, appWidgetId, views, R.id.fastForwardsB, new CommandFastForward());
         setOnClickIntent(context, appWidgetId, views, R.id.skipBackwardsB, new CommandSkipBackward());
         setOnClickIntent(context, appWidgetId, views, R.id.skipForwardsB, new CommandSkipForward());
-        setOnClickIntent(context, appWidgetId, views, R.id.playpauseB, new CommandControl());
+        setOnClickIntent(context, appWidgetId, views, R.id.playpauseB, new CommandControlToggle());
         setOnClickIntent(context, appWidgetId, views, R.id.stopB, new CommandControlStop());
         setOnClickIntent(context, appWidgetId, views, R.id.navLeftB, new CommandCursor(DirectionType.Left));
         setOnClickIntent(context, appWidgetId, views, R.id.navRightB, new CommandCursor(DirectionType.Right));
@@ -78,7 +80,7 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
 
         views.setTextViewText(R.id.textUpdate, updateString + ": " + Long.toString(curr % 10000));
 
-        updateMacroButtons(context,views);
+        updateMacroButtons(context, views);
 
         setRowView(views, ceolDevice, R.id.textRow0, 0);
         setRowView(views, ceolDevice, R.id.textRow1, 1);
