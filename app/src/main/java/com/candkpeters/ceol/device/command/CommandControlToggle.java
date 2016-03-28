@@ -10,10 +10,9 @@ import com.candkpeters.ceol.model.PlayStatusType;
 public class CommandControlToggle extends CommandControl {
 
     private static final String TAG = "CmdControlToggle";
-    private PlayStatusType playStatusType;
 
     public CommandControlToggle() {
-        super( PlayStatusType.Stop);
+        super(PlayStatusType.Stop);
     }
 
     @Override
@@ -24,10 +23,8 @@ public class CommandControlToggle extends CommandControl {
 
     @Override
     public void execute() {
-        String commandString = null;
 
         switch (ceolDevice.getSIStatus()) {
-
             case Unknown:
                 break;
             case CD:
@@ -43,7 +40,7 @@ public class CommandControlToggle extends CommandControl {
             case AnalogIn:
                 break;
         }
-        ceolCommandManager.sendCommand(commandString);
+        ceolCommandManager.sendCommand(playStatusType==PlayStatusType.Play?"NS9A":"NS9B");
     }
 
     private PlayStatusType toggleCurrentStatus() {
@@ -59,7 +56,6 @@ public class CommandControlToggle extends CommandControl {
                 currentPlayStatus = PlayStatusType.Play;
                 break;
         }
-        playStatusType = currentPlayStatus;
         return currentPlayStatus;
     }
 

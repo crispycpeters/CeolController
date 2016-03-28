@@ -61,7 +61,7 @@ public class CeolDeviceNetServer {
     }
 
     public void initializeEntries(String title, String scridValue, String scrid, String listmax, String listposition) {
-        isBrowsing = true;
+        setIsBrowsing(true);
         entries.initializeEntries(title, scridValue, scrid, listmax, listposition);
         this.title = title;
     }
@@ -75,7 +75,6 @@ public class CeolDeviceNetServer {
     }
 
     public void setTrackInfo(String track, String artist, String album, String format, String bitrate) {
-        setIsBrowsing(false);
         this.track = track;
         this.artist = artist;
         this.album = album;

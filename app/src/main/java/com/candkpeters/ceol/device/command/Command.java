@@ -31,6 +31,7 @@ public abstract class Command {
 
     private void checkOverallStatus() {
         if (isSuccessful()) {
+            Log.d(TAG, "checkOverallStatus: Success for " + this.toString() + ". Set isDone");
             setIsDone(true);
         }
         onCeolStatusChangedListener();

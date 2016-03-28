@@ -1,5 +1,7 @@
 package com.candkpeters.ceol.device.command;
 
+import android.util.Log;
+
 import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.model.SIStatusType;
 
@@ -12,6 +14,7 @@ public class CommandBrowseToRoot extends Command {
 
     @Override
     protected boolean isSuccessful() {
+        Log.d(TAG, "isSuccessful: scrd="+ceolDevice.NetServer.getScridValue()+" isbrowsing="+ceolDevice.NetServer.isBrowsing() );
         return (
                 ceolDevice.getSIStatus() == SIStatusType.NetServer &&
                 ceolDevice.NetServer.getScridValue().endsWith(".1") &&

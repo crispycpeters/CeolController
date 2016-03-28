@@ -10,7 +10,7 @@ import com.candkpeters.ceol.model.PlayStatusType;
 public class CommandControl extends Command {
 
     private static final String TAG = "CommandControl";
-    private PlayStatusType playStatusType;
+    protected PlayStatusType playStatusType;
 
     public CommandControl() {
         this( PlayStatusType.Stop);

@@ -247,6 +247,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 
                         Dictionary<WebSvcHttpResponseText> texts = webSvcHttpResponse.texts;
                         if (texts != null) {
+                            netServer.setIsBrowsing(true);
                             if (webSvcHttpResponse.type.equals("browse")) {
                                 netServer.initializeEntries(texts.get("title").text,
                                         texts.get("scridValue").text,
@@ -260,8 +261,8 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                                     }
                                 }
                             }
-                            if ( ceolDevice.getPlayStatus() == PlayStatusType.Stop ) {
-                                netServer.setTrackInfo("","","","","");
+                            if ( ceolDevice.getPlayStatus() == PlayStatusType.Stop) {
+                                netServer.setTrackInfo("","","","", "");
                                 netServer.setImageBitmap(null);
                             } else {
                                 if (webSvcHttpResponse.type.equals("play")) {
@@ -272,6 +273,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                                             texts.get("format").text,
                                             texts.get("bitrate").text
                                     );
+                                    netServer.setIsBrowsing(false);
                                 }
                             }
                         } else {
