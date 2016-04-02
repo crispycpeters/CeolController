@@ -1,7 +1,6 @@
 package com.candkpeters.ceol.device;
 
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.candkpeters.ceol.model.DeviceStatusType;
@@ -30,12 +29,13 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     private static final String TAG = "CeolDeviceWebSvcMonitor";
 
     private static final int REPEATRATE_MSECS = 900;
-    private static final int REPEATEND_MSECS = 60000;
+    private static final int BACKGROUNDRATE_MSECS = 60000;
     private static final int REPEATONCE_MSECS = 600;
 
     private String baseUrl = null;
     public WebSvcApiService webSvcApiService = null;
-    private UIThreadUpdater uiThreadUpdater;
+    private UIThreadUpdater activeThreadUpdater;
+    private UIThreadUpdater backgroundThreadUpdater;
     public CeolDevice ceolDevice;
 
     // Observer
@@ -84,14 +84,27 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     }
 
     public void getStatusSoon() {
-        uiThreadUpdater.fireOnce(REPEATONCE_MSECS);
+        activeThreadUpdater.fireOnce(REPEATONCE_MSECS);
     }
 
-    private void startUpdates() {
-        if ( uiThreadUpdater == null ) {
-            uiThreadUpdater = new UIThreadUpdater(this, REPEATRATE_MSECS);
+    private void startActiveUpdates() {
+        if ( activeThreadUpdater == null ) {
+            activeThreadUpdater = new UIThreadUpdater(this, REPEATRATE_MSECS);
         }
-        uiThreadUpdater.startUpdates();
+        activeThreadUpdater.startUpdates();
+    }
+
+    private void stopActiveUpdates() {
+        if (activeThreadUpdater != null) {
+            activeThreadUpdater.stopUpdates();
+        }
+    }
+
+    public void start() {
+        if ( backgroundThreadUpdater == null ) {
+            backgroundThreadUpdater = new UIThreadUpdater(this, BACKGROUNDRATE_MSECS);
+            backgroundThreadUpdater.startUpdates();
+        }
     }
 
     public void getStatus() {
@@ -340,7 +353,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             if(!observers.contains(obj)) observers.add(obj);
         }
         if ( observers.size() == 1 ) {
-            startUpdates();
+            startActiveUpdates();
         }
     }
 
@@ -351,7 +364,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             observers.remove(obj);
         }
         if ( observers.size() == 0 ) {
-            uiThreadUpdater.stopUpdates();
+            stopActiveUpdates();
         }
     }
 

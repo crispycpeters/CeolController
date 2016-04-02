@@ -21,7 +21,8 @@ public abstract class Command {
     protected CeolCommandManager ceolCommandManager;
     protected CeolDevice ceolDevice;
     protected int maxExecutionTimeMsecs = 30000;
-    OnCeolStatusChangedListener onCeolStatusChangedListener;
+    private OnCeolStatusChangedListener onCeolStatusChangedListener;
+    private OnCeolStatusChangedListener onDoneCeolStatusChangedListener;
     private long commandStartTime;
     private boolean isDone = false;
 
@@ -37,28 +38,32 @@ public abstract class Command {
         onCeolStatusChangedListener();
         if ( isSuccessful() ) {
             Log.d(TAG, "checkOverallStatus: Success for " + this.toString());
-            ceolCommandManager.unregister(onCeolStatusChangedListener);
+            finishUp();
             return;
         }
         if ( isDone() ) {
             Log.d(TAG, "checkOverallStatus: We're done for " + this.toString());
-            ceolCommandManager.unregister(onCeolStatusChangedListener);
+            finishUp();
             return;
         }
         if ( System.currentTimeMillis() - commandStartTime >= maxExecutionTimeMsecs  ) {
             Log.e(TAG, "checkOverallStatus: Timeout for " + this.toString());
-            ceolCommandManager.unregister(onCeolStatusChangedListener);
+            finishUp();
             return;
         }
+        return; // Not finished
      }
+
+    private void finishUp() {
+        ceolCommandManager.unregister(onCeolStatusChangedListener);
+        if ( onDoneCeolStatusChangedListener != null) {
+            onDoneCeolStatusChangedListener.onCeolStatusChanged(ceolDevice);
+        }
+    }
 
     protected void onCeolStatusChangedListener() {
         return;
     };
-
-    //public CommandType getType() {
-    //    return type;
-    //}
 
     protected abstract boolean isSuccessful( );
 
@@ -77,7 +82,12 @@ public abstract class Command {
     protected abstract void execute();
 
     public void execute( CeolCommandManager ceolCommandManager) {
+        execute(ceolCommandManager,null);
+    }
 
+    public void execute( CeolCommandManager ceolCommandManager, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
+
+        this.onDoneCeolStatusChangedListener = onDoneCeolStatusChangedListener;
         commandStartTime = System.currentTimeMillis();
 
         this.ceolCommandManager = ceolCommandManager;

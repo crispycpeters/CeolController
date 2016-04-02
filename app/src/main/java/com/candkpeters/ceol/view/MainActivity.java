@@ -1,5 +1,6 @@
 package com.candkpeters.ceol.view;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,11 +29,11 @@ import com.candkpeters.ceol.controller.CeolController;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.chris.ceol.R;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    ProgressDialog waitingDialog;
 
     private Prefs prefs = null;
 
@@ -52,16 +53,13 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     private static CeolController ceolController;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setupWaitingDialog();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -88,52 +86,69 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        System.loadLibrary("mobiletelnetsdkjni");
         Log.i(TAG, "Running");
         ceolController = new CeolController(this, new OnCeolStatusChangedListener() {
             @Override
             public void onCeolStatusChanged(CeolDevice ceolDevice) {
-                try {
-
-                    TextView textView = (TextView) mViewPager.findViewById(R.id.title);
-                    textView.setText("Status=" + ceolDevice.getDeviceStatus() +
-                                    " SI=" + ceolDevice.getSIStatus() + " Vol=" + ceolDevice.getMasterVolume() +
-                                    " ScridValue=" + ceolDevice.NetServer.getScridValue()
-                    );
-
-                    TextView trackTB = (TextView) mViewPager.findViewById(R.id.track);
-                    trackTB.setText(ceolDevice.NetServer.getTrack());
-
-                    TextView artistTB = (TextView) mViewPager.findViewById(R.id.artist);
-                    artistTB.setText("selpos = " + ceolDevice.NetServer.getSelectedPosition());
-
-                    TextView albumTB = (TextView) mViewPager.findViewById(R.id.album);
-                    albumTB.setText("selentry = " + ceolDevice.NetServer.getSelectedEntry());
-
-                    ImageView imageV = (ImageView) mViewPager.findViewById(R.id.imageV);
-                    imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
-                } catch (Exception e) {
-                    Log.e(TAG, "onCeolStatusChanged: Exception " + e);
-                    e.printStackTrace();
-                }
+                updateViewsOnDeviceChange(ceolDevice);
             }
         });
 
-/*        Button volumeUpB = (Button)findViewById(R.id.volumeupB);
-        volumeUpB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ceolController.volumeUp();
-            }
-        });
-        Button volumeDownB = (Button)findViewById(R.id.volumedownB);
-        volumeDownB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ceolController.volumeDown();
-            }
-        });
-        */
+    }
+
+
+    private void setupWaitingDialog() {
+        waitingDialog = new ProgressDialog(this);
+        waitingDialog.setMessage("Waiting...");
+        waitingDialog.setIndeterminate(true);
+        waitingDialog.setCancelable(false);
+    }
+
+    private void showWaitingDialog() {
+        waitingDialog.show();
+    }
+
+    private void hideWaitingDialog() {
+        waitingDialog.hide();
+    }
+
+    public void updateViewsOnDeviceChange(CeolDevice ceolDevice) {
+        try {
+
+            hideWaitingDialog();
+            TextView textView = (TextView) mViewPager.findViewById(R.id.title);
+            textView.setText("Status=" + ceolDevice.getDeviceStatus() +
+                            " SI=" + ceolDevice.getSIStatus() + " Vol=" + ceolDevice.getMasterVolume() +
+                            " ScridValue=" + ceolDevice.NetServer.getScridValue()
+            );
+
+            TextView trackTB = (TextView) mViewPager.findViewById(R.id.track);
+            trackTB.setText(ceolDevice.NetServer.getTrack());
+
+            TextView artistTB = (TextView) mViewPager.findViewById(R.id.artist);
+            artistTB.setText("selpos = " + ceolDevice.NetServer.getSelectedPosition());
+
+            TextView albumTB = (TextView) mViewPager.findViewById(R.id.album);
+            albumTB.setText("selentry = " + ceolDevice.NetServer.getSelectedEntry());
+
+            ImageView imageV = (ImageView) mViewPager.findViewById(R.id.imageV);
+            imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
+        } catch (Exception e) {
+            Log.e(TAG, "onCeolStatusChanged: Exception " + e);
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ceolController.activityOnStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ceolController.activityOnStop();
     }
 
     @Override
@@ -227,8 +242,8 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_ceolremote, container, false);
-//            TextView textView = (TextView) rootView.findViewById(R.id.title);
-//            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+//            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_navigator, container, false);
+
             return rootView;
         }
     }
@@ -254,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void performMacro(View view) {
+        showWaitingDialog();
         ceolController.performMacro();
     }
 
@@ -268,47 +284,6 @@ public class MainActivity extends AppCompatActivity {
     public void fastForwards(View view) {
 
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-/*
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.candkpeters.ceol.view/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-*/    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
- /*       // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.candkpeters.ceol.view/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
- */   }
-
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

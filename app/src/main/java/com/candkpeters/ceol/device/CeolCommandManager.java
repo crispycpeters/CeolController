@@ -71,7 +71,7 @@ public class CeolCommandManager {
 
     public void sendCommand(String commandString) {
         Log.d(TAG, "sendCommand: Sending: " + commandString);
-        if ( commandString!= null && commandString != NotNeeded_WebCommand.NOCOMMAND) {
+        if ( commandString!= null && commandString != "") {
             ceolDeviceWebSvcCommand.SendCommand( commandString, null);   //TODO We need use callback
             ceolDeviceMonitor.getStatusSoon();
         }
@@ -83,7 +83,11 @@ public class CeolCommandManager {
         }
     }
 
-
+    public void execute(Command command, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
+        if ( command!= null ) {
+            command.execute(this, onDoneCeolStatusChangedListener);
+        }
+    }
 /*
     public void InitiateListener(boolean keepMonitoring, final OnCeolStatusChangedListener onCeolStatusChangedListener) {
 
@@ -95,4 +99,7 @@ public class CeolCommandManager {
         return CeolDevice.getInstance();
     }
 
+    public void start() {
+        ceolDeviceMonitor.start();
+    }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.candkpeters.ceol.device.CeolCommandManager;
@@ -78,6 +79,7 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
         long curr = System.currentTimeMillis();
         CeolDevice ceolDevice = ceolCommandManager.getCeolDevice();
 
+        views.setViewVisibility(R.id.waitingPB, isWaiting?View.VISIBLE:View.INVISIBLE);
         views.setTextViewText(R.id.textUpdate, updateString + ": " + Long.toString(curr % 10000));
 
         updateMacroButtons(context, views);

@@ -20,6 +20,7 @@ public abstract class CeolWidgetHelper extends AppWidgetProvider {
 
     private static final String TAG = "WidgetProvider";
     private Prefs prefs;
+    boolean isWaiting = false;
 
     // On creation of first widget
     public void onEnabled(Context context) {
@@ -50,6 +51,7 @@ public abstract class CeolWidgetHelper extends AppWidgetProvider {
         views.setOnClickPendingIntent(resId, clickPendingIntent);
     }
 
+/*
     public void startService(Context context, int appWidgetId) {
         Intent intent = new Intent();
         intent.setAction(CeolService.START_SERVICE);
@@ -57,6 +59,7 @@ public abstract class CeolWidgetHelper extends AppWidgetProvider {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         context.startService(intent);
     }
+*/
 
     protected abstract RemoteViews buildRemoteView(Context context, int widgetId);
 
@@ -76,7 +79,14 @@ public abstract class CeolWidgetHelper extends AppWidgetProvider {
     }
 
     protected abstract void updateViewsFirstTime(Context context, RemoteViews views, String text);
-    
+
+    public boolean widgetsExist(CeolCommandManager ceolCommandManager, Context context) {
+        AppWidgetManager appWidgetMan = AppWidgetManager.getInstance(context);
+        ComponentName myWidget = getComponentName(context);
+
+        return appWidgetMan.getAppWidgetIds(myWidget).length > 0;
+    }
+
     public void updateWidgets(CeolCommandManager ceolCommandManager, Context context, String text) {
 
         AppWidgetManager appWidgetMan = AppWidgetManager.getInstance(context);
@@ -101,5 +111,8 @@ public abstract class CeolWidgetHelper extends AppWidgetProvider {
     }
 
     abstract public ComponentName getComponentName(Context context);
-    
+
+    public void setWaiting(boolean b) {
+        isWaiting = b;
+    }
 }

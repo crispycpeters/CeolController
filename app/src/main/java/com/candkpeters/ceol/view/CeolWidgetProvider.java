@@ -43,6 +43,7 @@ public abstract class CeolWidgetProvider extends AppWidgetProvider {
 //TODO Start service?
     }
 
+/*
     public void startService(Context context, int appWidgetId) {
         Intent intent = new Intent();
         intent.setAction(CeolService.START_SERVICE);
@@ -50,5 +51,6 @@ public abstract class CeolWidgetProvider extends AppWidgetProvider {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         context.startService(intent);
     }
+*/
 
 }
