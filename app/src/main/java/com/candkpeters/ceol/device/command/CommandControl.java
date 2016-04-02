@@ -23,7 +23,18 @@ public class CommandControl extends Command {
 
     @Override
     protected boolean isSuccessful() {
-        return ceolDevice.getPlayStatus() == playStatusType;
+        switch (ceolDevice.getSIStatus()) {
+
+            case NetServer:
+                return ceolDevice.getPlayStatus() == playStatusType;
+            case IRadio:
+            case AnalogIn:
+            case Unknown:
+            case CD:
+            case Tuner:
+            default:
+                return true;
+        }
     }
 
     @Override

@@ -132,50 +132,6 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
         });
     }
 
-/*
-    public void getImage2() {
-
-        webSvcApiService.appGetImageAsync("", new Callback<Response>() {
-
-            @Override
-            public void success(Response response, Response response2) {
-                Log.d(TAG, "image resp: ");
-                try {
-                    //you can now get your file in the InputStream
-                    InputStream is = response.getBody().in();
-                    updateDeviceImage(is);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.w(TAG, "Could not connect to CEOL: " + error);
-                updateDeviceErrorStatus();
-                return;
-            }
-        });
-    }
-*/
-
-/*
-    public void getImage3() {
-
-        try {
-            Response response = webSvcApiService.appGetImage();
-
-            //you can now get your file in the InputStream
-            InputStream is = response.getBody().in();
-            updateDeviceImage(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-*/
-
     public void getImage() {
 
         try {
@@ -324,15 +280,15 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                 case "Internet Radio":
                     return SIStatusType.IRadio;
                 case "USB":
-                    // TODO
+                    return SIStatusType.Ipod;
                 case "ANALOGIN":
-                    // TODO
+                    return SIStatusType.AnalogIn;
                 case "DIGITALIN1":
-                    // TODO
+                    return SIStatusType.DigitalIn1;
                 case "DIGITALIN2":
-                    // TODO
+                    return SIStatusType.DigitalIn2;
                 case "BLUETOOTH":
-                    // TODO
+                    return SIStatusType.Bluetooth;
                 default:
                     return SIStatusType.Unknown;
             }

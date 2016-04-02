@@ -44,14 +44,15 @@ public class CommandMacro extends CommandBaseInteger {
                 Log.d(TAG, "checkProgress: Success, move to next");
                 commandPosition++;
                 if (commandPosition < commandSize) {
-                    commands.get(commandPosition).execute(ceolCommandManager);
+                    Command command = commands.get(commandPosition);
+                    executeIfNeeded(command);
                 } else {
                     // We're done
                     setIsDone(true);
                 }
             } else {
                 // Stop remaining commands
-                Log.e(TAG, "checkProgress: Stopping macro as command + " + currentCommand + " was unsuccessful");
+                Log.e(TAG, "checkProgress: Stopping macro as command " + currentCommand + " is done but was unsuccessful");
                 setIsDone(true);
             }
         }
@@ -75,12 +76,20 @@ public class CommandMacro extends CommandBaseInteger {
         commandSize = commands.size();
     }
 
+    private void executeIfNeeded( Command command) {
+        Log.d(TAG, "EXECUTE " + command);
+        if ( !command.isSuccessful(ceolCommandManager)) {
+            command.execute(ceolCommandManager);
+        }
+    }
+
     @Override
     public void execute() {
         commandPosition = 0;
 
         if ( commandSize > 0 ) {
-            commands.get(commandPosition).execute(ceolCommandManager);
+            Command command = commands.get(commandPosition);
+            executeIfNeeded(command);
         }
     }
 

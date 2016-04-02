@@ -67,6 +67,17 @@ public abstract class Command {
 
     protected abstract boolean isSuccessful( );
 
+    public boolean isSuccessful(CeolCommandManager ceolCommandManager) {
+        setIsDone(false);
+        this.ceolCommandManager = ceolCommandManager;
+        this.ceolDevice = ceolCommandManager.getCeolDevice();
+        boolean result = isSuccessful();
+        if (result) {
+            setIsDone(true);
+        }
+        return result;
+    }
+
     public final boolean isDone() {
         return isDone;
     };
@@ -87,6 +98,7 @@ public abstract class Command {
 
     public void execute( CeolCommandManager ceolCommandManager, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
 
+        setIsDone(false);
         this.onDoneCeolStatusChangedListener = onDoneCeolStatusChangedListener;
         commandStartTime = System.currentTimeMillis();
 

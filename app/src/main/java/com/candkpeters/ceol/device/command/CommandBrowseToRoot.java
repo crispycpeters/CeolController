@@ -12,9 +12,15 @@ public class CommandBrowseToRoot extends Command {
 
     private static final String TAG = "CommandBrowseToRoot";
 
+    public CommandBrowseToRoot() {
+        super();
+        Log.d(TAG, "constructor: isdone=" + isDone());
+    }
+
     @Override
     protected boolean isSuccessful() {
-        Log.d(TAG, "isSuccessful: scrd="+ceolDevice.NetServer.getScridValue()+" isbrowsing="+ceolDevice.NetServer.isBrowsing() );
+        Log.d(TAG, "isSuccessful: scrd end=" + ceolDevice.NetServer.getScridValue().endsWith(".1") + " isbrowsing=" + ceolDevice.NetServer.isBrowsing());
+        Log.d(TAG, "isSuccessful: isdone=" + isDone());
         return (
                 ceolDevice.getSIStatus() == SIStatusType.NetServer &&
                 ceolDevice.NetServer.getScridValue().endsWith(".1") &&
@@ -27,16 +33,18 @@ public class CommandBrowseToRoot extends Command {
     };
 
     private void checkStatus() {
+        Log.d(TAG, "checkStatus: isdone=" + isDone());
         if ( ceolDevice.getSIStatus() != SIStatusType.NetServer) {
             setIsDone(true);
         }
         if (!isSuccessful()) {
-            new CommandCursor(DirectionType.Left).execute(ceolCommandManager);
+            new CommandCursorLeft(ceolDevice.NetServer.getScridValue()).execute(ceolCommandManager);
         }
     }
 
     @Override
     public void execute() {
+        Log.d(TAG, "execute: isdone=" + isDone());
         checkStatus();
     }
 

@@ -123,16 +123,16 @@ public class MainActivity extends AppCompatActivity {
             );
 
             TextView trackTB = (TextView) mViewPager.findViewById(R.id.track);
-            trackTB.setText(ceolDevice.NetServer.getTrack());
+            if (trackTB != null) trackTB.setText(ceolDevice.NetServer.getTrack());
 
             TextView artistTB = (TextView) mViewPager.findViewById(R.id.artist);
-            artistTB.setText("selpos = " + ceolDevice.NetServer.getSelectedPosition());
+            if (artistTB != null) artistTB.setText("selpos = " + ceolDevice.NetServer.getSelectedPosition());
 
             TextView albumTB = (TextView) mViewPager.findViewById(R.id.album);
-            albumTB.setText("selentry = " + ceolDevice.NetServer.getSelectedEntry());
+            if (albumTB != null) albumTB.setText("selentry = " + ceolDevice.NetServer.getSelectedEntry());
 
             ImageView imageV = (ImageView) mViewPager.findViewById(R.id.imageV);
-            imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
+            if (imageV != null) imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
         } catch (Exception e) {
             Log.e(TAG, "onCeolStatusChanged: Exception " + e);
             e.printStackTrace();

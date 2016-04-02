@@ -50,4 +50,5 @@ public class CommandCursor extends CommandBaseDirection {
         ceolCommandManager.sendCommand(commandString);
     }
 
+
 }

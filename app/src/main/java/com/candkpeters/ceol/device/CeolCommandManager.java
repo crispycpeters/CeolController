@@ -88,12 +88,6 @@ public class CeolCommandManager {
             command.execute(this, onDoneCeolStatusChangedListener);
         }
     }
-/*
-    public void InitiateListener(boolean keepMonitoring, final OnCeolStatusChangedListener onCeolStatusChangedListener) {
-
-        ceolDeviceMonitor.initiateListener(keepMonitoring, onCeolStatusChangedListener) ;
-    }
-*/
 
     public CeolDevice getCeolDevice() {
         return CeolDevice.getInstance();

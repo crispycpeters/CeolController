@@ -29,6 +29,7 @@ public class CommandBrowseInto extends CommandBaseString {
 
     public CommandBrowseInto(String value, boolean playFirstEntry) {
         super(value);
+        isFound = false;
         this.playFirstEntry = playFirstEntry;
     }
 
@@ -47,7 +48,24 @@ public class CommandBrowseInto extends CommandBaseString {
 
     @Override
     public boolean isSuccessful() {
-        return isFound;
+        Log.d(TAG, "isSuccessful: isfound=" + isFound + " here=" + ceolDevice.NetServer.getTitle() + " value=" + getValue());
+        Log.d(TAG, "isSuccessful: isDone=" + isDone());
+
+        if (getValue() != null && ceolDevice != null &&
+                ceolDevice.getSIStatus() == SIStatusType.NetServer ) {
+            if ( ceolDevice.NetServer.getTitle().equalsIgnoreCase(getValue())) {
+                if ( playFirstEntry ) {
+                    return (ceolDevice.getPlayStatus() == PlayStatusType.Play);
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+//        return isFound;
     }
 
     @Override

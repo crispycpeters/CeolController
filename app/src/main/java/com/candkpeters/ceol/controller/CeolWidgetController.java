@@ -43,12 +43,13 @@ public class CeolWidgetController {
 
     public void initialize() {
         this.prefs = new Prefs(context);
-        String baseurl = prefs.getBaseUrl();
+        String baseUrl = prefs.getBaseUrl();
 
         ceolCommandManager = CeolCommandManager.getInstance();
-        ceolCommandManager.setDevice(CeolDevice.getInstance(), baseurl, prefs.getMacroNames(), prefs.getMacroValues());
+        ceolCommandManager.setDevice(CeolDevice.getInstance(), baseUrl, prefs.getMacroNames(), prefs.getMacroValues());
         ceolDevice = ceolCommandManager.getCeolDevice();
         ceolCommandManager.start();
+        startService();
     }
 
     private void startWidgetUpdates() {
