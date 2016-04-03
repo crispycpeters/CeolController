@@ -9,6 +9,9 @@
     android:orientation="vertical"
     >
 
+    <include layout="@layout/fragment_top_level_controls"/>
+
+<!--
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/glayout"
         android:layout_width="match_parent"
@@ -17,11 +20,7 @@
         android:rowCount="11"
         android:background="@drawable/widget_shape"
          >
-    <!--
 
-    -->
-        <!--android:textSize="30sp"-->
-        <!--android:layout_below="@id/textUpdate"-->
         <ImageButton
             android:id="@+id/powerB"
             android:src="@drawable/ic_av_power"
@@ -134,6 +133,7 @@
             android:textSize="12dp"
             style="@style/WhiteRectangleButton"/>
     </GridLayout>
+-->
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -3,7 +3,9 @@ package com.candkpeters.ceol.device.command;
 import android.content.Intent;
 import android.util.Log;
 
+import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.model.CeolBrowseEntry;
+import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.model.PlayStatusType;
 import com.candkpeters.ceol.model.SIStatusType;
@@ -49,7 +51,6 @@ public class CommandBrowseInto extends CommandBaseString {
     @Override
     public boolean isSuccessful() {
         Log.d(TAG, "isSuccessful: isfound=" + isFound + " here=" + ceolDevice.NetServer.getTitle() + " value=" + getValue());
-        Log.d(TAG, "isSuccessful: isDone=" + isDone());
 
         if (getValue() != null && ceolDevice != null &&
                 ceolDevice.getSIStatus() == SIStatusType.NetServer ) {
@@ -65,7 +66,6 @@ public class CommandBrowseInto extends CommandBaseString {
         } else {
             return false;
         }
-//        return isFound;
     }
 
     @Override
@@ -88,15 +88,9 @@ public class CommandBrowseInto extends CommandBaseString {
             case MovingRight:
                 checkForRight();
                 break;
-            case Playing:
-                checkForPlaying();
-                break;
-        }
-    }
-
-    private void checkForPlaying() {
-        if ( ceolDevice.getPlayStatus() == PlayStatusType.Play) {
-            finish(true);
+//            case Playing:
+//                checkForPlaying();
+//                break;
         }
     }
 
@@ -106,8 +100,15 @@ public class CommandBrowseInto extends CommandBaseString {
 
             if ( playFirstEntry ) {
                 Log.d(TAG, "checkForRight: Playing entry");
-                searchSteps = SearchSteps.Playing;
-                new CommandControl(PlayStatusType.Play).execute(ceolCommandManager);
+//                searchSteps = SearchSteps.Playing;
+                new CommandControl(PlayStatusType.Play).execute(ceolCommandManager, new OnCeolStatusChangedListener() {
+                    @Override
+                    public void onCeolStatusChanged(CeolDevice ceolDevice) {
+                        if ( ceolDevice.getPlayStatus() == PlayStatusType.Play) {
+                            finish(true);
+                        }
+                    }
+                });
             } else {
                 Log.d(TAG, "checkForRight: Not playing entry. We're done.");
                 // That's it
@@ -137,6 +138,7 @@ public class CommandBrowseInto extends CommandBaseString {
                     Log.d(TAG, "checkForEntry: GetBrowseList: Wrong entry \"" + entry.Text + "\" found. Go down.");
                     searchSteps = searchSteps.MovingDown;
                     advancePosition();
+                    //Todo - use callback method - need to send string to Cursor down like cursor left
                     new CommandCursor(DirectionType.Down).execute(ceolCommandManager);
                 }
             } else {

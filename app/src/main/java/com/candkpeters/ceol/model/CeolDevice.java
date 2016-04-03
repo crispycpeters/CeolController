@@ -8,10 +8,12 @@ import android.util.Log;
 public class CeolDevice {
 
     private static final String TAG = "CeolDevice";
-    private static final long DEFAULT_WAKEUP_PERIOD_MSECS = 14000;
+    private static final long DEFAULT_WAKEUP_PERIOD_MSECS = 14000;  // Give machine a chance to wake up before sending commands
+    private static final long DEFAULT_NETSERVERON_PERIOD_MSECS = 6000; // Give NetServer a chance to settle down be believing its settings
 
     private static CeolDevice ourInstance = new CeolDevice();
     private long wakeUpPeriodMsecs = DEFAULT_WAKEUP_PERIOD_MSECS;
+    private long netServerOnPeriodMsecs = DEFAULT_NETSERVERON_PERIOD_MSECS;
 
     public static CeolDevice getInstance() {
         return ourInstance;
@@ -21,7 +23,6 @@ public class CeolDevice {
     private SIStatusType siStatus = SIStatusType.Unknown;
     private int masterVolume = 0;
     private boolean isMuted = false;
-    private boolean isBrowsing = false;
     private PlayStatusType playStatus = PlayStatusType.Unknown;
     private DeviceStatusType deviceStatus = DeviceStatusType.Connecting;
     public CeolDeviceNetServer NetServer;
@@ -77,9 +78,27 @@ public class CeolDevice {
         return siStatus;
     }
 
-    public void setSIStatus(SIStatusType siStatus) {
-        //Log.d(TAG, "setSiStatus: " + siStatus);
-        this.siStatus = siStatus;
+    private long netServerOnTimeMsecs = 0;
+
+    public void setSIStatus(SIStatusType newSiStatus) {
+        long now = System.currentTimeMillis();
+
+        if ( siStatus != SIStatusType.NetServer && newSiStatus == SIStatusType.NetServer ) {
+            // We are trying to switch to NetServer
+            if (netServerOnTimeMsecs == 0) {
+                // Start timer but don't change setting
+                netServerOnTimeMsecs = now;
+            } else {
+                if ((now - netServerOnTimeMsecs) > netServerOnPeriodMsecs) {
+                    // We've waited long enough
+                    this.siStatus = newSiStatus;
+                    netServerOnTimeMsecs = 0;
+                }
+            }
+        } else {
+            this.siStatus = newSiStatus;
+            netServerOnTimeMsecs = 0;
+        }
     }
 
     public int getMasterVolume() {

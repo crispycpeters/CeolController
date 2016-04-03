@@ -2,6 +2,8 @@ package com.candkpeters.ceol.device.command;
 
 import android.util.Log;
 
+import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
+import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.model.SIStatusType;
 
@@ -20,17 +22,11 @@ public class CommandBrowseToRoot extends Command {
     @Override
     protected boolean isSuccessful() {
         Log.d(TAG, "isSuccessful: scrd end=" + ceolDevice.NetServer.getScridValue().endsWith(".1") + " isbrowsing=" + ceolDevice.NetServer.isBrowsing());
-        Log.d(TAG, "isSuccessful: isdone=" + isDone());
         return (
                 ceolDevice.getSIStatus() == SIStatusType.NetServer &&
                 ceolDevice.NetServer.getScridValue().endsWith(".1") &&
                 ceolDevice.NetServer.isBrowsing() );
     }
-
-    @Override
-    protected void onCeolStatusChangedListener() {
-        checkStatus();
-    };
 
     private void checkStatus() {
         Log.d(TAG, "checkStatus: isdone=" + isDone());
@@ -38,7 +34,12 @@ public class CommandBrowseToRoot extends Command {
             setIsDone(true);
         }
         if (!isSuccessful()) {
-            new CommandCursorLeft(ceolDevice.NetServer.getScridValue()).execute(ceolCommandManager);
+            new CommandCursorLeft(ceolDevice.NetServer.getScridValue()).execute(ceolCommandManager, new OnCeolStatusChangedListener() {
+                @Override
+                public void onCeolStatusChanged(CeolDevice ceolDevice) {
+                    checkStatus();
+                }
+            });
         }
     }
 
