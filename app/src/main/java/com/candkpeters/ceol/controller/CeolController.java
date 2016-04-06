@@ -33,13 +33,13 @@ public class CeolController {
     OnCeolStatusChangedListener onCeolStatusChangedListener;
 
     public CeolController( Context context, final OnCeolStatusChangedListener onCeolStatusChangedListener ) {
-        this.prefs = new Prefs(context);
-        String baseurl = prefs.getBaseUrl();
+//        this.prefs = new Prefs(context);
+//        String baseurl = prefs.getBaseUrl();
 
         this.onCeolStatusChangedListener = onCeolStatusChangedListener;
-        ceolDevice = CeolDevice.getInstance();
         ceolCommandManager = CeolCommandManager.getInstance();
-        ceolCommandManager.setDevice(ceolDevice, baseurl, prefs.getMacroNames(), prefs.getMacroValues());
+        ceolDevice = ceolCommandManager.getCeolDevice();
+        ceolCommandManager.initialize(context);//ceolDevice, baseurl, prefs.getMacroNames(), prefs.getMacroValues());
     }
 
     private void stopListening() {
