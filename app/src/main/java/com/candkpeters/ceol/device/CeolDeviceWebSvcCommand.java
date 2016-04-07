@@ -15,7 +15,6 @@ public class CeolDeviceWebSvcCommand {
 
     private static final String TAG = "CeolDeviceWebSvcMonitor";
 
-    private String baseUrl = null;
     private WebSvcApiService webSvcApiService = null;
     private CeolDevice ceolDevice;
 
@@ -27,7 +26,10 @@ public class CeolDeviceWebSvcCommand {
     }
 
     public CeolDeviceWebSvcCommand(String baseUrl) {
-        this.baseUrl = baseUrl;
+        recreateService(baseUrl);
+    }
+
+    public void recreateService(String baseUrl) {
         webSvcApiService = WebSvcGenerator.createService(baseUrl);
     }
 

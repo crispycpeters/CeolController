@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <CheckBoxPreference
-        android:key="pref_debug"
+        android:key="@string/pref_key_debug_mode"
         android:title="@string/pref_title_debug"
         android:summary="@string/pref_summary_debug"
         android:defaultValue="@bool/pref_default_debug"
@@ -16,7 +16,8 @@
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="@string/pref_title_debug_device_server" />
+        android:title="@string/pref_title_debug_device_server"
+        />
 
 
 </PreferenceScreen>

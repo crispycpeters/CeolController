@@ -32,7 +32,6 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     private static final int BACKGROUNDRATE_MSECS = 60000;
     private static final int REPEATONCE_MSECS = 600;
 
-    private String baseUrl = null;
     public WebSvcApiService webSvcApiService = null;
     private UIThreadUpdater activeThreadUpdater;
     private UIThreadUpdater backgroundThreadUpdater;
@@ -74,13 +73,14 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     ImageDownloaderTask imageDownloaderTask;
 
     public CeolDeviceWebSvcMonitor(String baseUrl) {
-        this.baseUrl = baseUrl;
-        webSvcApiService = WebSvcGenerator.createService(baseUrl);
-
         ceolDevice = CeolDevice.getInstance();
         this.observers=new ArrayList<OnCeolStatusChangedListener>();
         imageDownloaderTask = new ImageDownloaderTask(this);
+        recreateService(baseUrl);
+    }
 
+    public void recreateService(String baseUrl) {
+        webSvcApiService = WebSvcGenerator.createService(baseUrl);
     }
 
     public void getStatusSoon() {

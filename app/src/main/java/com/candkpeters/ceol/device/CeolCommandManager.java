@@ -1,12 +1,14 @@
 package com.candkpeters.ceol.device;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.view.Prefs;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by crisp on 25/01/2016.
@@ -22,6 +24,8 @@ public class CeolCommandManager {
 
     private MacroInflater macroInflater;
 
+    private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
+
 //    private List<OnCeolStatusChangedListener> observers;
     private String message;
 //    private final Object MUTEX = new Object();
@@ -36,19 +40,37 @@ public class CeolCommandManager {
     /*
     To be called when config changes or on start
      */
-    public void setDevice(CeolDevice device, String baseUrl, String[] macroNames, String[] macroValues) {
-//        if ( this.device == null ) {
+    public void initialize(final Context context) {
+
+        if ( this.device == null ) {
             this.device = CeolDevice.getInstance();
-//        }
-//        if ( this.ceolDeviceMonitor == null ) {
-            this.ceolDeviceMonitor = new CeolDeviceWebSvcMonitor(baseUrl);
-//        }
-//        if ( this.ceolDeviceWebSvcCommand == null ) {
-            this.ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(baseUrl);
-//        }
-//        this.webStatusRepeatRateMsecs = webStatusRepeatRateMsecs;
-//        this.observers=new ArrayList<OnCeolStatusChangedListener>();
-        macroInflater = new MacroInflater(macroNames, macroValues);
+            if (onSharedPreferenceChangeListener == null) {
+                Prefs prefs = new Prefs(context);
+                onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                    @Override
+                    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                        updateConfig(context);
+                    }
+                };
+                prefs.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
+            }
+            updateConfig(context);
+        }
+    }
+
+    private void updateConfig(Context context) {
+        Prefs prefs = new Prefs(context);
+        if ( ceolDeviceMonitor == null) {
+            ceolDeviceMonitor = new CeolDeviceWebSvcMonitor(prefs.getBaseUrl());
+        } else {
+            ceolDeviceMonitor.recreateService(prefs.getBaseUrl());
+        }
+        if ( ceolDeviceWebSvcCommand == null ) {
+            ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(prefs.getBaseUrl());
+        } else {
+            ceolDeviceWebSvcCommand.recreateService(prefs.getBaseUrl());
+        }
+        macroInflater = new MacroInflater(prefs.getMacroNames(), prefs.getMacroValues());
     }
 
     public ArrayList<Command> getMacro(int macroNumber) {

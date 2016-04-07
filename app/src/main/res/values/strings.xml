@@ -18,8 +18,8 @@
 
     <string-array name="section_page_title">
         <item>Remote</item>
-        <item>Now playing</item>
-        <item>Section-3</item>
+        <item>Tab 2</item>
+        <item>Player</item>
     </string-array>
 
     <!-- Strings related to Settings -->

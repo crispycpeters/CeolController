@@ -45,12 +45,12 @@ public class MainActivity extends AppCompatActivity {
      * may be best to switch to a
      * {@link FragmentStatePagerAdapter}.
      */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionsPagerAdapter sectionsPagerAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    private ViewPager viewPager;
 
     private static CeolController ceolController;
 
@@ -63,18 +63,19 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        viewPager = (ViewPager) findViewById(R.id.container);
+        viewPager.setAdapter(sectionsPagerAdapter);
 
         prefs = new Prefs(this);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.setupWithViewPager(viewPager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -116,22 +117,22 @@ public class MainActivity extends AppCompatActivity {
         try {
 
             hideWaitingDialog();
-            TextView textView = (TextView) mViewPager.findViewById(R.id.title);
+            TextView textView = (TextView) viewPager.findViewById(R.id.title);
             textView.setText("Status=" + ceolDevice.getDeviceStatus() +
                             " SI=" + ceolDevice.getSIStatus() + " Vol=" + ceolDevice.getMasterVolume() +
                             " ScridValue=" + ceolDevice.NetServer.getScridValue()
             );
 
-            TextView trackTB = (TextView) mViewPager.findViewById(R.id.track);
+            TextView trackTB = (TextView) viewPager.findViewById(R.id.track);
             if (trackTB != null) trackTB.setText(ceolDevice.NetServer.getTrack());
 
-            TextView artistTB = (TextView) mViewPager.findViewById(R.id.artist);
+            TextView artistTB = (TextView) viewPager.findViewById(R.id.artist);
             if (artistTB != null) artistTB.setText("selpos = " + ceolDevice.NetServer.getSelectedPosition());
 
-            TextView albumTB = (TextView) mViewPager.findViewById(R.id.album);
+            TextView albumTB = (TextView) viewPager.findViewById(R.id.album);
             if (albumTB != null) albumTB.setText("selentry = " + ceolDevice.NetServer.getSelectedEntry());
 
-            ImageView imageV = (ImageView) mViewPager.findViewById(R.id.imageV);
+            ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageV);
             if (imageV != null) imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
         } catch (Exception e) {
             Log.e(TAG, "onCeolStatusChanged: Exception " + e);
@@ -202,13 +203,13 @@ public class MainActivity extends AppCompatActivity {
             switch (sectionNumber) {
                 default:
                 case 1:
-                    fragment = new CeolRemoteFragment();
+                    fragment = new CeolRemoteFragmentMainControls();
                     break;
                 case 2:
                     fragment = new PlaceholderFragment();
                     break;
                 case 3:
-                    fragment = new PlaceholderFragment();
+                    fragment = new CeolRemoteFragmentPlayerControl();
                     break;
             }
             fragment.setArguments(args);
@@ -226,22 +227,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Section 1 - Ceol remote page.
+     * Section 1 - Ceol main controls page.
      */
-    public static class CeolRemoteFragment extends Fragment {
+    public static class CeolRemoteFragmentMainControls extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "1";
 
-        public CeolRemoteFragment() {
+        public CeolRemoteFragmentMainControls() {
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_ceolremote, container, false);
+//            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_navigator, container, false);
+
+            return rootView;
+        }
+    }
+
+    /**
+     * Section 1 - Ceol main controls page.
+     */
+    public static class CeolRemoteFragmentPlayerControl extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "3";
+
+        public CeolRemoteFragmentPlayerControl() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_player, container, false);
 //            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_navigator, container, false);
 
             return rootView;

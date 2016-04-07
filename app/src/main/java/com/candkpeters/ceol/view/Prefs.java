@@ -32,6 +32,10 @@ public class Prefs {
 //                "com.candkpeters.ceol", Context.MODE_PRIVATE);
     }
 
+    public void registerOnSharedPreferenceChangeListener( SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener) {
+        preferences.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
+    }
+
 /*    public String getBaseUrl() {
         return preferences.getString(PREF_URL,
                 context.getResources().getStringArray(R.array.urls_array)[0] );

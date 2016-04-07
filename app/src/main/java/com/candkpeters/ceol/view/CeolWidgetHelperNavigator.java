@@ -43,12 +43,12 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
         setOnClickIntent(context, appWidgetId, views, R.id.performMacro3B, new CommandMacro(3));
         setOnClickIntent(context, appWidgetId, views, R.id.volumeupB, new CommandMasterVolumeUp());
         setOnClickIntent(context, appWidgetId, views, R.id.volumedownB, new CommandMasterVolumeDown());
-        setOnClickIntent(context, appWidgetId, views, R.id.fastBackwardsB, new CommandFastBackward());
-        setOnClickIntent(context, appWidgetId, views, R.id.fastForwardsB, new CommandFastForward());
-        setOnClickIntent(context, appWidgetId, views, R.id.skipBackwardsB, new CommandSkipBackward());
-        setOnClickIntent(context, appWidgetId, views, R.id.skipForwardsB, new CommandSkipForward());
-        setOnClickIntent(context, appWidgetId, views, R.id.playpauseB, new CommandControlToggle());
-        setOnClickIntent(context, appWidgetId, views, R.id.stopB, new CommandControlStop());
+//        setOnClickIntent(context, appWidgetId, views, R.id.fastBackwardsB, new CommandFastBackward());
+//        setOnClickIntent(context, appWidgetId, views, R.id.fastForwardsB, new CommandFastForward());
+//        setOnClickIntent(context, appWidgetId, views, R.id.skipBackwardsB, new CommandSkipBackward());
+//        setOnClickIntent(context, appWidgetId, views, R.id.skipForwardsB, new CommandSkipForward());
+//        setOnClickIntent(context, appWidgetId, views, R.id.playpauseB, new CommandControlToggle());
+//        setOnClickIntent(context, appWidgetId, views, R.id.stopB, new CommandControlStop());
         setOnClickIntent(context, appWidgetId, views, R.id.navLeftB, new CommandCursor(DirectionType.Left));
         setOnClickIntent(context, appWidgetId, views, R.id.navRightB, new CommandCursor(DirectionType.Right));
         setOnClickIntent(context, appWidgetId, views, R.id.navUpB, new CommandCursor(DirectionType.Up));
