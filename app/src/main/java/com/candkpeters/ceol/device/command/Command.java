@@ -48,6 +48,7 @@ public abstract class Command {
         }
         if ( System.currentTimeMillis() - commandStartTime >= maxExecutionTimeMsecs  ) {
             Log.e(TAG, "checkOverallStatus: Timeout for " + this.toString());
+            setIsDone(true);
             finishUp();
             return;
         }

@@ -245,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_ceolremote, container, false);
 //            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_navigator, container, false);
 
+            ceolController.setViewCommandHandlers( rootView );
             return rootView;
         }
     }
@@ -272,42 +273,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void volumeUp(View view) {
-        ceolController.volumeUp();
-    }
-
-    public void volumeDown(View view) {
-        ceolController.volumeDown();
-    }
-
-    public void skipBackwards(View view) {
-        ceolController.skipBackwards();
-    }
-
-    public void skipForwards(View view) {
-        ceolController.skipForwards();
-    }
-
-    public void pausePlay(View view) {
-
-    }
-
-    public void performMacro(View view) {
-        showWaitingDialog();
-        ceolController.performMacro();
-    }
-
-    public void stop(View view) {
-
-    }
-
-    public void fastBackwards(View view) {
-
-    }
-
-    public void fastForwards(View view) {
-
-    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
