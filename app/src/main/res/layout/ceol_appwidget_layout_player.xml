@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_margin="5dp"
-    android:background="@drawable/widget_shape"
+    android:background="@drawable/shape_widget"
     android:orientation="vertical"
     >
 
@@ -68,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@drawable/widget_shape"
+        android:background="@drawable/shape_widget"
         >
         <ImageButton
             android:id="@+id/skipBackwardsB"

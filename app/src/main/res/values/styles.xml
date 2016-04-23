@@ -83,4 +83,5 @@
         <item name="android:minWidth">15mm</item>
         <item name="android:minHeight">15mm</item>
     </style>
+
 </resources>

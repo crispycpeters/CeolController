@@ -2,6 +2,8 @@ package com.candkpeters.ceol.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -15,6 +17,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,17 +26,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.candkpeters.ceol.controller.CeolController;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.model.DeviceStatusType;
+import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.chris.ceol.R;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private static final float DIMMED = 0.9f;
+    private static final float NOTDIMMED = 0;
     ProgressDialog waitingDialog;
 
     private Prefs prefs = null;
@@ -53,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
 
     private static CeolController ceolController;
+
+    private Animation powerAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        powerAnimation = new AlphaAnimation(1,0);
+        powerAnimation.setDuration(1000);
+        powerAnimation.setInterpolator( new LinearInterpolator());
+        powerAnimation.setRepeatCount(Animation.INFINITE);
+        powerAnimation.setRepeatMode(Animation.REVERSE);
+
     }
 
 
@@ -134,9 +155,101 @@ public class MainActivity extends AppCompatActivity {
 
             ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageV);
             if (imageV != null) imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
+
+            updateMacroButtons();
+
+            updatePowerButton(ceolDevice);
+
+            showConnection( ceolDevice.getDeviceStatus() != DeviceStatusType.Connecting ) ;
+
+            updateNavigation( ceolDevice);
+
         } catch (Exception e) {
             Log.e(TAG, "onCeolStatusChanged: Exception " + e);
             e.printStackTrace();
+        }
+    }
+
+    private void updateNavigation(CeolDevice ceolDevice) {
+
+        updateNavigationRow( ceolDevice, R.id.textRow0, 0);
+        updateNavigationRow( ceolDevice, R.id.textRow1, 1);
+        updateNavigationRow( ceolDevice, R.id.textRow2, 2);
+        updateNavigationRow( ceolDevice, R.id.textRow3, 3);
+        updateNavigationRow( ceolDevice, R.id.textRow4, 4);
+        updateNavigationRow( ceolDevice, R.id.textRow5, 5);
+        updateNavigationRow( ceolDevice, R.id.textRow6, 6);
+        updateNavigationRow( ceolDevice, R.id.textRow7, 7);
+    }
+
+    private void updateNavigationRow(CeolDevice ceolDevice, int rowResId, int rowIndex) {
+        TextView textV = (TextView)findViewById(rowResId);
+        if ( textV != null) {
+            if ( ceolDevice.getSIStatus() == SIStatusType.NetServer && ceolDevice.NetServer.isBrowsing() ) {
+//                String s = ceolDevice.NetServer.getEntries().getBrowseLineText(rowIndex);
+                SpannableString s = new SpannableString(ceolDevice.NetServer.getEntries().getBrowseLineText(rowIndex));
+                if ( ceolDevice.NetServer.getEntries().getSelectedEntryIndex() == rowIndex) {
+                    s.setSpan(new StyleSpan(Typeface.BOLD_ITALIC),0, s.length(),0);
+                }
+                textV.setText(s);
+            } else {
+                textV.setText("");
+            }
+        }
+    }
+
+    private boolean isPowerAnimating = false;
+
+    private void updatePowerButton(CeolDevice ceolDevice) {
+        ImageButton powerB = (ImageButton)findViewById(R.id.powerB);
+
+        if (powerB != null) {
+
+            switch ( ceolDevice.getDeviceStatus()) {
+
+                case Connecting:
+                case Standby:
+                    if ( isPowerAnimating ) {
+                        powerB.clearAnimation();
+                        isPowerAnimating = false;
+                    }
+                    powerB.setImageResource(R.drawable.ic_av_power_back );
+                    break;
+                case Starting:
+                    if ( !isPowerAnimating ) {
+                        powerB.setImageResource(R.drawable.ic_av_power );
+                        powerB.startAnimation(powerAnimation);
+                        isPowerAnimating = true;
+                    }
+                    break;
+                case On:
+                    if ( isPowerAnimating ) {
+                        powerB.clearAnimation();
+                        isPowerAnimating = false;
+                    }
+                    powerB.setImageResource(R.drawable.ic_av_power );
+                    break;
+            }
+        }
+    }
+
+    public void updateMacroButtons() {
+        Prefs prefs = new Prefs(this);
+        String[] macroNames = prefs.getMacroNames();
+
+        updateMacroButton( R.id.performMacro1B, macroNames, 0);
+        updateMacroButton( R.id.performMacro2B, macroNames, 1);
+        updateMacroButton( R.id.performMacro3B, macroNames, 2);
+
+    }
+
+    private void updateMacroButton(int resId, String[] macroNames, int macroIndex) {
+
+        if ( macroIndex < macroNames.length) {
+            Button b = (Button)findViewById(resId);
+            if ( b != null ) {
+                b.setText(macroNames[macroIndex]);
+            }
         }
     }
 
@@ -226,6 +339,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void showConnection( boolean isConnected) {
+        View rootView = findViewById(R.id.dimV);
+        if (rootView == null) return;
+        boolean isDimmerVisible = ( rootView.getAlpha() != NOTDIMMED );
+//        Log.d(TAG, "showConnection: alpha="+rootView.getAlpha()+" isDimmerVisible="+isDimmerVisible);
+        if ( isConnected  ) {
+            if ( isDimmerVisible ) {
+                rootView.setVisibility(View.INVISIBLE);
+                rootView.animate().alpha(NOTDIMMED);
+            }
+        } else {
+            if ( !isDimmerVisible ) {
+                rootView.setAlpha(DIMMED);
+
+                rootView.setVisibility(View.VISIBLE);
+                rootView.animate().alpha(DIMMED);
+            }
+        }
+    }
+
     /**
      * Section 1 - Ceol main controls page.
      */
@@ -246,6 +379,9 @@ public class MainActivity extends AppCompatActivity {
 //            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_navigator, container, false);
 
             ceolController.setViewCommandHandlers( rootView );
+            rootView.findViewById(R.id.dimV).setAlpha((float) 0.5);
+            rootView.findViewById(R.id.dimV).setVisibility(View.VISIBLE);
+
             return rootView;
         }
     }
