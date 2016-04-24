@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+>
+<!--
     android:id="@+id/glayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/shape_widget"
-     >
+-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -211,4 +213,4 @@
             style="@style/WhiteCircleButton"
             />
     </GridLayout>
-</LinearLayout>
+</merge>

@@ -102,13 +102,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Log.i(TAG, "Running");
+        Log.i(TAG, "Created");
         ceolController = new CeolController(this, new OnCeolStatusChangedListener() {
             @Override
             public void onCeolStatusChanged(CeolDevice ceolDevice) {
                 updateViewsOnDeviceChange(ceolDevice);
             }
         });
+
+        ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageTrack);
+//        if (imageV != null) imageV.setMinimumHeight();width(ceolDevice.NetServer.getImageBitmap());
 
         powerAnimation = new AlphaAnimation(1,0);
         powerAnimation.setDuration(1000);
@@ -138,22 +141,24 @@ public class MainActivity extends AppCompatActivity {
         try {
 
             hideWaitingDialog();
+/*
             TextView textView = (TextView) viewPager.findViewById(R.id.title);
             textView.setText("Status=" + ceolDevice.getDeviceStatus() +
                             " SI=" + ceolDevice.getSIStatus() + " Vol=" + ceolDevice.getMasterVolume() +
                             " ScridValue=" + ceolDevice.NetServer.getScridValue()
             );
+*/
 
-            TextView trackTB = (TextView) viewPager.findViewById(R.id.track);
+            TextView trackTB = (TextView)findViewById(R.id.textTrack);
             if (trackTB != null) trackTB.setText(ceolDevice.NetServer.getTrack());
 
-            TextView artistTB = (TextView) viewPager.findViewById(R.id.artist);
-            if (artistTB != null) artistTB.setText("selpos = " + ceolDevice.NetServer.getSelectedPosition());
+            TextView artistTB = (TextView)findViewById(R.id.textArtist);
+            if (artistTB != null) artistTB.setText(ceolDevice.NetServer.getArtist());
 
-            TextView albumTB = (TextView) viewPager.findViewById(R.id.album);
-            if (albumTB != null) albumTB.setText("selentry = " + ceolDevice.NetServer.getSelectedEntry());
+            TextView albumTB = (TextView) viewPager.findViewById(R.id.textAlbum);
+            if (albumTB != null) albumTB.setText(ceolDevice.NetServer.getAlbum());
 
-            ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageV);
+            ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageTrack);
             if (imageV != null) imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
 
             updateMacroButtons();
@@ -340,6 +345,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showConnection( boolean isConnected) {
+
         View rootView = findViewById(R.id.dimV);
         if (rootView == null) return;
         boolean isDimmerVisible = ( rootView.getAlpha() != NOTDIMMED );
@@ -379,11 +385,10 @@ public class MainActivity extends AppCompatActivity {
 //            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_navigator, container, false);
 
             ceolController.setViewCommandHandlers( rootView );
-            rootView.findViewById(R.id.dimV).setAlpha((float) 0.5);
-            rootView.findViewById(R.id.dimV).setVisibility(View.VISIBLE);
 
             return rootView;
         }
+
     }
 
     /**
