@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:columnCount="3"
     android:rowCount="11"
-    android:background="@drawable/shape_widget"
+    android:background="@drawable/shape_background"
      >
 
     <!--android:textSize="30sp"-->
