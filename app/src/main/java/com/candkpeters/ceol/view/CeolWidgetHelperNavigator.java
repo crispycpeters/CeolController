@@ -35,12 +35,17 @@ import com.candkpeters.chris.ceol.R;
 public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
 
     @Override
+    public ComponentName getComponentName(Context context) {
+        return new ComponentName(context, CeolWidgetProviderNavigator.class);
+    }
+
+    @Override
     protected RemoteViews buildRemoteView(Context context, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ceol_appwidget_layout_navigator);
-        setOnClickIntent(context, appWidgetId, views, R.id.powerB, new CommandSetPowerToggle());
-        setOnClickIntent(context, appWidgetId, views, R.id.performMacro1B, new CommandMacro(1));
-        setOnClickIntent(context, appWidgetId, views, R.id.performMacro2B, new CommandMacro(2));
-        setOnClickIntent(context, appWidgetId, views, R.id.performMacro3B, new CommandMacro(3));
+//        setOnClickIntent(context, appWidgetId, views, R.id.powerB, new CommandSetPowerToggle());
+//        setOnClickIntent(context, appWidgetId, views, R.id.performMacro1B, new CommandMacro(1));
+//        setOnClickIntent(context, appWidgetId, views, R.id.performMacro2B, new CommandMacro(2));
+//        setOnClickIntent(context, appWidgetId, views, R.id.performMacro3B, new CommandMacro(3));
         setOnClickIntent(context, appWidgetId, views, R.id.volumeupB, new CommandMasterVolumeUp());
         setOnClickIntent(context, appWidgetId, views, R.id.volumedownB, new CommandMasterVolumeDown());
 //        setOnClickIntent(context, appWidgetId, views, R.id.fastBackwardsB, new CommandFastBackward());
@@ -54,21 +59,21 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
         setOnClickIntent(context, appWidgetId, views, R.id.navUpB, new CommandCursor(DirectionType.Up));
         setOnClickIntent(context, appWidgetId, views, R.id.navDownB, new CommandCursor(DirectionType.Down));
         setOnClickIntent(context, appWidgetId, views, R.id.navEnterB, new CommandCursorEnter());
-        setOnClickIntent(context, appWidgetId, views, R.id.siInternetRadioB, new CommandSetSI(SIStatusType.IRadio));
-        setOnClickIntent(context, appWidgetId, views, R.id.siIpodB, new CommandSetSI(SIStatusType.Ipod));
-        setOnClickIntent(context, appWidgetId, views, R.id.siMusicServerB, new CommandSetSI(SIStatusType.NetServer));
-        setOnClickIntent(context, appWidgetId, views, R.id.siTunerB, new CommandSetSI(SIStatusType.Tuner));
-        setOnClickIntent(context, appWidgetId, views, R.id.siAnalogInB, new CommandSetSI(SIStatusType.AnalogIn));
-        setOnClickIntent(context, appWidgetId, views, R.id.siDigitalInB, new CommandSetSI(SIStatusType.DigitalIn1));
-        setOnClickIntent(context, appWidgetId, views, R.id.siBluetoothB, new CommandSetSI(SIStatusType.Bluetooth));
-        setOnClickIntent(context, appWidgetId, views, R.id.siCdB, new CommandSetSI(SIStatusType.CD));
+//        setOnClickIntent(context, appWidgetId, views, R.id.siInternetRadioB, new CommandSetSI(SIStatusType.IRadio));
+//        setOnClickIntent(context, appWidgetId, views, R.id.siIpodB, new CommandSetSI(SIStatusType.Ipod));
+//        setOnClickIntent(context, appWidgetId, views, R.id.siMusicServerB, new CommandSetSI(SIStatusType.NetServer));
+//        setOnClickIntent(context, appWidgetId, views, R.id.siTunerB, new CommandSetSI(SIStatusType.Tuner));
+//        setOnClickIntent(context, appWidgetId, views, R.id.siAnalogInB, new CommandSetSI(SIStatusType.AnalogIn));
+//        setOnClickIntent(context, appWidgetId, views, R.id.siDigitalInB, new CommandSetSI(SIStatusType.DigitalIn1));
+//        setOnClickIntent(context, appWidgetId, views, R.id.siBluetoothB, new CommandSetSI(SIStatusType.Bluetooth));
+//        setOnClickIntent(context, appWidgetId, views, R.id.siCdB, new CommandSetSI(SIStatusType.CD));
 
         return views;
     }
 
     @Override
     protected void updateViewsFirstTime(Context context, RemoteViews views, String text) {
-        updateMacroButtons(context, views);
+//        updateMacroButtons(context, views);
         views.setTextViewText(R.id.textUpdate, text);
     }
 
@@ -82,7 +87,7 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
         views.setViewVisibility(R.id.waitingPB, isWaiting?View.VISIBLE:View.INVISIBLE);
         views.setTextViewText(R.id.textUpdate, updateString + ": " + Long.toString(curr % 10000));
 
-        updateMacroButtons(context, views);
+//        updateMacroButtons(context, views);
 
         setRowView(views, ceolDevice, R.id.textRow0, 0);
         setRowView(views, ceolDevice, R.id.textRow1, 1);
@@ -93,11 +98,6 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
         setRowView(views, ceolDevice, R.id.textRow6, 6);
         setRowView(views, ceolDevice, R.id.textRow7, 7);
 
-    }
-
-    @Override
-    public ComponentName getComponentName(Context context) {
-        return new ComponentName(context, CeolWidgetProviderNavigator.class);
     }
 
     private void setRowView(RemoteViews views, CeolDevice ceolDevice, int viewId, int rowindex) {
@@ -112,6 +112,7 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
         }
     }
 
+/*
     public void updateMacroButtons(Context context, RemoteViews views) {
         Prefs prefs = new Prefs(context);
         String[] macroNames = prefs.getMacroNames();
@@ -126,4 +127,5 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
             views.setTextViewText(R.id.performMacro3B,macroNames[2]);
         }
     }
+*/
 }

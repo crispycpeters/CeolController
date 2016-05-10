@@ -31,7 +31,6 @@ import com.candkpeters.chris.ceol.R;
 public class CeolWidgetProviderNavigator extends CeolWidgetProvider {
 
     private static final String TAG = "WidgetNavigator";
-    private Prefs prefs;
 
     public CeolWidgetProviderNavigator() {
         super(new CeolWidgetHelperNavigator());

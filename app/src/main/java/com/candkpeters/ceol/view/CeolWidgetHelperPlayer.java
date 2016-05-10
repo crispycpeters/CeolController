@@ -30,6 +30,11 @@ import com.candkpeters.chris.ceol.R;
 public class CeolWidgetHelperPlayer extends CeolWidgetHelper {
 
     @Override
+    public ComponentName getComponentName(Context context) {
+        return new ComponentName(context, CeolWidgetProviderPlayer.class);
+    }
+
+    @Override
     protected RemoteViews buildRemoteView(Context context, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ceol_appwidget_layout_player);
         setOnClickIntent(context, appWidgetId, views, R.id.skipBackwardsB, new CommandSkipBackward());
@@ -59,11 +64,6 @@ public class CeolWidgetHelperPlayer extends CeolWidgetHelper {
         views.setTextViewText(R.id.textAlbum, ceolDevice.NetServer.getAlbum());
 
 
-    }
-
-    @Override
-    public ComponentName getComponentName(Context context) {
-        return new ComponentName(context, CeolWidgetProviderPlayer.class);
     }
 
 }

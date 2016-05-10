@@ -15,6 +15,7 @@ import com.candkpeters.ceol.view.CeolService;
 import com.candkpeters.ceol.view.CeolWidgetHelper;
 import com.candkpeters.ceol.view.CeolWidgetHelperNavigator;
 import com.candkpeters.ceol.view.CeolWidgetHelperPlayer;
+import com.candkpeters.ceol.view.CeolWidgetHelperToplevel;
 import com.candkpeters.ceol.view.Prefs;
 
 /**
@@ -22,7 +23,11 @@ import com.candkpeters.ceol.view.Prefs;
  */
 public class CeolWidgetController {
     private static final String TAG = "WidgetController";
-    CeolWidgetHelper[] ceolWidgetHelpers = {new CeolWidgetHelperNavigator(), new CeolWidgetHelperPlayer()};
+    CeolWidgetHelper[] ceolWidgetHelpers = {
+            new CeolWidgetHelperToplevel(),
+            new CeolWidgetHelperNavigator(),
+            new CeolWidgetHelperPlayer()
+    };
 
     private Prefs prefs;
     CeolCommandManager ceolCommandManager = null;

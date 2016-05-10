@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
 >
-<!--
-    android:id="@+id/glayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/shape_background"
--->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -100,48 +93,18 @@
         android:id="@+id/glayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="3"
-        android:rowCount="11"
+        android:columnCount="2"
+        android:rowCount="2"
         android:background="@drawable/shape_background"
         >
-        <!--
-                <ImageButton
-                    android:id="@+id/skipBackwardsB"
-                    android:src="@drawable/ic_av_skip_backward"
-                    android:layout_column="0"
-                    android:layout_row="6"
-                    style="@style/DarkRectangleButton"/>
-
-                <ImageButton
-                    android:id="@+id/playpauseB"
-                    android:src="@drawable/ic_av_play_pause"
-                    android:layout_column="1"
-                    android:layout_row="6"
-                    style="@style/DarkRectangleButton"/>
-
-                <ImageButton
-                    android:id="@+id/skipForwardsB"
-                    android:src="@drawable/ic_av_skip_forward"
-                    android:layout_column="2"
-                    android:layout_row="6"
-                    style="@style/DarkRectangleButton"/>
-
-                <ImageButton
-                    android:id="@+id/stopB"
-                    android:src="@drawable/ic_av_stop"
-                    android:layout_column="1"
-                    android:layout_row="7"
-                    style="@style/DarkRectangleButton"/>
-        -->
 
         <RelativeLayout
             android:id="@+id/tlayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="8"
+            android:layout_row="0"
             android:layout_rowSpan="2"
             android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_margin="0dp"
             android:layout_gravity="fill"
             >
@@ -200,16 +163,16 @@
         <ImageButton
             android:id="@+id/volumeupB"
             android:src="@drawable/ic_av_up"
-            android:layout_column="2"
-            android:layout_row="8"
+            android:layout_column="1"
+            android:layout_row="0"
             style="@style/WhiteCircleButton"
             />
 
         <ImageButton
             android:id="@+id/volumedownB"
             android:src="@drawable/ic_av_down"
-            android:layout_column="2"
-            android:layout_row="9"
+            android:layout_column="1"
+            android:layout_row="1"
             style="@style/WhiteCircleButton"
             />
     </GridLayout>
