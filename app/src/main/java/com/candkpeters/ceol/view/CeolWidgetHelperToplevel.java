@@ -2,22 +2,14 @@ package com.candkpeters.ceol.view;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.graphics.Typeface;
-import android.text.SpannableString;
-import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import com.candkpeters.ceol.device.CeolCommandManager;
-import com.candkpeters.ceol.device.command.CommandCursor;
-import com.candkpeters.ceol.device.command.CommandCursorEnter;
 import com.candkpeters.ceol.device.command.CommandMacro;
-import com.candkpeters.ceol.device.command.CommandMasterVolumeDown;
-import com.candkpeters.ceol.device.command.CommandMasterVolumeUp;
 import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
 import com.candkpeters.ceol.device.command.CommandSetSI;
 import com.candkpeters.ceol.model.CeolDevice;
-import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.chris.ceol.R;
 
@@ -33,7 +25,7 @@ public class CeolWidgetHelperToplevel extends CeolWidgetHelper {
 
     @Override
     protected RemoteViews buildRemoteView(Context context, int appWidgetId) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ceol_appwidget_layout_toplevel);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout_toplevel);
         setOnClickIntent(context, appWidgetId, views, R.id.powerB, new CommandSetPowerToggle());
         setOnClickIntent(context, appWidgetId, views, R.id.performMacro1B, new CommandMacro(1));
         setOnClickIntent(context, appWidgetId, views, R.id.performMacro2B, new CommandMacro(2));

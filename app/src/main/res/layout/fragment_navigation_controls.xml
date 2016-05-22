@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_weight="1"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -8,7 +12,6 @@
         android:orientation="vertical"
         android:layout_weight="1"
         android:gravity="bottom"
-        android:layout_margin="6dp"
         android:padding="6dp"
         android:background="@drawable/widget_textpanel"
         >
@@ -176,4 +179,4 @@
             style="@style/WhiteCircleButton"
             />
     </GridLayout>
-</merge>
+</LinearLayout>

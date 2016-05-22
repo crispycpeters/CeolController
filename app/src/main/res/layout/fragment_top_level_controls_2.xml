@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/glayout2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_background"
+    android:orientation="vertical"
+    >
+
+    <ImageButton
+        android:id="@+id/powerB"
+        android:src="@drawable/ic_av_power"
+        style="@style/PowerButton"
+        />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/glayout3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="fill_vertical"
+        android:orientation="vertical"
+        >
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scrollView1"
+            android:layout_weight="1">
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+                <Button
+                    android:id="@+id/performMacro1B"
+                    style="@style/DarkRectangleLongButton"
+                    android:text=""
+                    />
+                <Button
+                    android:id="@+id/performMacro2B"
+                    style="@style/DarkRectangleLongButton"
+                    android:text=""
+                    />
+                <Button
+                    android:id="@+id/performMacro3B"
+                    style="@style/DarkRectangleLongButton"
+                    android:text=""
+                    />
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scrollView2"
+            android:layout_weight="1"
+            android:fadingEdgeLength="20dp"
+            android:requiresFadingEdge="vertical"
+            >
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="211dp"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/siInternetRadioB"
+                    android:text="Internet\nRadio"
+                    android:textSize="9.5dp"
+                    style="@style/WhiteRectangleButton"/>
+
+                <Button
+                    android:id="@+id/siIpodB"
+                    android:text="iPod /\nUSB"
+                    android:textSize="9.5dp"
+                    style="@style/WhiteRectangleButton"/>
+
+                <Button
+                    android:id="@+id/siMusicServerB"
+                    android:text="Music\nServer"
+                    android:textSize="9.5dp"
+                    style="@style/WhiteRectangleButton"/>
+
+                <Button
+                    android:id="@+id/siTunerB"
+                    android:text="Tuner"
+                    android:textSize="12dp"
+                    style="@style/WhiteRectangleButton"/>
+
+                <Button
+                    android:id="@+id/siAnalogInB"
+                    android:text="Analog In"
+                    android:textSize="9.5dp"
+                    style="@style/WhiteRectangleButton"/>
+
+                <Button
+                    android:id="@+id/siDigitalInB"
+                    android:text="Digital In"
+                    android:textSize="9.5dp"
+                    style="@style/WhiteRectangleButton"/>
+
+                <Button
+                    android:id="@+id/siBluetoothB"
+                    android:text="Blue-\ntooth"
+                    android:textSize="9.5dp"
+                    style="@style/WhiteRectangleButton"/>
+
+
+                <Button
+                    android:id="@+id/siCdB"
+                    android:text="CD"
+                    android:textSize="12dp"
+                    style="@style/WhiteRectangleButton"/>
+
+                <TextView
+                    android:id="@+id/textUpdate"
+                    style="@android:style/TextAppearance.Small"
+                    android:textColor="@color/white"
+                    android:textSize="8sp"
+                    android:text="Static Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </TextView>
+            </LinearLayout>
+
+        </ScrollView>
+    </LinearLayout>
+
+    <!--android:textSize="30sp"-->
+    <!--android:layout_below="@id/textUpdate"-->
+
+    <ProgressBar
+        android:id="@+id/waitingPB"
+        android:layout_row="1"
+        android:layout_column="2"
+        android:indeterminate="true"
+        android:layout_margin="8dp"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>

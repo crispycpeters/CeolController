@@ -4,7 +4,7 @@
     android:minHeight="320dp"
     android:minWidth="180dp"
     android:updatePeriodMillis="0"
-    android:initialLayout="@layout/ceol_appwidget_layout_player"
+    android:initialLayout="@layout/appwidget_layout_player"
     android:resizeMode="none"
     >
 </appwidget-provider>

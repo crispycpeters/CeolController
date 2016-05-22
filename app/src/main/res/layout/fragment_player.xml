@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ceol_appwidget_layout_player"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_background"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:layout_margin="6dp"
+        android:padding="6dp"
+        android:background="@drawable/widget_textpanel"
+        >
+
+        <ImageView
+            android:id="@+id/imageTrack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+        <TextView
+            android:id="@+id/textUpdate"
+            style="@android:style/TextAppearance.Small"
+            android:textSize="8sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Static Text" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textArtist"
+            android:layout_marginTop="15dp"
+            style="@android:style/TextAppearance.Small"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Artist" >
+        </TextView>
+        <TextView
+            android:id="@+id/textAlbum"
+            style="@android:style/TextAppearance.Small"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Track" >
+        </TextView>
+        <TextView
+            android:id="@+id/textTrack"
+            style="@android:style/TextAppearance.Medium"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Track" >
+        </TextView>
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/glayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:paddingTop="6dp"
+        android:orientation="horizontal"
+        android:background="@drawable/shape_background"
+        >
+        <ImageButton
+            android:id="@+id/skipBackwardsB"
+            android:src="@drawable/ic_av_skip_backward"
+            style="@style/DarkRectangleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+        <ImageButton
+            android:id="@+id/playpauseB"
+            android:src="@drawable/ic_av_play_pause"
+            style="@style/DarkRectangleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+        <ImageButton
+            android:id="@+id/stopB"
+            android:src="@drawable/ic_av_stop"
+            style="@style/DarkRectangleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+        <ImageButton
+            android:id="@+id/skipForwardsB"
+            android:src="@drawable/ic_av_skip_forward"
+            style="@style/DarkRectangleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+    </LinearLayout>
+</LinearLayout>

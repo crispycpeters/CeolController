@@ -9,24 +9,12 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.candkpeters.ceol.device.CeolCommandManager;
-import com.candkpeters.ceol.device.command.CommandControl;
-import com.candkpeters.ceol.device.command.CommandControlStop;
-import com.candkpeters.ceol.device.command.CommandControlToggle;
 import com.candkpeters.ceol.device.command.CommandCursor;
 import com.candkpeters.ceol.device.command.CommandCursorEnter;
-import com.candkpeters.ceol.device.command.CommandFastBackward;
-import com.candkpeters.ceol.device.command.CommandFastForward;
-import com.candkpeters.ceol.device.command.CommandMacro;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeDown;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeUp;
-import com.candkpeters.ceol.device.command.CommandSetPower;
-import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
-import com.candkpeters.ceol.device.command.CommandSetSI;
-import com.candkpeters.ceol.device.command.CommandSkipBackward;
-import com.candkpeters.ceol.device.command.CommandSkipForward;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.DirectionType;
-import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.chris.ceol.R;
 
 /**
@@ -41,7 +29,7 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
 
     @Override
     protected RemoteViews buildRemoteView(Context context, int appWidgetId) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ceol_appwidget_layout_navigator);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout_navigator);
 //        setOnClickIntent(context, appWidgetId, views, R.id.powerB, new CommandSetPowerToggle());
 //        setOnClickIntent(context, appWidgetId, views, R.id.performMacro1B, new CommandMacro(1));
 //        setOnClickIntent(context, appWidgetId, views, R.id.performMacro2B, new CommandMacro(2));

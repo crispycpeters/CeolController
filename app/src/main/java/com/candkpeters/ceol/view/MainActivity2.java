@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.candkpeters.ceol.controller.CeolController;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
@@ -211,7 +208,7 @@ public class MainActivity2 extends Activity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_ceolremote, container, false);
-//            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_navigator, container, false);
+//            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
 
             return rootView;
         }
@@ -233,8 +230,8 @@ public class MainActivity2 extends Activity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_player, container, false);
-//            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_navigator, container, false);
+            View rootView = inflater.inflate(R.layout.appwidget_layout_player, container, false);
+//            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
 
             return rootView;
         }

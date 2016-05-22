@@ -2,7 +2,7 @@
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/glayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:columnCount="3"
     android:rowCount="11"
     android:background="@drawable/shape_background"

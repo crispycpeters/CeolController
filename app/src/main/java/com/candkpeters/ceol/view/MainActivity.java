@@ -3,7 +3,6 @@ package com.candkpeters.ceol.view;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -382,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_ceolremote, container, false);
-//            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_navigator, container, false);
+//            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
 
             ceolController.setViewCommandHandlers( rootView );
 
@@ -407,8 +406,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_player, container, false);
-//            View rootView = inflater.inflate(R.layout.ceol_appwidget_layout_navigator, container, false);
+            View rootView = inflater.inflate(R.layout.appwidget_layout_player, container, false);
+//            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
 
             return rootView;
         }
