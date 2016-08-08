@@ -49,6 +49,16 @@
         <string name="pref_key_macro2">com.candkpeters.ceol.Macro2</string>
         <string name="pref_title_macro2">Macro 2</string>
 
+        <string name="pref_key_backgroundtimeoutsecs">com.candkpeters.ceol.Background_Timeout</string>
+        <integer name="pref_default_backgroundtimeoutsecs">30</integer>
+        <string name="pref_title_backgroundtimeoutsecs">Timeout before entering background mode (secs)</string>
+
+        <string name="pref_key_backgroundratesecs">com.candkpeters.ceol.Background_Timeout</string>
+        <integer name="pref_default_backgroundratesecs">60</integer>
+        <string name="pref_title_backgroundratesecs">Poll rate in background mode (secs)</string>
+
+    <string name="pref_category_general">General</string>
+
     <!-- Preferences Debug settings -->
     <string name="pref_header_debug">Debug</string>
 
@@ -63,6 +73,7 @@
     <string name="pref_default_debug_device_server">10.0.2.2</string>
     <string name="pref_default_macro1name">Macro 1</string>
     <string name="pref_default_macro2name">Macro 2</string>
+
 
 
 </resources>

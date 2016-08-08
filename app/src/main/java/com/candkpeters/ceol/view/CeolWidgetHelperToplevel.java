@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.candkpeters.ceol.device.CeolCommandManager;
+import com.candkpeters.ceol.device.command.CommandApp;
 import com.candkpeters.ceol.device.command.CommandMacro;
 import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
 import com.candkpeters.ceol.device.command.CommandSetSI;
@@ -26,18 +27,19 @@ public class CeolWidgetHelperToplevel extends CeolWidgetHelper {
     @Override
     protected RemoteViews buildRemoteView(Context context, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout_toplevel);
-        setOnClickIntent(context, appWidgetId, views, R.id.powerB, new CommandSetPowerToggle());
-        setOnClickIntent(context, appWidgetId, views, R.id.performMacro1B, new CommandMacro(1));
-        setOnClickIntent(context, appWidgetId, views, R.id.performMacro2B, new CommandMacro(2));
-        setOnClickIntent(context, appWidgetId, views, R.id.performMacro3B, new CommandMacro(3));
-        setOnClickIntent(context, appWidgetId, views, R.id.siInternetRadioB, new CommandSetSI(SIStatusType.IRadio));
-        setOnClickIntent(context, appWidgetId, views, R.id.siIpodB, new CommandSetSI(SIStatusType.Ipod));
-        setOnClickIntent(context, appWidgetId, views, R.id.siMusicServerB, new CommandSetSI(SIStatusType.NetServer));
-        setOnClickIntent(context, appWidgetId, views, R.id.siTunerB, new CommandSetSI(SIStatusType.Tuner));
-        setOnClickIntent(context, appWidgetId, views, R.id.siAnalogInB, new CommandSetSI(SIStatusType.AnalogIn));
-        setOnClickIntent(context, appWidgetId, views, R.id.siDigitalInB, new CommandSetSI(SIStatusType.DigitalIn1));
-        setOnClickIntent(context, appWidgetId, views, R.id.siBluetoothB, new CommandSetSI(SIStatusType.Bluetooth));
-        setOnClickIntent(context, appWidgetId, views, R.id.siCdB, new CommandSetSI(SIStatusType.CD));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.powerB, new CommandSetPowerToggle());
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.performMacro1B, new CommandMacro(1));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.performMacro2B, new CommandMacro(2));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.performMacro3B, new CommandMacro(3));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.siInternetRadioB, new CommandSetSI(SIStatusType.IRadio));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.siIpodB, new CommandSetSI(SIStatusType.Ipod));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.siMusicServerB, new CommandSetSI(SIStatusType.NetServer));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.siTunerB, new CommandSetSI(SIStatusType.Tuner));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.siAnalogInB, new CommandSetSI(SIStatusType.AnalogIn));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.siDigitalInB, new CommandSetSI(SIStatusType.DigitalIn1));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.siBluetoothB, new CommandSetSI(SIStatusType.Bluetooth));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.siCdB, new CommandSetSI(SIStatusType.CD));
+        setOnClickAppIntent(context, appWidgetId, views, R.id.appB);
 
         return views;
     }

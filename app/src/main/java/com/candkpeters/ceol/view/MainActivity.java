@@ -1,6 +1,7 @@
 package com.candkpeters.ceol.view;
 
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.design.widget.FloatingActionButton;

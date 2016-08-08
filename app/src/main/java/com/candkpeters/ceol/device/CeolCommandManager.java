@@ -61,7 +61,9 @@ public class CeolCommandManager {
     private void updateConfig(Context context) {
         Prefs prefs = new Prefs(context);
         if ( ceolDeviceMonitor == null) {
-            ceolDeviceMonitor = new CeolDeviceWebSvcMonitor(prefs.getBaseUrl());
+            ceolDeviceMonitor = new CeolDeviceWebSvcMonitor(prefs.getBaseUrl(),
+                    prefs.getBackgroundTimeoutSecs() * 1000,
+                    prefs.getBackgroundRateSecs() * 1000);
         } else {
             ceolDeviceMonitor.recreateService(prefs.getBaseUrl());
         }

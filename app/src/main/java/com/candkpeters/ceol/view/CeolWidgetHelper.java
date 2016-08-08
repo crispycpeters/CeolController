@@ -3,13 +3,12 @@ package com.candkpeters.ceol.view;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.content.ComponentName;
 
-import com.candkpeters.ceol.controller.CeolWidgetController;
 import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.device.command.Command;
 
@@ -36,18 +35,29 @@ public abstract class CeolWidgetHelper extends AppWidgetProvider {
         }
 
         updateWidgetsFirstTime(context, "Widget updated");
-//TODO Start service?
     }
 
     protected PendingIntent createPendingIntent(Context context, int appWidgetId, Intent intent) {
-//        Intent intent = new Intent(context, CeolService_Old.class);
         intent.setClass(context, CeolService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         return PendingIntent.getService(context, 0, intent, 0);
     }
 
-    protected void setOnClickIntent(Context context, int appWidgetId, RemoteViews views, int resId, Command command) {
+    protected void setOnClickCommandIntent(Context context, int appWidgetId, RemoteViews views, int resId, Command command) {
         PendingIntent clickPendingIntent = createPendingIntent(context, appWidgetId, CeolIntentFactory.getIntent(command));
+        views.setOnClickPendingIntent(resId, clickPendingIntent);
+    }
+
+    protected void setOnClickAppIntent(Context context, int appWidgetId, RemoteViews views, int resId) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        MainActivity a = new MainActivity();
+        ComponentName cn = new ComponentName(context, MainActivity.class);
+        intent.setComponent(cn);
+
+        PendingIntent clickPendingIntent = createPendingIntent(context, appWidgetId, intent);
         views.setOnClickPendingIntent(resId, clickPendingIntent);
     }
 

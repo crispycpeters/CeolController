@@ -29,8 +29,11 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     private static final String TAG = "CeolDeviceWebSvcMonitor";
 
     private static final int REPEATRATE_MSECS = 900;
-    private static final int BACKGROUNDRATE_MSECS = 60000;
+//    private static final int BACKGROUNDRATE_MSECS = 5000;
     private static final int REPEATONCE_MSECS = 600;
+//    private static final long BACKGROUNDTIMEOUT_MSECS = 10000;
+    private final int backgroundTimeoutMsecs;
+    private final int backgroundRateMsecs;
 
     public WebSvcApiService webSvcApiService = null;
     private UIThreadUpdater activeThreadUpdater;
@@ -71,12 +74,16 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             "</tx>\n";
     TypedString statusQuery_Tuner = new TypedString(statusQueryString_Tuner);
     ImageDownloaderTask imageDownloaderTask;
+    private long lastSuccessMsecs;
 
-    public CeolDeviceWebSvcMonitor(String baseUrl) {
+    public CeolDeviceWebSvcMonitor(String baseUrl, int backgroundTimeoutMsecs, int backgroundRateMsecs) {
         ceolDevice = CeolDevice.getInstance();
         this.observers=new ArrayList<OnCeolStatusChangedListener>();
         imageDownloaderTask = new ImageDownloaderTask(this);
         recreateService(baseUrl);
+        resetBackgroundCountdown();
+        this.backgroundTimeoutMsecs = backgroundTimeoutMsecs;
+        this.backgroundRateMsecs = backgroundRateMsecs;
     }
 
     public void recreateService(String baseUrl) {
@@ -85,6 +92,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 
     public void getStatusSoon() {
         activeThreadUpdater.fireOnce(REPEATONCE_MSECS);
+        resetBackgroundCountdown();
     }
 
     private void startActiveUpdates() {
@@ -102,9 +110,10 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 
     public void start() {
         if ( backgroundThreadUpdater == null ) {
-            backgroundThreadUpdater = new UIThreadUpdater(this, BACKGROUNDRATE_MSECS);
+            backgroundThreadUpdater = new UIThreadUpdater(this, backgroundRateMsecs);
             backgroundThreadUpdater.startUpdates();
         }
+        checkBackgroundUpdate();
     }
 
     public void getStatus() {
@@ -121,15 +130,31 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                     logResponse(webSvcHttpResponse);
                 }
                 updateDeviceStatus(webSvcHttpResponse);
+                checkBackgroundUpdate();
             }
 
             @Override
             public void failure(RetrofitError error) {
                 Log.w(TAG, "Could not connect to CEOL: " + error);
                 updateDeviceErrorStatus();
-                return;
+                checkBackgroundUpdate();
             }
         });
+    }
+
+    public void resetBackgroundCountdown() {
+        lastSuccessMsecs = System.currentTimeMillis();
+    }
+
+    private void checkBackgroundUpdate() {
+        long currentMsecs = System.currentTimeMillis();
+        if (currentMsecs > lastSuccessMsecs + backgroundTimeoutMsecs) {
+            // Time to back-off on active attempts
+            stopActiveUpdates();
+        } else {
+            // Ensure updates are running
+            startActiveUpdates();
+        }
     }
 
     public void getImage() {
@@ -208,9 +233,8 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                         tuner.setIsAuto(webSvcHttpResponse.automanual==null?false:webSvcHttpResponse.automanual.equalsIgnoreCase("AUTO"));
                         break;
                     case IRadio:
-                        // TODO - Like NetServer
-                        break;
                     case NetServer:
+                    case Bluetooth:
                         CeolDeviceNetServer netServer = ceolDevice.NetServer;
                         ceolDevice.setPlayStatus( webSvcHttpResponse.playstatus);
 

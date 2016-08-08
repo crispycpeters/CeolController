@@ -7,7 +7,6 @@ import android.preference.PreferenceManager;
 import com.candkpeters.chris.ceol.R;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by crisp on 05/01/2016.
@@ -106,6 +105,18 @@ public class Prefs {
         return preferences.getBoolean(context.getResources().getString(R.string.pref_key_debug_mode),
                 context.getResources().getBoolean(R.bool.pref_default_debug));
     }
+
+    public int getBackgroundTimeoutSecs() {
+        return preferences.getInt(context.getResources().getString(R.string.pref_key_backgroundtimeoutsecs),
+                context.getResources().getInteger(R.integer.pref_default_backgroundtimeoutsecs));
+    }
+
+    public int getBackgroundRateSecs() {
+        return preferences.getInt(context.getResources().getString(R.string.pref_key_backgroundratesecs),
+                context.getResources().getInteger(R.integer.pref_default_backgroundratesecs));
+    }
+
+
 
 /*
     public boolean getUseTelnet() {

@@ -9,13 +9,16 @@ import android.util.Log;
 import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
+import com.candkpeters.ceol.device.command.CommandApp;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.view.CeolIntentFactory;
 import com.candkpeters.ceol.view.CeolService;
 import com.candkpeters.ceol.view.CeolWidgetHelper;
+import com.candkpeters.ceol.view.CeolWidgetHelperMiniPlayer;
 import com.candkpeters.ceol.view.CeolWidgetHelperNavigator;
 import com.candkpeters.ceol.view.CeolWidgetHelperPlayer;
 import com.candkpeters.ceol.view.CeolWidgetHelperToplevel;
+import com.candkpeters.ceol.view.MainActivity;
 import com.candkpeters.ceol.view.Prefs;
 
 /**
@@ -26,7 +29,8 @@ public class CeolWidgetController {
     CeolWidgetHelper[] ceolWidgetHelpers = {
             new CeolWidgetHelperToplevel(),
             new CeolWidgetHelperNavigator(),
-            new CeolWidgetHelperPlayer()
+            new CeolWidgetHelperPlayer(),
+            new CeolWidgetHelperMiniPlayer()
     };
 
     private Prefs prefs;
@@ -99,6 +103,12 @@ public class CeolWidgetController {
                 }
             });
             updateWidgets(command.toString());
+            if ( command instanceof CommandApp ) {
+                Intent i = new Intent();
+                i.setClass(context, MainActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(i);
+            }
         } else {
             updateWidgets("No command");
         }

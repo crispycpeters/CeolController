@@ -74,6 +74,30 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/pref_category_general"
+        >
+
+        <EditTextPreference
+            android:capitalize="words"
+            android:defaultValue="@integer/pref_default_backgroundtimeoutsecs"
+            android:inputType="number"
+            android:key="@string/pref_key_backgroundtimeoutsecs"
+            android:selectAllOnFocus="false"
+            android:singleLine="true"
+            android:title="@string/pref_title_backgroundtimeoutsecs" />
+
+        <EditTextPreference
+            android:capitalize="words"
+            android:defaultValue="@integer/pref_default_backgroundratesecs"
+            android:inputType="number"
+            android:key="@string/pref_key_backgroundratesecs"
+            android:selectAllOnFocus="false"
+            android:singleLine="true"
+            android:title="@string/pref_title_backgroundratesecs" />
+
+    </PreferenceCategory>
+
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
          dismiss it. -->
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->

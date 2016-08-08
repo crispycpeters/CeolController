@@ -30,31 +30,31 @@ public class CeolWidgetHelperNavigator extends CeolWidgetHelper {
     @Override
     protected RemoteViews buildRemoteView(Context context, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout_navigator);
-//        setOnClickIntent(context, appWidgetId, views, R.id.powerB, new CommandSetPowerToggle());
-//        setOnClickIntent(context, appWidgetId, views, R.id.performMacro1B, new CommandMacro(1));
-//        setOnClickIntent(context, appWidgetId, views, R.id.performMacro2B, new CommandMacro(2));
-//        setOnClickIntent(context, appWidgetId, views, R.id.performMacro3B, new CommandMacro(3));
-        setOnClickIntent(context, appWidgetId, views, R.id.volumeupB, new CommandMasterVolumeUp());
-        setOnClickIntent(context, appWidgetId, views, R.id.volumedownB, new CommandMasterVolumeDown());
-//        setOnClickIntent(context, appWidgetId, views, R.id.fastBackwardsB, new CommandFastBackward());
-//        setOnClickIntent(context, appWidgetId, views, R.id.fastForwardsB, new CommandFastForward());
-//        setOnClickIntent(context, appWidgetId, views, R.id.skipBackwardsB, new CommandSkipBackward());
-//        setOnClickIntent(context, appWidgetId, views, R.id.skipForwardsB, new CommandSkipForward());
-//        setOnClickIntent(context, appWidgetId, views, R.id.playpauseB, new CommandControlToggle());
-//        setOnClickIntent(context, appWidgetId, views, R.id.stopB, new CommandControlStop());
-        setOnClickIntent(context, appWidgetId, views, R.id.navLeftB, new CommandCursor(DirectionType.Left));
-        setOnClickIntent(context, appWidgetId, views, R.id.navRightB, new CommandCursor(DirectionType.Right));
-        setOnClickIntent(context, appWidgetId, views, R.id.navUpB, new CommandCursor(DirectionType.Up));
-        setOnClickIntent(context, appWidgetId, views, R.id.navDownB, new CommandCursor(DirectionType.Down));
-        setOnClickIntent(context, appWidgetId, views, R.id.navEnterB, new CommandCursorEnter());
-//        setOnClickIntent(context, appWidgetId, views, R.id.siInternetRadioB, new CommandSetSI(SIStatusType.IRadio));
-//        setOnClickIntent(context, appWidgetId, views, R.id.siIpodB, new CommandSetSI(SIStatusType.Ipod));
-//        setOnClickIntent(context, appWidgetId, views, R.id.siMusicServerB, new CommandSetSI(SIStatusType.NetServer));
-//        setOnClickIntent(context, appWidgetId, views, R.id.siTunerB, new CommandSetSI(SIStatusType.Tuner));
-//        setOnClickIntent(context, appWidgetId, views, R.id.siAnalogInB, new CommandSetSI(SIStatusType.AnalogIn));
-//        setOnClickIntent(context, appWidgetId, views, R.id.siDigitalInB, new CommandSetSI(SIStatusType.DigitalIn1));
-//        setOnClickIntent(context, appWidgetId, views, R.id.siBluetoothB, new CommandSetSI(SIStatusType.Bluetooth));
-//        setOnClickIntent(context, appWidgetId, views, R.id.siCdB, new CommandSetSI(SIStatusType.CD));
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.powerB, new CommandSetPowerToggle());
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.performMacro1B, new CommandMacro(1));
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.performMacro2B, new CommandMacro(2));
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.performMacro3B, new CommandMacro(3));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.volumeupB, new CommandMasterVolumeUp());
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.volumedownB, new CommandMasterVolumeDown());
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.fastBackwardsB, new CommandFastBackward());
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.fastForwardsB, new CommandFastForward());
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.skipBackwardsB, new CommandSkipBackward());
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.skipForwardsB, new CommandSkipForward());
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.playpauseB, new CommandControlToggle());
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.stopB, new CommandControlStop());
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.navLeftB, new CommandCursor(DirectionType.Left));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.navRightB, new CommandCursor(DirectionType.Right));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.navUpB, new CommandCursor(DirectionType.Up));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.navDownB, new CommandCursor(DirectionType.Down));
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.navEnterB, new CommandCursorEnter());
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.siInternetRadioB, new CommandSetSI(SIStatusType.IRadio));
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.siIpodB, new CommandSetSI(SIStatusType.Ipod));
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.siMusicServerB, new CommandSetSI(SIStatusType.NetServer));
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.siTunerB, new CommandSetSI(SIStatusType.Tuner));
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.siAnalogInB, new CommandSetSI(SIStatusType.AnalogIn));
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.siDigitalInB, new CommandSetSI(SIStatusType.DigitalIn1));
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.siBluetoothB, new CommandSetSI(SIStatusType.Bluetooth));
+//        setOnClickCommandIntent(context, appWidgetId, views, R.id.siCdB, new CommandSetSI(SIStatusType.CD));
 
         return views;
     }

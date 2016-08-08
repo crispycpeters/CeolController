@@ -40,7 +40,6 @@ public abstract class CeolWidgetProvider extends AppWidgetProvider {
         }
 
         ceolWidgetHelper.updateWidgetsFirstTime(context, "Widget updated");
-//TODO Start service?
     }
 
 /*

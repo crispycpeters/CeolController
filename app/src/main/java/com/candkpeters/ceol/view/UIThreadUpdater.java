@@ -19,6 +19,7 @@ public class UIThreadUpdater {
     private Runnable oneoffRunnable;
     private final int repeatRateMsecs;
     private long lastUpdate = System.currentTimeMillis();
+    private boolean isRunning = false;
 
     /**
      * Creates an UIUpdater object, that can be used to
@@ -63,8 +64,11 @@ public class UIThreadUpdater {
      * adds the callback to the handler).
      */
     public synchronized void startUpdates(){
-        stopUpdates();
-        mHandler.post(repeatedRunnable);
+        if (!isRunning) {
+            stopUpdates();
+            mHandler.post(repeatedRunnable);
+        }
+        isRunning = true;
     }
 
     public synchronized void fireOnce(){
@@ -82,5 +86,10 @@ public class UIThreadUpdater {
     public synchronized void stopUpdates(){
         mHandler.removeCallbacks(repeatedRunnable);
         mHandler.removeCallbacks(oneoffRunnable);
+        isRunning = false;
+    }
+
+    public synchronized boolean isRunning() {
+        return isRunning;
     }
 }

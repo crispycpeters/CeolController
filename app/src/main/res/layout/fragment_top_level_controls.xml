@@ -112,6 +112,13 @@
         android:textSize="9.5dp"
         style="@style/WhiteRectangleButton"/>
 
+    <Button
+        android:id="@+id/appB"
+        android:layout_column="1"
+        android:layout_row="4"
+        android:text="APP"
+        android:textSize="13dp"
+        style="@style/WhiteRectangleButton"/>
 
     <Button
         android:id="@+id/siCdB"
