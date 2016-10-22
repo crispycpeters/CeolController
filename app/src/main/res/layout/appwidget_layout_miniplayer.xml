@@ -42,62 +42,80 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageTrack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_weight="1"
-        android:gravity="bottom"
-        android:layout_margin="6dp"
-        android:padding="6dp"
         android:background="@drawable/widget_textpanel"
         >
 
-        <TextView
-            android:id="@+id/textUpdate"
-            style="@android:style/TextAppearance.Small"
-            android:textSize="8sp"
+        <ImageView
+            android:id="@+id/imageTrack"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Static Text" >
-        </TextView>
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_launcher"
+            android:scaleType="centerCrop"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            />
 
-        <TextView
-            android:id="@+id/textArtist"
-            android:layout_marginTop="15dp"
-            style="@android:style/TextAppearance.Small"
-            android:textColor="@color/white"
+<!--            android:background="@drawable/widget_textpanel"
+-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Artist" >
-        </TextView>
-        <TextView
-            android:id="@+id/textAlbum"
-            style="@android:style/TextAppearance.Small"
-            android:textColor="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Track" >
-        </TextView>
-        <TextView
-            android:id="@+id/textTrack"
-            style="@android:style/TextAppearance.Medium"
-            android:textColor="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="Track" >
-        </TextView>
+            android:orientation="vertical"
+            android:gravity="bottom"
+            android:layout_margin="6dp"
+            android:padding="6dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/playinfo"
+            >
 
+            <TextView
+                android:id="@+id/textUpdate"
+                style="@android:style/TextAppearance.Small"
+                android:textSize="8sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Static Text" >
+            </TextView>
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textArtist"
+                android:layout_marginTop="15dp"
+                style="@android:style/TextAppearance.Small"
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Artist" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/textAlbum"
+                style="@android:style/TextAppearance.Medium"
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Album" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/textTrack"
+                style="@android:style/TextAppearance.Medium"
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Track" >
+            </TextView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/glayout2"

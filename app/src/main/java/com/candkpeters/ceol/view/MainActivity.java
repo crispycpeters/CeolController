@@ -1,7 +1,6 @@
 package com.candkpeters.ceol.view;
 
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.design.widget.FloatingActionButton;
@@ -324,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
                     fragment = new CeolRemoteFragmentMainControls();
                     break;
                 case 2:
-                    fragment = new PlaceholderFragment();
+                    fragment = new CeolRemoteFragmentNavigatorControl();
                     break;
                 case 3:
                     fragment = new CeolRemoteFragmentPlayerControl();
@@ -382,8 +381,6 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_ceolremote, container, false);
-//            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
-
             ceolController.setViewCommandHandlers( rootView );
 
             return rootView;
@@ -392,7 +389,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Section 1 - Ceol main controls page.
+     * Section 2 - Ceol navigator control.
+     */
+    public static class CeolRemoteFragmentNavigatorControl extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "3";
+
+        public CeolRemoteFragmentNavigatorControl() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
+//            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
+
+            return rootView;
+        }
+    }
+
+    /**
+     * Section 3 - Ceol player control.
      */
     public static class CeolRemoteFragmentPlayerControl extends Fragment {
         /**
@@ -408,7 +428,6 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.appwidget_layout_player, container, false);
-//            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
 
             return rootView;
         }

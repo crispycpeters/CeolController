@@ -1,5 +1,7 @@
 package com.candkpeters.ceol.device.command;
 
+import android.util.Log;
+
 import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.CommandType;
@@ -31,7 +33,6 @@ public class CommandSkip extends CommandBaseDirection {
                 break;
             case Tuner:
                 // TODO
-
                 break;
             case IRadio:
                 break;

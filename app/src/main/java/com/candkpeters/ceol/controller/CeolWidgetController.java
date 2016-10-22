@@ -92,7 +92,8 @@ public class CeolWidgetController {
 
         Command command = CeolIntentFactory.newInstance(intent);
         AppWidgetProviderInfo appWidgetProviderInfo = appWidgetMan.getAppWidgetInfo(widgetId);
-        Log.d(TAG, "onStartCommand: Provider: " + appWidgetProviderInfo.provider);
+        Log.d(TAG, "onStartCommand: Provider: " + appWidgetProviderInfo);
+        Log.d(TAG, "onStartCommand: Provider name: " + appWidgetProviderInfo.provider);
         if (command != null) {
             commandStarting(widgetId, appWidgetMan);
             ceolCommandManager.execute(command, new OnCeolStatusChangedListener() {

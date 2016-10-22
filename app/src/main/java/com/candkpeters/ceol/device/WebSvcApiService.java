@@ -14,11 +14,13 @@ import retrofit.mime.TypedString;
  */
 public interface WebSvcApiService {
 
+/*
     @POST("/goform/AppCommand.xml")
     WebSvcHttpResponse appCommand(@Body WebSvcHttpRequest appRequest);
 
     @POST("/goform/AppCommand.xml")
     void appCommandAsync_old(@Body WebSvcHttpRequest appRequest, Callback<WebSvcHttpResponse> cb);
+*/
 
     @POST("/goform/AppCommand.xml")
     void appCommandAsync(@Body TypedString appRequest, Callback<WebSvcHttpResponse> cb);
