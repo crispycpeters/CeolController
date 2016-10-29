@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_tuner"
+            android:title="@string/si_tuner" />
+        <item
+            android:id="@+id/nav_server"
+            android:title="@string/si_netserver" />
+        <item
+            android:id="@+id/nav_iradio"
+            android:title="@string/si_iradio" />
+        <item
+            android:id="@+id/nav_usb"
+            android:title="@string/si_usb" />
+        <item
+            android:id="@+id/nav_bluetooth"
+            android:title="@string/si_bluetooth" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>

@@ -16,6 +16,7 @@
         android:layout_row="0"
         android:layout_column="2"
         style="@style/PowerButton"
+        android:onClick="buttonClick"
         />
 
     <ProgressBar
@@ -43,16 +44,19 @@
             android:id="@+id/performMacro1B"
             style="@style/DarkRectangleLongButton"
             android:text=""
+            android:onClick="buttonClick"
             />
         <Button
             android:id="@+id/performMacro2B"
             style="@style/DarkRectangleLongButton"
             android:text=""
+            android:onClick="buttonClick"
             />
         <Button
             android:id="@+id/performMacro3B"
             style="@style/DarkRectangleLongButton"
             android:text=""
+            android:onClick="buttonClick"
             />
     </LinearLayout>
 
@@ -62,7 +66,9 @@
         android:layout_row="2"
         android:text="Internet\nRadio"
         android:textSize="9.5dp"
-        style="@style/WhiteRectangleButton"/>
+        style="@style/WhiteRectangleButton"
+        android:onClick="buttonClick"
+        />
 
     <Button
         android:id="@+id/siIpodB"
@@ -70,7 +76,9 @@
         android:layout_row="2"
         android:text="iPod /\nUSB"
         android:textSize="9.5dp"
-        style="@style/WhiteRectangleButton"/>
+        style="@style/WhiteRectangleButton"
+        android:onClick="buttonClick"
+        />
 
     <Button
         android:id="@+id/siMusicServerB"
@@ -78,7 +86,9 @@
         android:layout_row="2"
         android:text="Music\nServer"
         android:textSize="9.5dp"
-        style="@style/WhiteRectangleButton"/>
+        style="@style/WhiteRectangleButton"
+        android:onClick="buttonClick"
+        />
 
     <Button
         android:id="@+id/siTunerB"
@@ -86,7 +96,9 @@
         android:layout_row="3"
         android:text="Tuner"
         android:textSize="12dp"
-        style="@style/WhiteRectangleButton"/>
+        style="@style/WhiteRectangleButton"
+        android:onClick="buttonClick"
+        />
 
     <Button
         android:id="@+id/siAnalogInB"
@@ -94,7 +106,9 @@
         android:layout_row="3"
         android:text="Analog In"
         android:textSize="9.5dp"
-        style="@style/WhiteRectangleButton"/>
+        style="@style/WhiteRectangleButton"
+        android:onClick="buttonClick"
+        />
 
     <Button
         android:id="@+id/siDigitalInB"
@@ -102,7 +116,9 @@
         android:layout_row="3"
         android:text="Digital In"
         android:textSize="9.5dp"
-        style="@style/WhiteRectangleButton"/>
+        style="@style/WhiteRectangleButton"
+        android:onClick="buttonClick"
+        />
 
     <Button
         android:id="@+id/siBluetoothB"
@@ -110,7 +126,9 @@
         android:layout_row="4"
         android:text="Blue-\ntooth"
         android:textSize="9.5dp"
-        style="@style/WhiteRectangleButton"/>
+        style="@style/WhiteRectangleButton"
+        android:onClick="buttonClick"
+        />
 
     <Button
         android:id="@+id/appB"
@@ -118,7 +136,9 @@
         android:layout_row="4"
         android:text="APP"
         android:textSize="13dp"
-        style="@style/WhiteRectangleButton"/>
+        style="@style/WhiteRectangleButton"
+        android:onClick="buttonClick"
+        />
 
     <Button
         android:id="@+id/siCdB"
@@ -126,7 +146,9 @@
         android:layout_row="4"
         android:text="CD"
         android:textSize="12dp"
-        style="@style/WhiteRectangleButton"/>
+        style="@style/WhiteRectangleButton"
+        android:onClick="buttonClick"
+        />
 
     <TextView
         android:id="@+id/textUpdate"

@@ -4,13 +4,21 @@ package com.candkpeters.ceol.model;
  * Created by crisp on 22/01/2016.
  */
 public enum SIStatusType {
-    Unknown,
-    CD,
-    Tuner,
-    IRadio,
-    NetServer,
-    AnalogIn,
-    DigitalIn1,
-    DigitalIn2,
-    Bluetooth, Ipod
+    Unknown     ( "Unknown"),
+    CD          ( "CD"),
+    Tuner       ( "Tuner"),
+    IRadio      ( "IRadio"),
+    NetServer   ( "Music Server"),
+    AnalogIn    ( "Analog In"),
+    DigitalIn1  ( "Digital In 1"),
+    DigitalIn2  ( "Digital In 2"),
+    Bluetooth   ( "Bluetooth"),
+    Ipod        ( "USB / iPod"),
+    Spotify     ( "Spotify");
+
+    public final String name;
+
+    SIStatusType(String name ) {
+        this.name = name;
+    }
 }

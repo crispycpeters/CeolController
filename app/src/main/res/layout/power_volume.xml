@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/glayout3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="0dp"
+    android:paddingTop="6dp"
+    android:orientation="horizontal"
+    android:background="@drawable/shape_background"
+    >
+    <ImageButton
+        android:id="@+id/powerB"
+        android:src="@drawable/ic_av_power"
+        style="@style/PowerButton"
+        android:layout_margin="@dimen/av_button"
+        android:onClick="buttonClick"
+        />
+
+    <Button
+        android:layout_height="6mm"
+        android:layout_width="20mm"
+        android:id="@+id/siB"
+        style="@style/WhiteRectangleButton"
+        android:onClick="siBClick"
+        />
+
+    <ImageButton
+        android:layout_height="6mm"
+        android:layout_width="6mm"
+        android:id="@+id/volumedownB"
+        android:src="@drawable/ic_av_down"
+        style="@style/WhiteCircleButton"
+        android:onClick="buttonClick"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/volume2"
+        style="@style/VolumeText"
+        android:text="00"
+        android:onClick="buttonClick"
+        />
+
+    <ImageButton
+        android:layout_height="6mm"
+        android:layout_width="6mm"
+        android:id="@+id/volumeupB"
+        android:src="@drawable/ic_av_up"
+        style="@style/WhiteCircleButton"
+        android:onClick="buttonClick"
+        />
+
+    <TextView
+        android:id="@+id/textUpdateA"
+        style="@style/AlbumArtText.Small"
+        android:textSize="8sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Static Text"
+        android:background="#00000000"
+        />
+
+</LinearLayout>
+

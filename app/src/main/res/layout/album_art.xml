@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:orientation="vertical"
+    android:layout_weight="1"
+    android:gravity="bottom"
+    android:layout_margin="6dp"
+    android:padding="3dp"
+    android:background="@drawable/widget_textpanel"
+    >
+
+    <ImageView
+        android:id="@+id/imageTrack"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitStart"
+        android:src="@mipmap/ic_launcher"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        />
+
+    <LinearLayout
+        android:id="@+id/albumTextPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/textArtist"
+            android:paddingTop="15dp"
+            style="@style/AlbumArtText.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Artist"
+            android:background="@drawable/playinfo"
+        />
+
+        <TextView
+            android:id="@+id/textAlbum"
+            style="@style/AlbumArtText.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Track"
+        />
+
+        <TextView
+            android:id="@+id/textTrack"
+            style="@style/AlbumArtText.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Track"
+            android:background="@color/imageOverlay"
+        />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textUpdate"
+        style="@style/AlbumArtText.Small"
+        android:textSize="8sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/albumTextPanel"
+        android:layout_alignEnd="@id/albumTextPanel"
+        android:text="Static Text"
+        android:background="#00000000"
+        />
+
+</RelativeLayout>

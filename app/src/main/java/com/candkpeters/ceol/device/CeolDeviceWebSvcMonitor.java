@@ -51,8 +51,8 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             " <cmd id=\"1\">GetPowerStatus</cmd>\n" +
             " <cmd id=\"2\">GetVolumeLevel</cmd>\n" +
             " <cmd id=\"3\">GetMuteStatus</cmd>\n" +
-            " <cmd id=\"4\">GetSourceStatus</cmd>\n" +
-            " <cmd id=\"5\">GetNetAudioStatus</cmd>\n" +
+            " <cmd id=\"4\">GetNetAudioStatus</cmd>\n" +
+            " <cmd id=\"5\">GetSourceStatus</cmd>\n" +
             "</tx>\n";
     TypedString statusQuery_NetServer = new TypedString(statusQueryString_NetServer);
     private final static String statusQueryString_CD = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
@@ -60,8 +60,8 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             " <cmd id=\"1\">GetPowerStatus</cmd>\n" +
             " <cmd id=\"2\">GetVolumeLevel</cmd>\n" +
             " <cmd id=\"3\">GetMuteStatus</cmd>\n" +
-            " <cmd id=\"4\">GetSourceStatus</cmd>\n" +
-            " <cmd id=\"5\">GetCDStatus</cmd>\n" +
+            " <cmd id=\"4\">GetCDStatus</cmd>\n" +
+            " <cmd id=\"5\">GetSourceStatus</cmd>\n" +
             "</tx>\n";
     TypedString statusQuery_CD = new TypedString(statusQueryString_CD);
     private final static String statusQueryString_Tuner = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
@@ -69,8 +69,8 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             " <cmd id=\"1\">GetPowerStatus</cmd>\n" +
             " <cmd id=\"2\">GetVolumeLevel</cmd>\n" +
             " <cmd id=\"3\">GetMuteStatus</cmd>\n" +
-            " <cmd id=\"4\">GetSourceStatus</cmd>\n" +
-            " <cmd id=\"5\">GetTunerStatus</cmd>\n" +
+            " <cmd id=\"4\">GetTunerStatus</cmd>\n" +
+            " <cmd id=\"5\">GetSourceStatus</cmd>\n" +
             "</tx>\n";
     TypedString statusQuery_Tuner = new TypedString(statusQueryString_Tuner);
     ImageDownloaderTask imageDownloaderTask;
@@ -168,7 +168,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     }
 
     private void logResponse(WebSvcHttpResponse webSvcHttpResponse) {
-        //Log.d(TAG, "logResponse: " + webSvcHttpResponse.toString());
+        Log.d(TAG, "logResponse: " + webSvcHttpResponse.toString());
     }
 
     private TypedString determineStatusQuery(SIStatusType siStatus) {
@@ -217,64 +217,66 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                 ceolDevice.setMasterVolume(webSvcHttpResponse.dispvalue);
                 ceolDevice.setIsMuted(webSvcHttpResponse.mute.equals("on"));
 
-                switch (ceolDevice.getSIStatus()) {
+                if ( ceolDevice.isNetServer() ) {
 
-                    case Unknown:
-                        break;
-                    case CD:
-                        // TODO
-                        break;
-                    case Tuner:
-                        CeolDeviceTuner tuner = ceolDevice.Tuner;
-                        ceolDevice.setPlayStatus(PlayStatusType.Stop);
-                        tuner.setBand(webSvcHttpResponse.band);
-                        tuner.setFrequency(webSvcHttpResponse.frequency);
-                        tuner.setName(webSvcHttpResponse.name);
-                        tuner.setIsAuto(webSvcHttpResponse.automanual==null?false:webSvcHttpResponse.automanual.equalsIgnoreCase("AUTO"));
-                        break;
-                    case IRadio:
-                    case NetServer:
-                    case Bluetooth:
-                        CeolDeviceNetServer netServer = ceolDevice.NetServer;
-                        ceolDevice.setPlayStatus( webSvcHttpResponse.playstatus);
+                    CeolDeviceNetServer netServer = ceolDevice.NetServer;
+                    ceolDevice.setPlayStatus( webSvcHttpResponse.playstatus);
 
-                        Dictionary<WebSvcHttpResponseText> texts = webSvcHttpResponse.texts;
-                        if (texts != null) {
-                            netServer.setIsBrowsing(true);
-                            if (webSvcHttpResponse.type.equals("browse")) {
-                                netServer.initializeEntries(texts.get("title").text,
-                                        texts.get("scridValue").text,
-                                        texts.get("scrid").text,
-                                        webSvcHttpResponse.listmax,
-                                        webSvcHttpResponse.listposition);
-                                for (int i = 0; i < CeolDeviceNetServer.MAX_LINES; i++) {
-                                    WebSvcHttpResponseText responseText = texts.get("line" + i);
-                                    if (responseText != null) {
-                                        netServer.setBrowseLine(i, responseText.text, responseText.flag);
-                                    }
+                    Dictionary<WebSvcHttpResponseText> texts = webSvcHttpResponse.texts;
+                    if (texts != null) {
+                        netServer.setIsBrowsing(true);
+                        if (webSvcHttpResponse.type.equals("browse")) {
+                            netServer.initializeEntries(texts.get("title").text,
+                                    texts.get("scridValue").text,
+                                    texts.get("scrid").text,
+                                    webSvcHttpResponse.listmax,
+                                    webSvcHttpResponse.listposition);
+                            for (int i = 0; i < CeolDeviceNetServer.MAX_LINES; i++) {
+                                WebSvcHttpResponseText responseText = texts.get("line" + i);
+                                if (responseText != null) {
+                                    netServer.setBrowseLine(i, responseText.text, responseText.flag);
                                 }
                             }
-                            if ( ceolDevice.getPlayStatus() == PlayStatusType.Stop) {
-                                netServer.setTrackInfo("","","","", "");
-                                netServer.setImageBitmap(null);
-                            } else {
-                                if (webSvcHttpResponse.type.equals("play")) {
-                                    netServer.setTrackInfo(
-                                            texts.get("track").text,
-                                            texts.get("artist").text,
-                                            texts.get("album").text,
-                                            texts.get("format").text,
-                                            texts.get("bitrate").text
-                                    );
-                                    netServer.setIsBrowsing(false);
-                                }
-                            }
-                        } else {
-                            netServer.clear();
                         }
-                        break;
-                    case AnalogIn:
-                        break;
+                        if ( ceolDevice.getPlayStatus() == PlayStatusType.Stop) {
+                            netServer.setTrackInfo("","","","", "");
+                            netServer.setImageBitmap(null);
+                        } else {
+                            if (webSvcHttpResponse.type.equals("play")) {
+                                netServer.setTrackInfo(
+                                        texts.get("track").text,
+                                        texts.get("artist").text,
+                                        texts.get("album").text,
+                                        texts.get("format").text,
+                                        texts.get("bitrate").text
+                                );
+                                netServer.setIsBrowsing(false);
+                            }
+                        }
+                    } else {
+                        netServer.clear();
+                    }
+
+                } else {
+                    switch (ceolDevice.getSIStatus()) {
+
+                        case Unknown:
+                            break;
+                        case CD:
+                            // TODO
+                            break;
+                        case Tuner:
+                            CeolDeviceTuner tuner = ceolDevice.Tuner;
+                            ceolDevice.setPlayStatus(PlayStatusType.Stop);
+                            tuner.setBand(webSvcHttpResponse.band);
+                            tuner.setFrequency(webSvcHttpResponse.frequency);
+                            tuner.setName(webSvcHttpResponse.name);
+                            tuner.setIsAuto(webSvcHttpResponse.automanual == null ? false : webSvcHttpResponse.automanual.equalsIgnoreCase("AUTO"));
+                            break;
+                        case AnalogIn:
+                        default:
+                            break;
+                    }
                 }
             }
         } catch (Exception e) {
@@ -297,6 +299,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             switch (webSvcHttpResponse.source) {
                 case "Music Server":
                     return SIStatusType.NetServer;
+                case "":
                 case "TUNER":
                     return SIStatusType.Tuner;
                 case "CD":
@@ -313,6 +316,8 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                     return SIStatusType.DigitalIn2;
                 case "BLUETOOTH":
                     return SIStatusType.Bluetooth;
+                case "SpotifyConnect":
+                    return SIStatusType.Spotify;
                 default:
                     return SIStatusType.Unknown;
             }

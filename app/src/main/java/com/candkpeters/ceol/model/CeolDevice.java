@@ -14,6 +14,7 @@ public class CeolDevice {
     private static CeolDevice ourInstance = new CeolDevice();
     private long wakeUpPeriodMsecs = DEFAULT_WAKEUP_PERIOD_MSECS;
     private long netServerOnPeriodMsecs = DEFAULT_NETSERVERON_PERIOD_MSECS;
+    private boolean isNetServer;
 
     public static CeolDevice getInstance() {
         return ourInstance;
@@ -99,10 +100,34 @@ public class CeolDevice {
             this.siStatus = newSiStatus;
             netServerOnTimeMsecs = 0;
         }
+
+        switch (siStatus) {
+
+            case AnalogIn:
+            case CD:
+            case Tuner:
+                isNetServer = false;
+                break;
+            case Unknown:
+            case DigitalIn1:
+            case DigitalIn2:
+            case Bluetooth:
+            case IRadio:
+            case NetServer:
+            case Ipod:
+            case Spotify:
+            default:
+                isNetServer = true;
+                break;
+        }
     }
 
     public int getMasterVolume() {
         return masterVolume;
+    }
+
+    public String getMasterVolumeString() {
+        return Integer.toString(masterVolume);
     }
 
     public void setMasterVolume(int masterVolume) {
@@ -157,4 +182,7 @@ public class CeolDevice {
     }
 
 
+    public boolean isNetServer() {
+        return isNetServer;
+    }
 }

@@ -8,114 +8,9 @@
     android:orientation="vertical"
     >
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/glayout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="0dp"
-        android:paddingTop="6dp"
-        android:orientation="horizontal"
-        android:background="@drawable/shape_background"
-        >
-        <ImageButton
-            android:id="@+id/powerB"
-            android:src="@drawable/ic_av_power"
-            style="@style/PowerButton"
-            android:layout_margin="@dimen/av_button"
-            />
+    <include layout="@layout/power_volume"/>
 
-        <ImageButton
-            android:layout_height="6mm"
-            android:layout_width="6mm"
-            android:id="@+id/volumedownB"
-            android:src="@drawable/ic_av_down"
-            style="@style/WhiteCircleButton"
-            />
-
-        <ImageButton
-            android:layout_height="6mm"
-            android:layout_width="6mm"
-            android:id="@+id/volumeupB"
-            android:src="@drawable/ic_av_up"
-            style="@style/WhiteCircleButton"
-            />
-
-    </LinearLayout>
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/widget_textpanel"
-        >
-
-        <ImageView
-            android:id="@+id/imageTrack"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/ic_launcher"
-            android:scaleType="centerCrop"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            />
-
-<!--            android:background="@drawable/widget_textpanel"
--->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="bottom"
-            android:layout_margin="6dp"
-            android:padding="6dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/playinfo"
-            >
-
-            <TextView
-                android:id="@+id/textUpdate"
-                style="@android:style/TextAppearance.Small"
-                android:textSize="8sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Static Text" >
-            </TextView>
-
-            <TextView
-                android:id="@+id/textArtist"
-                android:layout_marginTop="15dp"
-                style="@android:style/TextAppearance.Small"
-                android:textColor="@color/white"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Artist" >
-            </TextView>
-
-            <TextView
-                android:id="@+id/textAlbum"
-                style="@android:style/TextAppearance.Medium"
-                android:textColor="@color/white"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Album" >
-            </TextView>
-
-            <TextView
-                android:id="@+id/textTrack"
-                style="@android:style/TextAppearance.Medium"
-                android:textColor="@color/white"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="Track" >
-            </TextView>
-
-        </LinearLayout>
-
-    </RelativeLayout>
-
+    <include layout="@layout/album_art"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/glayout2"
@@ -133,6 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="buttonClick"
             />
 
         <ImageButton
@@ -142,6 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="buttonClick"
             />
 
         <ImageButton
@@ -151,6 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="buttonClick"
             />
 
         <ImageButton
@@ -160,6 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="buttonClick"
             />
 
     </LinearLayout>

@@ -58,6 +58,8 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
         views.setTextViewText(R.id.textTrack, ceolDevice.NetServer.getTrack());
         views.setTextViewText(R.id.textArtist, ceolDevice.NetServer.getArtist());
         views.setTextViewText(R.id.textAlbum, ceolDevice.NetServer.getAlbum());
+
+        views.setTextViewText(R.id.volume1, Integer.toString(ceolDevice.getMasterVolume()));
     }
 
 }

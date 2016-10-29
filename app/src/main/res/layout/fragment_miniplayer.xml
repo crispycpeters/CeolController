@@ -8,62 +8,7 @@
     android:orientation="vertical"
     >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        android:gravity="bottom"
-        android:layout_margin="6dp"
-        android:padding="6dp"
-        android:background="@drawable/widget_textpanel"
-        >
-
-        <ImageView
-            android:id="@+id/imageTrack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            />
-
-        <TextView
-            android:id="@+id/textUpdate"
-            style="@android:style/TextAppearance.Small"
-            android:textSize="8sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Static Text" >
-        </TextView>
-
-        <TextView
-            android:id="@+id/textArtist"
-            android:layout_marginTop="15dp"
-            style="@android:style/TextAppearance.Small"
-            android:textColor="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Artist" >
-        </TextView>
-        <TextView
-            android:id="@+id/textAlbum"
-            style="@android:style/TextAppearance.Small"
-            android:textColor="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Track" >
-        </TextView>
-        <TextView
-            android:id="@+id/textTrack"
-            style="@android:style/TextAppearance.Medium"
-            android:textColor="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="Track" >
-        </TextView>
-
-
-    </LinearLayout>
+    <include layout="@layout/album_art"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/glayout2"

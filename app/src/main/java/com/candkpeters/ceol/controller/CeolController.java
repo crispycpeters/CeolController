@@ -85,6 +85,12 @@ public class CeolController implements View.OnClickListener {
         ceolCommandManager.execute(new CommandSkip(DirectionType.Forward));
     }
 
+    public void performCommand( Command command ) {
+        if ( command != null) {
+            ceolCommandManager.execute(command);
+        }
+    }
+
     public void performMacro() {
         ceolCommandManager.execute(new CommandMacro(1));
     }

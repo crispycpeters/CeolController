@@ -74,6 +74,13 @@
     <string name="pref_default_macro1name">Macro 1</string>
     <string name="pref_default_macro2name">Macro 2</string>
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="si_tuner">Tuner</string>
+    <string name="si_netserver">Music Server</string>
+    <string name="si_iradio">IRadio</string>
+    <string name="si_usb">iPod / USB</string>
+    <string name="si_bluetooth">Bluetooth</string>
 
 
 </resources>

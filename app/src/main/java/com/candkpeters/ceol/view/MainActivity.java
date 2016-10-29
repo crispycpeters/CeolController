@@ -4,10 +4,14 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -35,13 +39,27 @@ import android.widget.TextView;
 
 import com.candkpeters.ceol.controller.CeolController;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
+import com.candkpeters.ceol.device.command.Command;
+import com.candkpeters.ceol.device.command.CommandControlStop;
+import com.candkpeters.ceol.device.command.CommandControlToggle;
+import com.candkpeters.ceol.device.command.CommandCursorDown;
+import com.candkpeters.ceol.device.command.CommandCursorEnter;
+import com.candkpeters.ceol.device.command.CommandCursorRight;
+import com.candkpeters.ceol.device.command.CommandCursorUp;
+import com.candkpeters.ceol.device.command.CommandMasterVolumeDown;
+import com.candkpeters.ceol.device.command.CommandMasterVolumeUp;
+import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
+import com.candkpeters.ceol.device.command.CommandSetSI;
+import com.candkpeters.ceol.device.command.CommandSkipBackward;
+import com.candkpeters.ceol.device.command.CommandSkipForward;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.DeviceStatusType;
 import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.chris.ceol.R;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
     private static final float DIMMED = 0.9f;
     private static final float NOTDIMMED = 0;
@@ -71,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.drawer_layout);
 
         setupWaitingDialog();
 
@@ -100,6 +118,18 @@ public class MainActivity extends AppCompatActivity {
                 ceolController.volumeDown();
             }
         });
+
+        // Menu item
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        setNavigationMenuStrings(navigationView);
 
         Log.i(TAG, "Created");
         ceolController = new CeolController(this, new OnCeolStatusChangedListener() {
@@ -157,8 +187,21 @@ public class MainActivity extends AppCompatActivity {
             TextView albumTB = (TextView) viewPager.findViewById(R.id.textAlbum);
             if (albumTB != null) albumTB.setText(ceolDevice.NetServer.getAlbum());
 
-            ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageTrack);
+            String currString = Long.toString(System.currentTimeMillis() % 1000);
+            TextView update = (TextView) viewPager.findViewById(R.id.textUpdate);
+            if (update != null) update.setText(currString);
+            update = (TextView)findViewById(R.id.textUpdateA);
+            if (update != null) update.setText(currString);
+
+            TextView volume = (TextView)findViewById(R.id.volume1);
+            if (volume != null) volume.setText(ceolDevice.getMasterVolumeString());
+            volume = (TextView)findViewById(R.id.volume2);
+            if (volume != null) volume.setText(ceolDevice.getMasterVolumeString());
+
+            ImageView imageV = (ImageView)findViewById(R.id.imageTrack);
             if (imageV != null) imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
+
+            updateSIEntries(ceolDevice);
 
             updateMacroButtons();
 
@@ -168,9 +211,74 @@ public class MainActivity extends AppCompatActivity {
 
             updateNavigation( ceolDevice);
 
+
         } catch (Exception e) {
             Log.e(TAG, "onCeolStatusChanged: Exception " + e);
             e.printStackTrace();
+        }
+    }
+
+    private void updateSIEntries(CeolDevice ceolDevice) {
+        Button siB = (Button) findViewById(R.id.siB);
+        if (siB != null) siB.setText(ceolDevice.getSIStatus().name);
+
+        int id = 0;
+        switch ( ceolDevice.getSIStatus()) {
+
+            case Unknown:
+                break;
+            case CD:
+                break;
+            case Tuner:
+                id = R.id.nav_tuner;
+                break;
+            case IRadio:
+                id = R.id.nav_iradio;
+                break;
+            case NetServer:
+                id = R.id.nav_server;
+                break;
+            case AnalogIn:
+                break;
+            case DigitalIn1:
+                break;
+            case DigitalIn2:
+                break;
+            case Bluetooth:
+                id = R.id.nav_bluetooth;
+                break;
+            case Ipod:
+                id = R.id.nav_usb;
+                break;
+            case Spotify:
+                break;
+        }
+        if ( id != 0 ) {
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            MenuItem item = navigationView.getMenu().findItem(id);
+            if (item != null) {
+                item.setChecked(true);
+            }
+        }
+    }
+
+    private void setNavigationMenuStrings(NavigationView navigationView) {
+        Menu menu = navigationView.getMenu();
+
+        menu.findItem(R.id.nav_bluetooth).setTitle(SIStatusType.Bluetooth.name);
+        menu.findItem(R.id.nav_iradio).setTitle(SIStatusType.IRadio.name);
+        menu.findItem(R.id.nav_server).setTitle(SIStatusType.NetServer.name);
+        menu.findItem(R.id.nav_tuner).setTitle(SIStatusType.Tuner.name);
+        menu.findItem(R.id.nav_usb).setTitle(SIStatusType.Ipod.name);
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -269,6 +377,67 @@ public class MainActivity extends AppCompatActivity {
         ceolController.activityOnStop();
     }
 
+    private Command getCommandFromId(int id) {
+        switch (id) {
+            // Navigation
+            case R.id.navUpB:
+                return new CommandCursorUp();
+            case R.id.navDownB:
+                return new CommandCursorDown();
+            case R.id.navLeftB:
+                return new CommandCursorRight();
+            case R.id.navRightB:
+                return new CommandCursorRight();
+            case R.id.navEnterB:
+                return new CommandCursorEnter();
+
+            // Control
+            case R.id.powerB:
+                return new CommandSetPowerToggle();
+            case R.id.skipBackwardsB:
+                return new CommandSkipBackward();
+            case R.id.skipForwardsB:
+                return new CommandSkipForward();
+            case R.id.playpauseB:
+                return new CommandControlToggle();
+            case R.id.stopB:
+                return new CommandControlStop();
+            case R.id.volumedownB:
+                return new CommandMasterVolumeDown();
+            case R.id.volumeupB:
+                return new CommandMasterVolumeUp();
+
+            // Select
+            case R.id.siInternetRadioB:
+                return new CommandSetSI(SIStatusType.IRadio);
+            case R.id.siIpodB:
+                return new CommandSetSI(SIStatusType.Ipod);
+            case R.id.siMusicServerB:
+                return new CommandSetSI(SIStatusType.NetServer);
+            case R.id.siTunerB:
+                return new CommandSetSI(SIStatusType.Tuner);
+            case R.id.siAnalogInB:
+                return new CommandSetSI(SIStatusType.AnalogIn);
+            case R.id.siDigitalInB:
+                return new CommandSetSI(SIStatusType.DigitalIn1);
+            case R.id.siBluetoothB:
+                return new CommandSetSI(SIStatusType.Bluetooth);
+            case R.id.siCdB:
+                return new CommandSetSI(SIStatusType.CD);
+
+            default:
+                return null;
+        }
+    }
+
+    public void buttonClick(View view) {
+        Log.d(TAG, "buttonClick: " + view.getTag());
+        Command command = getCommandFromId(view.getId());
+        if ( command != null) {
+            ceolController.performCommand(command);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -292,6 +461,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void siBClick(View view) {
+        // Open menu
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.openDrawer(GravityCompat.START);
     }
 
     /**
@@ -380,7 +555,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_ceolremote, container, false);
+            View rootView = inflater.inflate(R.layout.appwidget_layout_toplevel, container, false);
             ceolController.setViewCommandHandlers( rootView );
 
             return rootView;
@@ -466,6 +641,28 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
         }
+    }
+
+    // NAVIGATION VIEW
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        Command command = null;
+
+        if (id == R.id.nav_tuner) {
+            command = new CommandSetSI(SIStatusType.Tuner);
+        } else if (id == R.id.nav_server) {
+            command = new CommandSetSI(SIStatusType.NetServer);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
+        if (command != null) {
+            ceolController.performCommand(command);
+        }
+        return true;
     }
 
 }
