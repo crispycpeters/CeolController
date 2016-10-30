@@ -76,7 +76,7 @@ public class CeolDevice {
     }
 
     public SIStatusType setSIStatus(String source) {
-        SIStatusType siStatusNew = SIStatusType.Unknown;
+        SIStatusType siStatusNew;
 
         if ( source != null && !source.isEmpty()) {
             switch (source) {
@@ -111,7 +111,7 @@ public class CeolDevice {
                     siStatusNew = SIStatusType.Spotify;
                     break;
                 default:
-                    siStatusNew = SIStatusType.Unknown;
+                    siStatusNew = siStatus;
                     break;
             }
             setSIStatus(siStatusNew);
@@ -121,7 +121,7 @@ public class CeolDevice {
 
 
     public SIStatusType setSIStatusLite(String inputFunc) {
-        SIStatusType siStatusNew = SIStatusType.Unknown;
+        SIStatusType siStatusNew;
 
         switch (inputFunc) {
             case "NET":
@@ -129,6 +129,8 @@ public class CeolDevice {
                     // Not sure yet what the type is yet - assumee NetServer
                     isNetServer = true;
                     siStatusNew = SIStatusType.NetServer;
+                } else {
+                    siStatusNew = siStatus;
                 }
                 break;
             case "TUNER":
@@ -156,6 +158,7 @@ public class CeolDevice {
                 siStatusNew = SIStatusType.DigitalIn2;
                 break;
             default:
+                siStatusNew = siStatus;
                 break;
         }
         setSIStatus(siStatusNew);
@@ -171,6 +174,9 @@ public class CeolDevice {
     public void setSIStatus(SIStatusType newSiStatus) {
         long now = System.currentTimeMillis();
 
+        this.siStatus = newSiStatus;
+
+/*
         if ( newSiStatus == SIStatusType.NetServer &&
                 (siStatus != SIStatusType.Unknown && siStatus != SIStatusType.NetServer) ) {
             // We are trying to switch to NetServer
@@ -188,6 +194,7 @@ public class CeolDevice {
             this.siStatus = newSiStatus;
             netServerOnTimeMsecs = 0;
         }
+*/
 
         switch (siStatus) {
 

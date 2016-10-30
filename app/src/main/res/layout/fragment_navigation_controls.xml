@@ -16,7 +16,7 @@
         android:background="@drawable/widget_textpanel"
         >
 
-        <TextView
+       <!-- <TextView
             android:id="@+id/textUpdate"
             style="@android:style/TextAppearance.Small"
             android:textColor="@color/white"
@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Static Text" >
-        </TextView>
+        </TextView>-->
 
         <TextView
             android:id="@+id/textRow0"

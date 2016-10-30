@@ -50,27 +50,24 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             "<tx>\n" +
             " <cmd id=\"1\">GetPowerStatus</cmd>\n" +
             " <cmd id=\"2\">GetVolumeLevel</cmd>\n" +
-            " <cmd id=\"3\">GetMuteStatus</cmd>\n" +
-            " <cmd id=\"4\">GetNetAudioStatus</cmd>\n" +
-            " <cmd id=\"5\">GetSourceStatus</cmd>\n" +
+            " <cmd id=\"3\">GetNetAudioStatus</cmd>\n" +
+            " <cmd id=\"4\">GetSourceStatus</cmd>\n" +
             "</tx>\n";
     TypedString statusQuery_NetServer = new TypedString(statusQueryString_NetServer);
     private final static String statusQueryString_CD = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
             "<tx>\n" +
             " <cmd id=\"1\">GetPowerStatus</cmd>\n" +
             " <cmd id=\"2\">GetVolumeLevel</cmd>\n" +
-            " <cmd id=\"3\">GetMuteStatus</cmd>\n" +
-            " <cmd id=\"4\">GetCDStatus</cmd>\n" +
-            " <cmd id=\"5\">GetSourceStatus</cmd>\n" +
+            " <cmd id=\"3\">GetCDStatus</cmd>\n" +
+            " <cmd id=\"4\">GetSourceStatus</cmd>\n" +
             "</tx>\n";
     TypedString statusQuery_CD = new TypedString(statusQueryString_CD);
     private final static String statusQueryString_Tuner = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
             "<tx>\n" +
             " <cmd id=\"1\">GetPowerStatus</cmd>\n" +
             " <cmd id=\"2\">GetVolumeLevel</cmd>\n" +
-            " <cmd id=\"3\">GetMuteStatus</cmd>\n" +
-            " <cmd id=\"4\">GetTunerStatus</cmd>\n" +
-            " <cmd id=\"5\">GetSourceStatus</cmd>\n" +
+            " <cmd id=\"3\">GetTunerStatus</cmd>\n" +
+            " <cmd id=\"4\">GetSourceStatus</cmd>\n" +
             "</tx>\n";
     TypedString statusQuery_Tuner = new TypedString(statusQueryString_Tuner);
     ImageDownloaderTask imageDownloaderTask;
@@ -146,7 +143,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 //                    Log.d(TAG, "success: Hmm - texts is null");
                 } else {
                     //Log.d(TAG, "success: title: " + webSvcHttpAppCommandResponse.texts.get("title"));
-                    logResponse(webSvcHttpAppCommandResponse);
+                    Log.d(TAG, "AppCommand success: ");
                 }
                 updateDeviceStatus(webSvcHttpAppCommandResponse);
                 checkBackgroundUpdate();
@@ -215,7 +212,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     private void updateDeviceErrorStatus() {
         synchronized (ceolDevice) {
             ceolDevice.setDeviceStatus(DeviceStatusType.Connecting);
-            ceolDevice.setSIStatus(SIStatusType.Unknown);
+//            ceolDevice.setSIStatus(SIStatusType.Unknown);
         }
         notifyObservers();
 //        onCeolStatusChangedListener.onCeolStatusChanged(ceolDevice);
@@ -240,7 +237,6 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                 ceolDevice.setSIStatus(webSvcHttpAppCommandResponse.source);
                 ceolDevice.setDeviceStatus(webSvcHttpAppCommandResponse.power);
                 ceolDevice.setMasterVolume(webSvcHttpAppCommandResponse.dispvalue);
-                ceolDevice.setIsMuted(webSvcHttpAppCommandResponse.mute.equals("on"));
 
                 if ( ceolDevice.isNetServer() ) {
 

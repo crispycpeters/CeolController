@@ -52,12 +52,13 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
         long curr = System.currentTimeMillis();
         CeolDevice ceolDevice = ceolCommandManager.getCeolDevice();
 
-        views.setTextViewText(R.id.textUpdate, updateString + ": " + Long.toString(curr % 10000));
+        views.setTextViewText(R.id.textUpdate,  Long.toString(curr % 10000));
 
         views.setImageViewBitmap(R.id.imageTrack, ceolDevice.NetServer.getImageBitmap());
         views.setTextViewText(R.id.textTrack, ceolDevice.NetServer.getTrack());
         views.setTextViewText(R.id.textArtist, ceolDevice.NetServer.getArtist());
         views.setTextViewText(R.id.textAlbum, ceolDevice.NetServer.getAlbum());
+        views.setTextViewText(R.id.volume, ceolDevice.getMasterVolumeString());
 
     }
 

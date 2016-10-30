@@ -59,7 +59,7 @@
 
     </LinearLayout>
 
-    <TextView
+    <!--<TextView
         android:id="@+id/textUpdate"
         style="@style/AlbumArtText.Small"
         android:textSize="8sp"
@@ -70,5 +70,5 @@
         android:text="Static Text"
         android:background="#00000000"
         />
-
+-->
 </RelativeLayout>

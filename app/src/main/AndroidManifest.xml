@@ -34,6 +34,13 @@
         <service android:name="com.candkpeters.ceol.view.CeolService" >
         </service>
 
+        <receiver android:name="com.candkpeters.ceol.view.CeolServiceReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+<!--
         <receiver
             android:name="com.candkpeters.ceol.view.CeolWidgetProviderNavigator"
             android:label="Ceol Navigator">
@@ -66,6 +73,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/ceol_appwidget_player" />
         </receiver>
+-->
 
         <receiver
             android:name="com.candkpeters.ceol.view.CeolWidgetProviderMiniPlayer"

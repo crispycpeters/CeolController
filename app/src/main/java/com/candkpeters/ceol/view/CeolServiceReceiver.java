@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 
 /**
  * Created by crisp on 17/03/2016.
@@ -27,6 +28,17 @@ public class CeolServiceReceiver extends BroadcastReceiver {
                 break;
             case Intent.ACTION_BOOT_COMPLETED:
                 i.setAction(CeolService.BOOT_COMPLETED);
+                break;
+            case ConnectivityManager.CONNECTIVITY_ACTION:
+/*
+                final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                final android.net.NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                if ( wifi.isConnected()) {
+                    i.setAction(CeolService.SCREEN_ON);
+                } else {
+                    i.setAction(CeolService.SCREEN_OFF);
+                }
+*/
                 break;
             default:
                 break;

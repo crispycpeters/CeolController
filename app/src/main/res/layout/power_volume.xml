@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:id="@+id/volume2"
+        android:id="@+id/volume"
         style="@style/VolumeText"
         android:text="00"
         android:onClick="buttonClick"
@@ -49,8 +49,9 @@
         android:onClick="buttonClick"
         />
 
+
     <TextView
-        android:id="@+id/textUpdateA"
+        android:id="@+id/textUpdate"
         style="@style/AlbumArtText.Small"
         android:textSize="8sp"
         android:layout_width="wrap_content"

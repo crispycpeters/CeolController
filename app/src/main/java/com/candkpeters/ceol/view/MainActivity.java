@@ -191,10 +191,8 @@ public class MainActivity extends AppCompatActivity
             String currString = Long.toString(System.currentTimeMillis() % 1000);
             TextView update = (TextView) viewPager.findViewById(R.id.textUpdate);
             if (update != null) update.setText(currString);
-            update = (TextView)findViewById(R.id.textUpdateA);
-            if (update != null) update.setText(currString);
 
-            TextView volume = (TextView)findViewById(R.id.volume2);
+            TextView volume = (TextView)findViewById(R.id.volume);
             if (volume != null) volume.setText(ceolDevice.getMasterVolumeString());
 
             ImageView imageV = (ImageView)findViewById(R.id.imageTrack);
@@ -378,56 +376,76 @@ public class MainActivity extends AppCompatActivity
     }
 
     private Command getCommandFromId(int id) {
+        Command command = null;
+
         switch (id) {
             // Navigation
             case R.id.navUpB:
-                return new CommandCursorUp();
+                command = new CommandCursorUp();
+                break;
             case R.id.navDownB:
-                return new CommandCursorDown();
+                command = new CommandCursorDown();
+                break;
             case R.id.navLeftB:
-                return new CommandCursorLeft();
+                command = new CommandCursorLeft();
+                break;
             case R.id.navRightB:
-                return new CommandCursorRight();
+                command = new CommandCursorRight();
+                break;
             case R.id.navEnterB:
-                return new CommandCursorEnter();
+                command = new CommandCursorEnter();
+                break;
 
             // Control
             case R.id.powerB:
-                return new CommandSetPowerToggle();
+                command = new CommandSetPowerToggle();
+                break;
             case R.id.skipBackwardsB:
-                return new CommandSkipBackward();
+                command = new CommandSkipBackward();
+                break;
             case R.id.skipForwardsB:
-                return new CommandSkipForward();
+                command = new CommandSkipForward();
+                break;
             case R.id.playpauseB:
-                return new CommandControlToggle();
+                command = new CommandControlToggle();
+                break;
             case R.id.stopB:
-                return new CommandControlStop();
+                command = new CommandControlStop();
+                break;
             case R.id.volumedownB:
-                return new CommandMasterVolumeDown();
+                command = new CommandMasterVolumeDown();
+                break;
             case R.id.volumeupB:
-                return new CommandMasterVolumeUp();
+                command = new CommandMasterVolumeUp();
+                break;
 
             // Select
             case R.id.siInternetRadioB:
-                return new CommandSetSI(SIStatusType.IRadio);
+                command = new CommandSetSI(SIStatusType.IRadio);
+                break;
             case R.id.siIpodB:
-                return new CommandSetSI(SIStatusType.Ipod);
+                command = new CommandSetSI(SIStatusType.Ipod);
+                break;
             case R.id.siMusicServerB:
-                return new CommandSetSI(SIStatusType.NetServer);
+                command = new CommandSetSI(SIStatusType.NetServer);
+                break;
             case R.id.siTunerB:
-                return new CommandSetSI(SIStatusType.Tuner);
+                command = new CommandSetSI(SIStatusType.Tuner);
+                break;
             case R.id.siAnalogInB:
-                return new CommandSetSI(SIStatusType.AnalogIn);
+                command = new CommandSetSI(SIStatusType.AnalogIn);
+                break;
             case R.id.siDigitalInB:
-                return new CommandSetSI(SIStatusType.DigitalIn1);
+                command = new CommandSetSI(SIStatusType.DigitalIn1);
+                break;
             case R.id.siBluetoothB:
-                return new CommandSetSI(SIStatusType.Bluetooth);
+                command = new CommandSetSI(SIStatusType.Bluetooth);
+                break;
             case R.id.siCdB:
-                return new CommandSetSI(SIStatusType.CD);
-
-            default:
-                return null;
+                command = new CommandSetSI(SIStatusType.CD);
+                break;
         }
+        return command;
     }
 
     public void buttonClick(View view) {
