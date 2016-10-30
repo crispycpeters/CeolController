@@ -44,6 +44,7 @@ import com.candkpeters.ceol.device.command.CommandControlStop;
 import com.candkpeters.ceol.device.command.CommandControlToggle;
 import com.candkpeters.ceol.device.command.CommandCursorDown;
 import com.candkpeters.ceol.device.command.CommandCursorEnter;
+import com.candkpeters.ceol.device.command.CommandCursorLeft;
 import com.candkpeters.ceol.device.command.CommandCursorRight;
 import com.candkpeters.ceol.device.command.CommandCursorUp;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeDown;
@@ -193,9 +194,7 @@ public class MainActivity extends AppCompatActivity
             update = (TextView)findViewById(R.id.textUpdateA);
             if (update != null) update.setText(currString);
 
-            TextView volume = (TextView)findViewById(R.id.volume1);
-            if (volume != null) volume.setText(ceolDevice.getMasterVolumeString());
-            volume = (TextView)findViewById(R.id.volume2);
+            TextView volume = (TextView)findViewById(R.id.volume2);
             if (volume != null) volume.setText(ceolDevice.getMasterVolumeString());
 
             ImageView imageV = (ImageView)findViewById(R.id.imageTrack);
@@ -297,6 +296,7 @@ public class MainActivity extends AppCompatActivity
     private void updateNavigationRow(CeolDevice ceolDevice, int rowResId, int rowIndex) {
         TextView textV = (TextView)findViewById(rowResId);
         if ( textV != null) {
+//            if ( ceolDevice.getSIStatus() == SIStatusType.NetServer  ) {
             if ( ceolDevice.getSIStatus() == SIStatusType.NetServer && ceolDevice.NetServer.isBrowsing() ) {
 //                String s = ceolDevice.NetServer.getEntries().getBrowseLineText(rowIndex);
                 SpannableString s = new SpannableString(ceolDevice.NetServer.getEntries().getBrowseLineText(rowIndex));
@@ -385,7 +385,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.navDownB:
                 return new CommandCursorDown();
             case R.id.navLeftB:
-                return new CommandCursorRight();
+                return new CommandCursorLeft();
             case R.id.navRightB:
                 return new CommandCursorRight();
             case R.id.navEnterB:
@@ -495,13 +495,10 @@ public class MainActivity extends AppCompatActivity
             switch (sectionNumber) {
                 default:
                 case 1:
-                    fragment = new CeolRemoteFragmentMainControls();
+                    fragment = new CeolRemoteFragmentPlayerControl();
                     break;
                 case 2:
                     fragment = new CeolRemoteFragmentNavigatorControl();
-                    break;
-                case 3:
-                    fragment = new CeolRemoteFragmentPlayerControl();
                     break;
             }
             fragment.setArguments(args);
@@ -629,7 +626,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override

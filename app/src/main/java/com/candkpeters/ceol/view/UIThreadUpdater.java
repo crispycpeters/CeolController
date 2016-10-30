@@ -58,7 +58,6 @@ public class UIThreadUpdater {
         };
     }
 
-
     /**
      * Starts the periodical update routine (repeatedRunnable
      * adds the callback to the handler).

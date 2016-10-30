@@ -75,6 +75,93 @@ public class CeolDevice {
         }
     }
 
+    public SIStatusType setSIStatus(String source) {
+        SIStatusType siStatusNew = SIStatusType.Unknown;
+
+        if ( source != null && !source.isEmpty()) {
+            switch (source) {
+                case "Music Server":
+                    siStatusNew = SIStatusType.NetServer;
+                    break;
+                case "TUNER":
+                    siStatusNew = SIStatusType.Tuner;
+                    break;
+                case "CD":
+                    siStatusNew = SIStatusType.CD;
+                    break;
+                case "Internet Radio":
+                    siStatusNew = SIStatusType.IRadio;
+                    break;
+                case "USB":
+                    siStatusNew = SIStatusType.Ipod;
+                    break;
+                case "ANALOGIN":
+                    siStatusNew = SIStatusType.AnalogIn;
+                    break;
+                case "DIGITALIN1":
+                    siStatusNew = SIStatusType.DigitalIn1;
+                    break;
+                case "DIGITALIN2":
+                    siStatusNew = SIStatusType.DigitalIn2;
+                    break;
+                case "BLUETOOTH":
+                    siStatusNew = SIStatusType.Bluetooth;
+                    break;
+                case "SpotifyConnect":
+                    siStatusNew = SIStatusType.Spotify;
+                    break;
+                default:
+                    siStatusNew = SIStatusType.Unknown;
+                    break;
+            }
+            setSIStatus(siStatusNew);
+        }
+        return siStatus;
+    }
+
+
+    public SIStatusType setSIStatusLite(String inputFunc) {
+        SIStatusType siStatusNew = SIStatusType.Unknown;
+
+        switch (inputFunc) {
+            case "NET":
+                if (!isNetServer()) {
+                    // Not sure yet what the type is yet - assumee NetServer
+                    isNetServer = true;
+                    siStatusNew = SIStatusType.NetServer;
+                }
+                break;
+            case "TUNER":
+                isNetServer = false;
+                siStatusNew = SIStatusType.Tuner;
+                break;
+            case "CD":
+                isNetServer = false;
+                siStatusNew = SIStatusType.CD;
+                break;
+            case "USB":
+                isNetServer = false;
+                siStatusNew = SIStatusType.Ipod;
+                break;
+            case "ANALOGIN":
+                isNetServer = false;
+                siStatusNew = SIStatusType.AnalogIn;
+                break;
+            case "DIGITALIN1":
+                isNetServer = false;
+                siStatusNew = SIStatusType.DigitalIn1;
+                break;
+            case "DIGITALIN2":
+                isNetServer = false;
+                siStatusNew = SIStatusType.DigitalIn2;
+                break;
+            default:
+                break;
+        }
+        setSIStatus(siStatusNew);
+        return siStatus;
+    }
+
     public SIStatusType getSIStatus() {
         return siStatus;
     }
@@ -84,7 +171,8 @@ public class CeolDevice {
     public void setSIStatus(SIStatusType newSiStatus) {
         long now = System.currentTimeMillis();
 
-        if ( siStatus != SIStatusType.NetServer && newSiStatus == SIStatusType.NetServer ) {
+        if ( newSiStatus == SIStatusType.NetServer &&
+                (siStatus != SIStatusType.Unknown && siStatus != SIStatusType.NetServer) ) {
             // We are trying to switch to NetServer
             if (netServerOnTimeMsecs == 0) {
                 // Start timer but don't change setting
@@ -185,4 +273,5 @@ public class CeolDevice {
     public boolean isNetServer() {
         return isNetServer;
     }
+
 }

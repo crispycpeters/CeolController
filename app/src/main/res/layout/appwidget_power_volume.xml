@@ -16,14 +16,6 @@
         android:contentDescription="@string/power_toggle"
         />
 
-    <Button
-        android:id="@+id/siB"
-        style="@style/SIButton"
-        android:layout_weight="1"
-        android:onClick="siBClick"
-        android:text="Music server"
-        />
-
     <ImageButton
         android:id="@+id/volumedownB"
         android:src="@drawable/ic_av_down"
@@ -54,9 +46,8 @@
         style="@style/AlbumArtText.Small"
         android:textSize="8sp"
         android:layout_width="wrap_content"
-        android:minWidth="20dp"
         android:layout_height="wrap_content"
-        android:text="00"
+        android:text="Static Text"
         android:background="#00000000"
         />
 

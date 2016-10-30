@@ -12,7 +12,7 @@ public class WebSvcGenerator {
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(endpoint)
-                //.setLogLevel(RestAdapter.LogLevel.FULL)
+//                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setConverter(new SimpleXmlConverter())
                 .setClient(new WebSvcConnectionClient())
                 .build();

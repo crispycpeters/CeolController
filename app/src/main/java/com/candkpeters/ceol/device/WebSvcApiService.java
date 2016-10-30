@@ -16,14 +16,17 @@ public interface WebSvcApiService {
 
 /*
     @POST("/goform/AppCommand.xml")
-    WebSvcHttpResponse appCommand(@Body WebSvcHttpRequest appRequest);
+    WebSvcHttpAppCommandResponse appCommand(@Body WebSvcHttpRequest appRequest);
 
     @POST("/goform/AppCommand.xml")
-    void appCommandAsync_old(@Body WebSvcHttpRequest appRequest, Callback<WebSvcHttpResponse> cb);
+    void appCommandAsync_old(@Body WebSvcHttpRequest appRequest, Callback<WebSvcHttpAppCommandResponse> cb);
 */
 
+    @GET("/goform/formMainZone_MainZoneXmlStatusLite.xml")
+    void appStatusLiteAsync(Callback<WebSvcHttpStatusLiteResponse> cb);
+
     @POST("/goform/AppCommand.xml")
-    void appCommandAsync(@Body TypedString appRequest, Callback<WebSvcHttpResponse> cb);
+    void appCommandAsync(@Body TypedString appRequest, Callback<WebSvcHttpAppCommandResponse> cb);
 
     @GET("/goform/formiPhoneAppDirect.xml{command}")
     void appDirectCommandAsync(@EncodedPath("command") String command, Callback<Void> cb);

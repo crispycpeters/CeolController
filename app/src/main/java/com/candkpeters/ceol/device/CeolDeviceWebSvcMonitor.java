@@ -117,19 +117,38 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     }
 
     public void getStatus() {
-        TypedString statusQuery = determineStatusQuery(ceolDevice.getSIStatus());
-        webSvcApiService.appCommandAsync(statusQuery, new Callback<WebSvcHttpResponse>() {
+        webSvcApiService.appStatusLiteAsync(new Callback<WebSvcHttpStatusLiteResponse>() {
             @Override
-            public void success(WebSvcHttpResponse webSvcHttpResponse, Response response) {
+            public void success(WebSvcHttpStatusLiteResponse webSvcHttpStatusLiteResponse, Response response) {
                 //Log.d(TAG, "success: Got successful response: " + response.getBody());
-                //Log.d(TAG, "success: power: " + webSvcHttpResponse.power);
-                if (webSvcHttpResponse.texts == null) {
+                //Log.d(TAG, "success: power: " + webSvcHttpAppCommandResponse.power);
+                updateDeviceStatusLite(webSvcHttpStatusLiteResponse);
+                getStatus2();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.w(TAG, "Could not connect to CEOL: " + error);
+                updateDeviceErrorStatus();
+                checkBackgroundUpdate();
+            }
+        });
+    }
+
+    public void getStatus2() {
+        TypedString statusQuery = determineStatusQuery(ceolDevice.getSIStatus());
+        webSvcApiService.appCommandAsync(statusQuery, new Callback<WebSvcHttpAppCommandResponse>() {
+            @Override
+            public void success(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse, Response response) {
+                //Log.d(TAG, "success: Got successful response: " + response.getBody());
+                //Log.d(TAG, "success: power: " + webSvcHttpAppCommandResponse.power);
+                if (webSvcHttpAppCommandResponse.texts == null) {
 //                    Log.d(TAG, "success: Hmm - texts is null");
                 } else {
-                    //Log.d(TAG, "success: title: " + webSvcHttpResponse.texts.get("title"));
-                    logResponse(webSvcHttpResponse);
+                    //Log.d(TAG, "success: title: " + webSvcHttpAppCommandResponse.texts.get("title"));
+                    logResponse(webSvcHttpAppCommandResponse);
                 }
-                updateDeviceStatus(webSvcHttpResponse);
+                updateDeviceStatus(webSvcHttpAppCommandResponse);
                 checkBackgroundUpdate();
             }
 
@@ -147,14 +166,14 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     }
 
     private void checkBackgroundUpdate() {
-        long currentMsecs = System.currentTimeMillis();
-        if (currentMsecs > lastSuccessMsecs + backgroundTimeoutMsecs) {
+//        long currentMsecs = System.currentTimeMillis();
+//        if (currentMsecs > lastSuccessMsecs + backgroundTimeoutMsecs) {
             // Time to back-off on active attempts
-            stopActiveUpdates();
-        } else {
+//            stopActiveUpdates();
+//        } else {
             // Ensure updates are running
             startActiveUpdates();
-        }
+//        }
     }
 
     public void getImage() {
@@ -167,8 +186,8 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
         }
     }
 
-    private void logResponse(WebSvcHttpResponse webSvcHttpResponse) {
-        Log.d(TAG, "logResponse: " + webSvcHttpResponse.toString());
+    private void logResponse(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse) {
+        Log.d(TAG, "logResponse: " + webSvcHttpAppCommandResponse.toString());
     }
 
     private TypedString determineStatusQuery(SIStatusType siStatus) {
@@ -202,7 +221,13 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 //        onCeolStatusChangedListener.onCeolStatusChanged(ceolDevice);
     }
 
-    private void updateDeviceStatus(WebSvcHttpResponse webSvcHttpResponse) {
+    private void updateDeviceStatusLite(WebSvcHttpStatusLiteResponse webSvcHttpStatusLiteResponse) {
+        ceolDevice.setDeviceStatus(webSvcHttpStatusLiteResponse.power);
+        ceolDevice.setSIStatusLite(webSvcHttpStatusLiteResponse.inputFunc);
+        ceolDevice.setIsMuted(webSvcHttpStatusLiteResponse.mute.equals("on"));
+    }
+
+    private void updateDeviceStatus(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse) {
         SIStatusType oldSiStatus = ceolDevice.getSIStatus();
 
         String oldTrack = ceolDevice.NetServer.getTrack();
@@ -212,25 +237,25 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 
         try {
             synchronized (ceolDevice) {
-                ceolDevice.setSIStatus(parseSIStatus(webSvcHttpResponse));
-                ceolDevice.setDeviceStatus(webSvcHttpResponse.power);
-                ceolDevice.setMasterVolume(webSvcHttpResponse.dispvalue);
-                ceolDevice.setIsMuted(webSvcHttpResponse.mute.equals("on"));
+                ceolDevice.setSIStatus(webSvcHttpAppCommandResponse.source);
+                ceolDevice.setDeviceStatus(webSvcHttpAppCommandResponse.power);
+                ceolDevice.setMasterVolume(webSvcHttpAppCommandResponse.dispvalue);
+                ceolDevice.setIsMuted(webSvcHttpAppCommandResponse.mute.equals("on"));
 
                 if ( ceolDevice.isNetServer() ) {
 
                     CeolDeviceNetServer netServer = ceolDevice.NetServer;
-                    ceolDevice.setPlayStatus( webSvcHttpResponse.playstatus);
+                    ceolDevice.setPlayStatus( webSvcHttpAppCommandResponse.playstatus);
 
-                    Dictionary<WebSvcHttpResponseText> texts = webSvcHttpResponse.texts;
+                    Dictionary<WebSvcHttpResponseText> texts = webSvcHttpAppCommandResponse.texts;
                     if (texts != null) {
                         netServer.setIsBrowsing(true);
-                        if (webSvcHttpResponse.type.equals("browse")) {
+                        if (webSvcHttpAppCommandResponse.type.equals("browse")) {
                             netServer.initializeEntries(texts.get("title").text,
                                     texts.get("scridValue").text,
                                     texts.get("scrid").text,
-                                    webSvcHttpResponse.listmax,
-                                    webSvcHttpResponse.listposition);
+                                    webSvcHttpAppCommandResponse.listmax,
+                                    webSvcHttpAppCommandResponse.listposition);
                             for (int i = 0; i < CeolDeviceNetServer.MAX_LINES; i++) {
                                 WebSvcHttpResponseText responseText = texts.get("line" + i);
                                 if (responseText != null) {
@@ -242,7 +267,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                             netServer.setTrackInfo("","","","", "");
                             netServer.setImageBitmap(null);
                         } else {
-                            if (webSvcHttpResponse.type.equals("play")) {
+                            if (webSvcHttpAppCommandResponse.type.equals("play")) {
                                 netServer.setTrackInfo(
                                         texts.get("track").text,
                                         texts.get("artist").text,
@@ -268,10 +293,10 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                         case Tuner:
                             CeolDeviceTuner tuner = ceolDevice.Tuner;
                             ceolDevice.setPlayStatus(PlayStatusType.Stop);
-                            tuner.setBand(webSvcHttpResponse.band);
-                            tuner.setFrequency(webSvcHttpResponse.frequency);
-                            tuner.setName(webSvcHttpResponse.name);
-                            tuner.setIsAuto(webSvcHttpResponse.automanual == null ? false : webSvcHttpResponse.automanual.equalsIgnoreCase("AUTO"));
+                            tuner.setBand(webSvcHttpAppCommandResponse.band);
+                            tuner.setFrequency(webSvcHttpAppCommandResponse.frequency);
+                            tuner.setName(webSvcHttpAppCommandResponse.name);
+                            tuner.setIsAuto(webSvcHttpAppCommandResponse.automanual == null ? false : webSvcHttpAppCommandResponse.automanual.equalsIgnoreCase("AUTO"));
                             break;
                         case AnalogIn:
                         default:
@@ -292,38 +317,6 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
         notifyObservers();
 //        if ( ceol.getSIStatus() != oldSiStatus) {
 //        }
-    }
-
-    private SIStatusType parseSIStatus(WebSvcHttpResponse webSvcHttpResponse) {
-        if ( webSvcHttpResponse.source != null) {
-            switch (webSvcHttpResponse.source) {
-                case "Music Server":
-                    return SIStatusType.NetServer;
-                case "":
-                case "TUNER":
-                    return SIStatusType.Tuner;
-                case "CD":
-                    return SIStatusType.CD;
-                case "Internet Radio":
-                    return SIStatusType.IRadio;
-                case "USB":
-                    return SIStatusType.Ipod;
-                case "ANALOGIN":
-                    return SIStatusType.AnalogIn;
-                case "DIGITALIN1":
-                    return SIStatusType.DigitalIn1;
-                case "DIGITALIN2":
-                    return SIStatusType.DigitalIn2;
-                case "BLUETOOTH":
-                    return SIStatusType.Bluetooth;
-                case "SpotifyConnect":
-                    return SIStatusType.Spotify;
-                default:
-                    return SIStatusType.Unknown;
-            }
-        } else {
-            return SIStatusType.Unknown;
-        }
     }
 
     @Override

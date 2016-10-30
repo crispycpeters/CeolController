@@ -93,110 +93,70 @@
 
     </LinearLayout>
 
-    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/glayout2"
+
+    <RelativeLayout
+        android:id="@+id/tlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:rowCount="3"
+        android:layout_margin="0dp"
+        android:layout_gravity="fill"
         android:background="@drawable/shape_background"
         >
 
-        <RelativeLayout
-            android:id="@+id/tlayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="0"
-            android:layout_rowSpan="3"
-            android:layout_column="0"
-            android:layout_margin="0dp"
-            android:layout_gravity="fill"
-            >
-
-            <Button
-                android:id="@+id/navEnterB"
-                android:src="@drawable/ic_av_stop"
-                android:layout_width="10mm"
-                android:layout_height="10mm"
-                style="@style/DarkCircleButton"
-                android:layout_centerInParent="true"
-                android:text="Enter"
-                android:onClick="buttonClick"
-                />
-
-            <ImageButton
-                android:id="@+id/navLeftB"
-                android:src="@drawable/ic_av_left"
-                style="@style/DarkRectangleButton"
-                android:layout_width="5mm"
-                android:layout_height="10mm"
-                android:layout_toLeftOf="@id/navEnterB"
-                android:layout_centerVertical="true"
-                android:onClick="buttonClick"
-                />
-
-            <ImageButton
-                android:id="@+id/navUpB"
-                android:src="@drawable/ic_av_up"
-                style="@style/DarkRectangleButton"
-                android:layout_width="10mm"
-                android:layout_height="5mm"
-                android:layout_above="@id/navEnterB"
-                android:layout_centerHorizontal="true"
-                android:onClick="buttonClick"
-                />
-
-            <ImageButton
-                android:id="@+id/navRightB"
-                android:src="@drawable/ic_av_right"
-                style="@style/DarkRectangleButton"
-                android:layout_height="10mm"
-                android:layout_width="5mm"
-                android:layout_toRightOf="@+id/navEnterB"
-                android:layout_centerVertical="true"
-                android:onClick="buttonClick"
-                />
-
-            <ImageButton
-                android:id="@+id/navDownB"
-                android:src="@drawable/ic_av_down"
-                style="@style/DarkRectangleButton"
-                android:layout_height="5mm"
-                android:layout_width="10mm"
-                android:layout_below="@id/navEnterB"
-                android:layout_centerHorizontal="true"
-                android:onClick="buttonClick"
-                />
-
-        </RelativeLayout>
-
         <ImageButton
-            android:id="@+id/volumeupB"
+            android:id="@+id/navUpB"
             android:src="@drawable/ic_av_up"
-            android:layout_column="1"
-            android:layout_row="0"
-            style="@style/WhiteCircleButton"
+            style="@style/DarkRectangleButton"
+            android:layout_height="@dimen/av_button_size_minimum"
+            android:layout_width="@dimen/av_button_size_medium"
+            android:layout_centerHorizontal="true"
+            android:onClick="buttonClick"
+            />
+
+        <Button
+            android:id="@+id/navEnterB"
+            android:layout_width="@dimen/av_button_size_medium"
+            android:layout_height="@dimen/av_button_size_medium"
+            style="@style/DarkCircleButton"
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/navUpB"
+            android:text="Enter"
             android:onClick="buttonClick"
             />
 
         <ImageButton
-            android:id="@+id/volumedownB"
-            android:src="@drawable/ic_av_down"
-            android:layout_column="1"
-            android:layout_row="2"
-            style="@style/WhiteCircleButton"
+            android:id="@+id/navLeftB"
+            android:src="@drawable/ic_av_left"
+            style="@style/DarkRectangleButton"
+            android:layout_width="@dimen/av_button_size_minimum"
+            android:layout_height="@dimen/av_button_size_medium"
+            android:layout_toLeftOf="@id/navEnterB"
+            android:layout_centerVertical="true"
             android:onClick="buttonClick"
             />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="fill_horizontal"
-            android:layout_column="1"
-            android:layout_row="1"
-            android:id="@+id/volume1"
-            style="@style/VolumeText"
-            android:text="00"
+        <ImageButton
+            android:id="@+id/navRightB"
+            android:src="@drawable/ic_av_right"
+            style="@style/DarkRectangleButton"
+            android:layout_width="@dimen/av_button_size_minimum"
+            android:layout_height="@dimen/av_button_size_medium"
+            android:layout_toRightOf="@+id/navEnterB"
+            android:layout_centerVertical="true"
+            android:onClick="buttonClick"
             />
-    </GridLayout>
+
+        <ImageButton
+            android:id="@+id/navDownB"
+            android:src="@drawable/ic_av_down"
+            style="@style/DarkRectangleButton"
+            android:layout_height="@dimen/av_button_size_minimum"
+            android:layout_width="@dimen/av_button_size_medium"
+            android:layout_below="@id/navEnterB"
+            android:layout_centerHorizontal="true"
+            android:onClick="buttonClick"
+            />
+
+    </RelativeLayout>
+
 </LinearLayout>

@@ -10,7 +10,7 @@ import org.simpleframework.xml.util.Dictionary;
  * Created by crisp on 02/01/2016.
  */
 @Root(name="rx", strict = false)
-public class WebSvcHttpResponse {
+public class WebSvcHttpAppCommandResponse {
 
 //    @ElementList(entry = "cmd", inline = true )
 //    private List<CeolAppCommandResponseCmd> cmds;

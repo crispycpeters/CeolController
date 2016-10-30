@@ -17,9 +17,8 @@
     <!--<integer name="end_rate_msecs">60000</integer>-->
 
     <string-array name="section_page_title">
-        <item>Remote</item>
-        <item>Navigator</item>
         <item>Player</item>
+        <item>Navigator</item>
     </string-array>
 
     <!-- Strings related to Settings -->
@@ -81,6 +80,8 @@
     <string name="si_iradio">IRadio</string>
     <string name="si_usb">iPod / USB</string>
     <string name="si_bluetooth">Bluetooth</string>
+    <string name="power_toggle">Power Toggle</string>
+    <string name="volume_down">Volume down</string>
 
 
 </resources>
