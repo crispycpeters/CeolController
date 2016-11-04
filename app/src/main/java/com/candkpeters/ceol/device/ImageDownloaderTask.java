@@ -5,8 +5,12 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.FilterInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.net.URL;
+import java.net.URLConnection;
 
 import retrofit.client.Response;
 
@@ -59,20 +63,79 @@ class ImageDownloaderTask extends AsyncTask<Void, Void, Bitmap> {
         WebSvcApiService webSvcApiService = ceolDeviceWebSvcMonitorRef.get().webSvcApiService;
 
         Bitmap bitmap = null;
+        InputStream inputStream = null;
+        Response response = null;
         try {
-            Response response = webSvcApiService.appGetImage();
+            response = webSvcApiService.appGetImage();
 
-            InputStream inputStream = response.getBody().in();
+            inputStream = response.getBody().in();
+            if (inputStream != null) {
+//                bitmap = BitmapFactory.decodeStream(new FlushedInputStream(inputStream));
+                bitmap = BitmapFactory.decodeStream(inputStream);
+            }
+            inputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if ( bitmap != null ) {
+            Log.d(TAG, "downloadBitmap: Size:" + bitmap.getWidth() + "x" + bitmap.getHeight());
+        } else {
+            Log.d(TAG, "downloadBitmap: Null !");
+        }
+        return bitmap;
+    }
+
+    private Bitmap downloadBitmap_alt() {
+        Bitmap bitmap = null;
+        InputStream inputStream = null;
+        try {
+            URL url = new URL("http://192.168.0.3//NetAudio/art.asp-jpg");
+
+            URLConnection conn = url.openConnection();
+            conn.connect();
+
+            inputStream = conn.getInputStream();
             if (inputStream != null) {
                 bitmap = BitmapFactory.decodeStream(inputStream);
+                inputStream.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if ( bitmap != null ) {
+            Log.d(TAG, "downloadBitmap: Size:" + bitmap.getWidth() + "x" + bitmap.getHeight());
+        } else {
+            Log.d(TAG, "downloadBitmap: Null !");
         }
         return bitmap;
     }
 
     public boolean isRunning() {
         return (this.getStatus() == Status.RUNNING);
+    }
+
+
+    static class FlushedInputStream extends FilterInputStream {
+        public FlushedInputStream(InputStream inputStream) {
+            super(inputStream);
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            long totalBytesSkipped = 0L;
+            while (totalBytesSkipped < n) {
+                long bytesSkipped = in.skip(n - totalBytesSkipped);
+                if (bytesSkipped == 0L) {
+                    int xbyte = read();
+                    if (xbyte < 0) {
+                        break;  // we reached EOF
+                    } else {
+                        bytesSkipped = 1; // we read one byte
+                    }
+                }
+                totalBytesSkipped += bytesSkipped;
+            }
+            return totalBytesSkipped;
+        }
     }
 }

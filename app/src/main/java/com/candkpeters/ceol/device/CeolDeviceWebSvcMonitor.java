@@ -1,6 +1,7 @@
 package com.candkpeters.ceol.device;
 
 import android.graphics.Bitmap;
+import android.os.Handler;
 import android.util.Log;
 
 import com.candkpeters.ceol.model.DeviceStatusType;
@@ -174,13 +175,17 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     }
 
     public void getImage() {
-
-        try {
-            imageDownloaderTask = new ImageDownloaderTask(this);
-            imageDownloaderTask.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        imageDownloaderTask = new ImageDownloaderTask(this);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    imageDownloaderTask.execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 1000);
     }
 
     private void logResponse(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse) {

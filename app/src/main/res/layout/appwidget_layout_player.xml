@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ceol_appwidget_layout_player"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/shape_background"
-    android:orientation="vertical"
     >
 
-    <include layout="@layout/album_art"/>
+    <include layout="@layout/album_art"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_gravity="fill_vertical"
+        android:layout_above="@id/glayout2"
+        />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/glayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_margin="0dp"
         android:paddingTop="6dp"
         android:orientation="horizontal"
@@ -60,4 +65,16 @@
             />
 
     </LinearLayout>
-</LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/dimV"
+        android:alpha="0"
+        android:visibility="visible"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:background="#000"
+        />
+
+</RelativeLayout>

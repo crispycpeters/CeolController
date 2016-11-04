@@ -62,8 +62,8 @@ import com.candkpeters.chris.ceol.R;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
-    private static final float DIMMED = 0.9f;
-    private static final float NOTDIMMED = 0;
+    private static final float DIMMED = 0.8f;
+    private static final float TRANSPARENT = 0;
     ProgressDialog waitingDialog;
 
     private Prefs prefs = null;
@@ -179,32 +179,61 @@ public class MainActivity extends AppCompatActivity
             );
 */
 
-            TextView trackTB = (TextView)findViewById(R.id.textTrack);
-            if (trackTB != null) trackTB.setText(ceolDevice.NetServer.getTrack());
+            setTextViewText(R.id.textTrack, ceolDevice.NetServer.getTrack());
 
-            TextView artistTB = (TextView)findViewById(R.id.textArtist);
-            if (artistTB != null) artistTB.setText(ceolDevice.NetServer.getArtist());
+            setTextViewText(R.id.textArtist, ceolDevice.NetServer.getArtist());
 
-            TextView albumTB = (TextView) viewPager.findViewById(R.id.textAlbum);
-            if (albumTB != null) albumTB.setText(ceolDevice.NetServer.getAlbum());
+            setTextViewText(R.id.textAlbum, ceolDevice.NetServer.getAlbum());
 
             String currString = Long.toString(System.currentTimeMillis() % 1000);
-            TextView update = (TextView) viewPager.findViewById(R.id.textUpdate);
-            if (update != null) update.setText(currString);
+            setTextViewText(R.id.textUpdate, currString);
 
-            TextView volume = (TextView)findViewById(R.id.volume);
-            if (volume != null) volume.setText(ceolDevice.getMasterVolumeString());
+            setTextViewText(R.id.volume, ceolDevice.getMasterVolumeString());
 
             ImageView imageV = (ImageView)findViewById(R.id.imageTrack);
             if (imageV != null) imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
 
+            View tunerPanel = findViewById(R.id.tunerPanel);
+            View albumTextPanel = findViewById(R.id.albumTextPanel);
+            switch (ceolDevice.getSIStatus()) {
+                case Unknown:
+                case CD:
+                case AnalogIn:
+                case DigitalIn1:
+                case DigitalIn2:
+                    tunerPanel.setVisibility(View.GONE);
+                    albumTextPanel.setVisibility(View.GONE);
+                    break;
+                case Tuner:
+                    tunerPanel.setVisibility(View.VISIBLE);
+                    albumTextPanel.setVisibility(View.GONE);
+
+                    setTextViewText(R.id.tunerName, ceolDevice.Tuner.getName());
+                    setTextViewText(R.id.tunerFrequency, ceolDevice.Tuner.getFrequency());
+                    if ( ceolDevice.Tuner.getBand().equalsIgnoreCase("FM")) {
+                        setTextViewText(R.id.tunerUnits, "MHz");
+                    } else {
+                        setTextViewText(R.id.tunerUnits, "kHz");
+                    }
+                    setTextViewText(R.id.tunerBand, ceolDevice.Tuner.getBand());
+                    break;
+                case IRadio:
+                case NetServer:
+                case Bluetooth:
+                case Ipod:
+                case Spotify:
+                default:
+                    tunerPanel.setVisibility(View.GONE);
+                    albumTextPanel.setVisibility(View.VISIBLE);
+                    break;
+            }
             updateSIEntries(ceolDevice);
 
             updateMacroButtons();
 
             updatePowerButton(ceolDevice);
 
-            showConnection( ceolDevice.getDeviceStatus() != DeviceStatusType.Connecting ) ;
+            showConnection( ceolDevice.getDeviceStatus() == DeviceStatusType.On ) ;
 
             updateNavigation( ceolDevice);
 
@@ -215,9 +244,20 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void setTextViewText(int tunerName2, String name) {
+        TextView tunerName = (TextView) findViewById(tunerName2);
+        if (tunerName != null) tunerName.setText(name);
+    }
+
     private void updateSIEntries(CeolDevice ceolDevice) {
         Button siB = (Button) findViewById(R.id.siB);
-        if (siB != null) siB.setText(ceolDevice.getSIStatus().name);
+        if (siB != null) {
+            if ( ceolDevice.getDeviceStatus() != DeviceStatusType.On ) {
+                siB.setText(SIStatusType.Unknown.name);
+            } else {
+                siB.setText(ceolDevice.getSIStatus().name);
+            }
+        }
 
         int id = 0;
         switch ( ceolDevice.getSIStatus()) {
@@ -537,21 +577,43 @@ public class MainActivity extends AppCompatActivity
 
         View rootView = findViewById(R.id.dimV);
         if (rootView == null) return;
-        boolean isDimmerVisible = ( rootView.getAlpha() != NOTDIMMED );
+        boolean isFullyDimmed = ( rootView.getAlpha() == DIMMED );
+        boolean isFullyUnDimmed = ( rootView.getAlpha() == TRANSPARENT);
 //        Log.d(TAG, "showConnection: alpha="+rootView.getAlpha()+" isDimmerVisible="+isDimmerVisible);
-        if ( isConnected  ) {
-            if ( isDimmerVisible ) {
+        if ( isFullyUnDimmed ) {
+            if (isConnected) {
+                // Connected - ensure view is removed
                 rootView.setVisibility(View.INVISIBLE);
-                rootView.animate().alpha(NOTDIMMED);
-            }
-        } else {
-            if ( !isDimmerVisible ) {
-                rootView.setAlpha(DIMMED);
-
+            } else {
+                // Animate to disconnected
                 rootView.setVisibility(View.VISIBLE);
                 rootView.animate().alpha(DIMMED);
             }
         }
+        if ( isFullyDimmed) {
+            if (isConnected) {
+                // Animate to connected
+                rootView.setVisibility(View.VISIBLE);
+                rootView.animate().alpha(TRANSPARENT);
+            } else {
+                // Already not connected
+            }
+        }
+/*
+        if ( isFullyDimmed ) {
+            if ( isConnected) {
+            } else {
+                rootView.setVisibility(View.VISIBLE);
+            }
+        }
+        if ( isFullyUnDimmed ) {
+            if ( isConnected) {
+                rootView.setVisibility(View.INVISIBLE);
+            } else {
+                rootView.animate().alpha(DIMMED);
+            }
+        }
+*/
     }
 
     /**

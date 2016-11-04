@@ -6,5 +6,6 @@ package com.candkpeters.ceol.model;
 public enum DeviceStatusType {
     Connecting,
     Standby,
-    Starting, On
+    Starting,
+    On
 }

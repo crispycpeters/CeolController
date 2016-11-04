@@ -42,13 +42,4 @@
 
     </LinearLayout>
 
-    <!--To dim the entire view if not connected-->
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/dimV"
-        android:src="@drawable/shape_background"
-        android:visibility="invisible"
-        />
-
 </FrameLayout>

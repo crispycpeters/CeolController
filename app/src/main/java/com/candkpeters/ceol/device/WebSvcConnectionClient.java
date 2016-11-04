@@ -16,8 +16,8 @@ public final class WebSvcConnectionClient extends UrlConnectionClient {
 
     @Override protected HttpURLConnection openConnection(Request request) throws IOException {
         HttpURLConnection connection = super.openConnection(request);
-        connection.setConnectTimeout(900);
-        connection.setReadTimeout(900);
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
         return connection;
     }
 }

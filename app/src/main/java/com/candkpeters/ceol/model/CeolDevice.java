@@ -126,7 +126,7 @@ public class CeolDevice {
         switch (inputFunc) {
             case "NET":
                 if (!isNetServer()) {
-                    // Not sure yet what the type is yet - assumee NetServer
+                    // Not sure yet what the type is yet - assume NetServer
                     isNetServer = true;
                     siStatusNew = SIStatusType.NetServer;
                 } else {

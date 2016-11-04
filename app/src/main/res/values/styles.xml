@@ -113,4 +113,15 @@
         <item name="android:background">@color/imageOverlay</item>
     </style>
 
+    <style name="AlbumArtText.Large" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/imageOverlay</item>
+    </style>
+
+    <style name="TunerNameText.Large" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/imageOverlay</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

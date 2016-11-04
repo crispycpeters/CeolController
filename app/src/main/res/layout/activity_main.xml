@@ -11,9 +11,10 @@
     android:background="@drawable/shape_background"
     >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
@@ -47,9 +48,10 @@
                 android:layout_height="match_parent"
                 />
             <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+            <!--To dim the entire view if not connected-->
         </android.support.design.widget.AppBarLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
