@@ -15,8 +15,6 @@ import com.candkpeters.ceol.view.CeolIntentFactory;
 import com.candkpeters.ceol.view.CeolService;
 import com.candkpeters.ceol.view.CeolWidgetHelper;
 import com.candkpeters.ceol.view.CeolWidgetHelperMiniPlayer;
-import com.candkpeters.ceol.view.CeolWidgetHelperNavigator;
-import com.candkpeters.ceol.view.CeolWidgetHelperPlayer;
 import com.candkpeters.ceol.view.CeolWidgetHelperToplevel;
 import com.candkpeters.ceol.view.MainActivity;
 import com.candkpeters.ceol.view.Prefs;
@@ -28,8 +26,6 @@ public class CeolWidgetController {
     private static final String TAG = "WidgetController";
     CeolWidgetHelper[] ceolWidgetHelpers = {
             new CeolWidgetHelperToplevel(),
-            new CeolWidgetHelperNavigator(),
-            new CeolWidgetHelperPlayer(),
             new CeolWidgetHelperMiniPlayer()
     };
 

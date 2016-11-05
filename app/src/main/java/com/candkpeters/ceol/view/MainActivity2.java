@@ -230,7 +230,7 @@ public class MainActivity2 extends Activity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.appwidget_layout_player, container, false);
+            View rootView = inflater.inflate(R.layout.layout_player, container, false);
 //            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
 
             return rootView;

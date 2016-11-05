@@ -1,32 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="6dp"
     android:padding="3dp"
     android:background="@drawable/widget_textpanel"
     >
-
-    <ImageView
-        android:id="@+id/imageTrack"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitStart"
-        android:src="@mipmap/ic_launcher"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        />
 
     <RelativeLayout
         android:id="@+id/tunerPanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="6dp"
-        android:padding="3dp"
+        android:layout_gravity="fill_vertical"
         android:background="@drawable/widget_textpanel"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
         >
         <TextView
             android:id="@+id/tunerCentre"
@@ -42,7 +28,6 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/tunerCentre"
             android:text="tunerName"
-            android:layout_weight="1"
             android:background="@drawable/playinfo"
 
             />
@@ -85,44 +70,69 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/albumTextPanel"
+    <RelativeLayout
+        android:id="@+id/netPanel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        android:paddingStart="4dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/widget_textpanel"
+        android:layout_margin="5dp"
         >
 
-        <TextView
-            android:id="@+id/textArtist"
-            android:paddingTop="15dp"
-            style="@style/AlbumArtText.Small"
+        <ImageView
+            android:id="@+id/imageTrack"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitStart"
+            android:src="@mipmap/ic_launcher"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            />
+
+        <LinearLayout
+            android:id="@+id/albumTextPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Artist"
-            android:background="@drawable/playinfo"
-        />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            >
 
-        <TextView
-            android:id="@+id/textAlbum"
-            style="@style/AlbumArtText.Small"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Track"
-        />
+            <TextView
+                android:id="@+id/textArtist"
+                android:paddingTop="15dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                style="@style/AlbumArtText.Small"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Artist"
+                android:background="@drawable/playinfo"
+            />
 
-        <TextView
-            android:id="@+id/textTrack"
-            style="@style/AlbumArtText.Medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Track"
-            android:background="@color/imageOverlay"
-        />
+            <TextView
+                android:id="@+id/textAlbum"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                style="@style/AlbumArtText.Small"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Album"
+            />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textTrack"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="8dp"
+                style="@style/AlbumArtText.Medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Track"
+            />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <!--<TextView
         android:id="@+id/textUpdate"
@@ -136,4 +146,4 @@
         android:background="#00000000"
         />
 -->
-</RelativeLayout>
+</FrameLayout>

@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity
             if (imageV != null) imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
 
             View tunerPanel = findViewById(R.id.tunerPanel);
-            View albumTextPanel = findViewById(R.id.albumTextPanel);
+            View netPanel = findViewById(R.id.netPanel);
             switch (ceolDevice.getSIStatus()) {
                 case Unknown:
                 case CD:
@@ -202,11 +202,11 @@ public class MainActivity extends AppCompatActivity
                 case DigitalIn1:
                 case DigitalIn2:
                     tunerPanel.setVisibility(View.GONE);
-                    albumTextPanel.setVisibility(View.GONE);
+                    netPanel.setVisibility(View.VISIBLE);
                     break;
                 case Tuner:
                     tunerPanel.setVisibility(View.VISIBLE);
-                    albumTextPanel.setVisibility(View.GONE);
+                    netPanel.setVisibility(View.GONE);
 
                     setTextViewText(R.id.tunerName, ceolDevice.Tuner.getName());
                     setTextViewText(R.id.tunerFrequency, ceolDevice.Tuner.getFrequency());
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity
                 case Spotify:
                 default:
                     tunerPanel.setVisibility(View.GONE);
-                    albumTextPanel.setVisibility(View.VISIBLE);
+                    netPanel.setVisibility(View.VISIBLE);
                     break;
             }
             updateSIEntries(ceolDevice);
@@ -577,8 +577,10 @@ public class MainActivity extends AppCompatActivity
 
         View rootView = findViewById(R.id.dimV);
         if (rootView == null) return;
-        boolean isFullyDimmed = ( rootView.getAlpha() == DIMMED );
+
+/*
         boolean isFullyUnDimmed = ( rootView.getAlpha() == TRANSPARENT);
+        boolean isFullyDimmed = ( rootView.getAlpha() == DIMMED );
 //        Log.d(TAG, "showConnection: alpha="+rootView.getAlpha()+" isDimmerVisible="+isDimmerVisible);
         if ( isFullyUnDimmed ) {
             if (isConnected) {
@@ -597,20 +599,6 @@ public class MainActivity extends AppCompatActivity
                 rootView.animate().alpha(TRANSPARENT);
             } else {
                 // Already not connected
-            }
-        }
-/*
-        if ( isFullyDimmed ) {
-            if ( isConnected) {
-            } else {
-                rootView.setVisibility(View.VISIBLE);
-            }
-        }
-        if ( isFullyUnDimmed ) {
-            if ( isConnected) {
-                rootView.setVisibility(View.INVISIBLE);
-            } else {
-                rootView.animate().alpha(DIMMED);
             }
         }
 */
@@ -679,7 +667,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.appwidget_layout_player, container, false);
+            View rootView = inflater.inflate(R.layout.layout_player, container, false);
 
             return rootView;
         }

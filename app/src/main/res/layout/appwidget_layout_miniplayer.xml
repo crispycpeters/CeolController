@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ceol_appwidget_layout_player"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="fill_vertical"
     android:background="@drawable/shape_background"
-    android:orientation="vertical"
     >
 
-    <include layout="@layout/appwidget_power_volume"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/glayout3"
+        >
+        <include layout="@layout/appwidget_power_volume"  />
+    </FrameLayout>
 
-    <include layout="@layout/album_art"/>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:id="@+id/glayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_margin="0dp"
-        android:paddingTop="3dp"
+        android:paddingTop="6dp"
         android:orientation="horizontal"
         android:background="@drawable/shape_background"
         >
-
         <ImageButton
             android:id="@+id/skipBackwardsB"
             android:src="@drawable/ic_av_skip_backward"
@@ -63,4 +66,12 @@
             />
 
     </LinearLayout>
-</LinearLayout>
+
+    <include layout="@layout/album_art"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_above="@id/glayout2"
+        android:layout_below="@id/glayout3"
+        />
+
+</RelativeLayout>

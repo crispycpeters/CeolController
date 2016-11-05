@@ -8,7 +8,13 @@
     android:orientation="vertical"
     >
 
-    <include layout="@layout/album_art"/>
+    <include layout="@layout/appwidget_power_volume"/>
+
+    <include layout="@layout/album_art"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill"
+        android:layout_width="match_parent"
+        />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/glayout2"

@@ -51,6 +51,16 @@
             <!--To dim the entire view if not connected-->
         </android.support.design.widget.AppBarLayout>
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/dimV"
+            android:alpha="0"
+            android:visibility="gone"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:background="#000"
+            />
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
