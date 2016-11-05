@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity
 
             setTextViewText(R.id.textAlbum, ceolDevice.NetServer.getAlbum());
 
-            String currString = Long.toString(System.currentTimeMillis() % 1000);
+            String currString = Long.toString(System.currentTimeMillis() % 100);
             setTextViewText(R.id.textUpdate, currString);
 
             setTextViewText(R.id.volume, ceolDevice.getMasterVolumeString());
