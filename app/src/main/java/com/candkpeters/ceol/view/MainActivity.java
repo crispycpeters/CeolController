@@ -196,13 +196,11 @@ public class MainActivity extends AppCompatActivity
             View tunerPanel = findViewById(R.id.tunerPanel);
             View netPanel = findViewById(R.id.netPanel);
             switch (ceolDevice.getSIStatus()) {
-                case Unknown:
                 case CD:
                 case AnalogIn:
-                case DigitalIn1:
-                case DigitalIn2:
-                    tunerPanel.setVisibility(View.GONE);
-                    netPanel.setVisibility(View.VISIBLE);
+                case NotConnected:
+                    tunerPanel.setVisibility(View.INVISIBLE);
+                    netPanel.setVisibility(View.INVISIBLE);
                     break;
                 case Tuner:
                     tunerPanel.setVisibility(View.VISIBLE);
@@ -210,13 +208,11 @@ public class MainActivity extends AppCompatActivity
 
                     setTextViewText(R.id.tunerName, ceolDevice.Tuner.getName());
                     setTextViewText(R.id.tunerFrequency, ceolDevice.Tuner.getFrequency());
-                    if ( ceolDevice.Tuner.getBand().equalsIgnoreCase("FM")) {
-                        setTextViewText(R.id.tunerUnits, "MHz");
-                    } else {
-                        setTextViewText(R.id.tunerUnits, "kHz");
-                    }
+                    setTextViewText(R.id.tunerUnits, ceolDevice.Tuner.getUnits());
                     setTextViewText(R.id.tunerBand, ceolDevice.Tuner.getBand());
                     break;
+                case DigitalIn1:
+                case DigitalIn2:
                 case IRadio:
                 case NetServer:
                 case Bluetooth:
@@ -252,17 +248,17 @@ public class MainActivity extends AppCompatActivity
     private void updateSIEntries(CeolDevice ceolDevice) {
         Button siB = (Button) findViewById(R.id.siB);
         if (siB != null) {
-            if ( ceolDevice.getDeviceStatus() != DeviceStatusType.On ) {
-                siB.setText(SIStatusType.Unknown.name);
-            } else {
+//            if ( ceolDevice.getDeviceStatus() != DeviceStatusType.On ) {
+//                siB.setText(SIStatusType.NotConnected.name);
+//            } else {
                 siB.setText(ceolDevice.getSIStatus().name);
-            }
+//            }
         }
 
         int id = 0;
         switch ( ceolDevice.getSIStatus()) {
 
-            case Unknown:
+            case NotConnected:
                 break;
             case CD:
                 break;
@@ -578,7 +574,6 @@ public class MainActivity extends AppCompatActivity
         View rootView = findViewById(R.id.dimV);
         if (rootView == null) return;
 
-/*
         boolean isFullyUnDimmed = ( rootView.getAlpha() == TRANSPARENT);
         boolean isFullyDimmed = ( rootView.getAlpha() == DIMMED );
 //        Log.d(TAG, "showConnection: alpha="+rootView.getAlpha()+" isDimmerVisible="+isDimmerVisible);
@@ -601,7 +596,6 @@ public class MainActivity extends AppCompatActivity
                 // Already not connected
             }
         }
-*/
     }
 
     /**

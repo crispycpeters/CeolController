@@ -21,6 +21,14 @@ public class CeolDeviceTuner {
         return Band;
     }
 
+    public String getUnits() {
+        if ( getBand().equalsIgnoreCase("FM")) {
+            return "MHz";
+        } else {
+            return "kHz";
+        }
+    }
+
     public void setBand(String band) {
         Band = band;
     }

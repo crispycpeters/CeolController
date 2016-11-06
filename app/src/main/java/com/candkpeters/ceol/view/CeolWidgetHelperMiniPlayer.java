@@ -2,6 +2,7 @@ package com.candkpeters.ceol.view;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.candkpeters.ceol.device.CeolCommandManager;
@@ -36,7 +37,7 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
         setOnClickCommandIntent(context, appWidgetId, views, R.id.skipForwardsB, new CommandSkipForward());
         setOnClickCommandIntent(context, appWidgetId, views, R.id.playpauseB, new CommandControlToggle());
         setOnClickCommandIntent(context, appWidgetId, views, R.id.stopB, new CommandControlStop());
-        setOnClickCommandIntent(context, appWidgetId, views, R.id.imageTrack, new CommandApp());
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.album_art, new CommandApp());
         return views;
     }
 
@@ -63,6 +64,38 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
         views.setTextViewText(R.id.tunerName, ceolDevice.Tuner.getName());
         views.setTextViewText(R.id.tunerFrequency, ceolDevice.Tuner.getFrequency());
         views.setTextViewText(R.id.siB, ceolDevice.getSIStatus().name);
+
+        switch ( ceolDevice.getSIStatus()) {
+
+            case Tuner:
+                views.setViewVisibility(R.id.netPanel, View.INVISIBLE);
+                views.setViewVisibility(R.id.tunerPanel, View.VISIBLE);
+                views.setViewVisibility(R.id.dimV, View.INVISIBLE);
+                break;
+            case NotConnected:
+                views.setViewVisibility(R.id.netPanel, View.INVISIBLE);
+                views.setViewVisibility(R.id.tunerPanel, View.INVISIBLE);
+                views.setViewVisibility(R.id.dimV, View.VISIBLE);
+                break;
+            case CD:
+            case AnalogIn:
+                views.setViewVisibility(R.id.netPanel, View.INVISIBLE);
+                views.setViewVisibility(R.id.tunerPanel, View.INVISIBLE);
+                views.setViewVisibility(R.id.dimV, View.INVISIBLE);
+                break;
+            default:
+            case IRadio:
+            case DigitalIn1:
+            case DigitalIn2:
+            case NetServer:
+            case Bluetooth:
+            case Ipod:
+            case Spotify:
+                views.setViewVisibility(R.id.netPanel, View.VISIBLE);
+                views.setViewVisibility(R.id.tunerPanel, View.INVISIBLE);
+                views.setViewVisibility(R.id.dimV, View.INVISIBLE);
+                break;
+        }
 
     }
 

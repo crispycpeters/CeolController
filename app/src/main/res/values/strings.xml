@@ -82,6 +82,6 @@
     <string name="si_bluetooth">Bluetooth</string>
     <string name="power_toggle">Power Toggle</string>
     <string name="volume_down">Volume down</string>
-
+    <string name="not_connected">Not Connected</string>
 
 </resources>

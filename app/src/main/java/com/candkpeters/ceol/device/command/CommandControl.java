@@ -29,7 +29,7 @@ public class CommandControl extends Command {
                 return ceolDevice.getPlayStatus() == playStatusType;
             case IRadio:
             case AnalogIn:
-            case Unknown:
+            case NotConnected:
             case CD:
             case Tuner:
             default:
@@ -43,7 +43,7 @@ public class CommandControl extends Command {
 
         switch (ceolDevice.getSIStatus()) {
 
-            case Unknown:
+            case NotConnected:
                 break;
             case CD:
                 // TODO

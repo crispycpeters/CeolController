@@ -23,7 +23,13 @@ public interface WebSvcApiService {
 */
 
     @GET("/goform/formMainZone_MainZoneXmlStatusLite.xml")
+    WebSvcHttpStatusLiteResponse appStatusLite();
+
+    @GET("/goform/formMainZone_MainZoneXmlStatusLite.xml")
     void appStatusLiteAsync(Callback<WebSvcHttpStatusLiteResponse> cb);
+
+    @POST("/goform/AppCommand.xml")
+    WebSvcHttpAppCommandResponse appCommand(@Body TypedString appRequest);
 
     @POST("/goform/AppCommand.xml")
     void appCommandAsync(@Body TypedString appRequest, Callback<WebSvcHttpAppCommandResponse> cb);

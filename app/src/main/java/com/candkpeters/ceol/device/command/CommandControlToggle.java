@@ -25,7 +25,7 @@ public class CommandControlToggle extends CommandControl {
     public void execute() {
 
         switch (ceolDevice.getSIStatus()) {
-            case Unknown:
+            case NotConnected:
                 break;
             case CD:
                 // TODO

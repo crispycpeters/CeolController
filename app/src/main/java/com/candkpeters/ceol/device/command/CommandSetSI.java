@@ -15,7 +15,7 @@ public class CommandSetSI extends Command {
     }
 
     public CommandSetSI() {
-        this(SIStatusType.Unknown);
+        this(SIStatusType.NotConnected);
     }
 
     public SIStatusType getValue() {
@@ -31,7 +31,7 @@ public class CommandSetSI extends Command {
     public void execute() {
         String webCommand;
         switch ( value ) {
-            case Unknown:
+            case NotConnected:
                 webCommand = null;
                 break;
             case CD:

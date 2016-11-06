@@ -16,10 +16,10 @@ public class UIThreadUpdater {
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private Runnable repeatedRunnable;
-    private Runnable oneoffRunnable;
+//    private Runnable oneoffRunnable;
     private final int repeatRateMsecs;
     private long lastUpdate = System.currentTimeMillis();
-    private boolean isRunning = false;
+//    private boolean isRunning = false;
 
     /**
      * Creates an UIUpdater object, that can be used to
@@ -45,17 +45,16 @@ public class UIThreadUpdater {
                 // Run the passed runnable
                 uiUpdater.run();
                 // Re-run it after the update interval
-                mHandler.postDelayed(this, UIThreadUpdater.this.repeatRateMsecs);
+                // Will be done within monitor
+//                mHandler.postDelayed(this, UIThreadUpdater.this.repeatRateMsecs);
             }
         };
-        oneoffRunnable = new Runnable() {
-            @Override
-            public void run() {
-                lastUpdate = System.currentTimeMillis();
-                // Run the passed runnable
-                uiUpdater.run();
-            }
-        };
+    }
+
+    public synchronized void next() {
+        mHandler.removeCallbacks(repeatedRunnable);
+        // TODO Could make this calculate time when last update was initiated.
+        mHandler.postDelayed(repeatedRunnable, repeatRateMsecs);
     }
 
     /**
@@ -63,19 +62,18 @@ public class UIThreadUpdater {
      * adds the callback to the handler).
      */
     public synchronized void startUpdates(){
-        if (!isRunning) {
-            stopUpdates();
-            mHandler.post(repeatedRunnable);
-        }
-        isRunning = true;
+        mHandler.removeCallbacks(repeatedRunnable);
+        mHandler.post(repeatedRunnable);
     }
 
     public synchronized void fireOnce(){
-        mHandler.post(oneoffRunnable);
+        mHandler.removeCallbacks(repeatedRunnable);
+        mHandler.post(repeatedRunnable);
     }
 
     public synchronized void fireOnce( int msecWait ){
-        mHandler.postDelayed(oneoffRunnable,msecWait);
+        mHandler.removeCallbacks(repeatedRunnable);
+        mHandler.postDelayed(repeatedRunnable,msecWait);
     }
 
     /**
@@ -84,11 +82,9 @@ public class UIThreadUpdater {
      */
     public synchronized void stopUpdates(){
         mHandler.removeCallbacks(repeatedRunnable);
-        mHandler.removeCallbacks(oneoffRunnable);
-        isRunning = false;
     }
 
-    public synchronized boolean isRunning() {
-        return isRunning;
-    }
+//    public synchronized boolean isRunning() {
+//        return isRunning;
+//    }
 }

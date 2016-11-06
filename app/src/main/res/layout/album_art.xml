@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:padding="3dp"
     android:background="@drawable/widget_textpanel"
+    android:id="@+id/album_art"
     >
 
     <RelativeLayout
@@ -28,8 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/tunerCentre"
             android:text="tunerName"
-            android:background="@drawable/playinfo"
-
             />
         <TextView
             android:id="@+id/tunerFrequency"
@@ -39,7 +38,6 @@
             android:layout_height="wrap_content"
             android:text="100.00"
             android:textAlignment="viewEnd"
-            android:background="@drawable/playinfo"
             android:layout_below="@id/tunerName"
             android:layout_alignEnd="@id/tunerCentre"
             />
@@ -51,7 +49,6 @@
             android:text="MHz"
             android:paddingStart="3dp"
             android:textAlignment="textStart"
-            android:background="@drawable/playinfo"
             android:layout_toEndOf="@id/tunerFrequency"
             android:layout_alignBaseline="@id/tunerFrequency"
             />
@@ -63,7 +60,6 @@
             android:paddingStart="10dp"
             android:text="FM"
             android:textAlignment="textStart"
-            android:background="@drawable/playinfo"
             android:layout_toEndOf="@id/tunerUnits"
             android:layout_alignBaseline="@id/tunerFrequency"
             />

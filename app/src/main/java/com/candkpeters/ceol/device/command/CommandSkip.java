@@ -26,7 +26,7 @@ public class CommandSkip extends CommandBaseDirection {
         String commandString = null;
         switch (ceolDevice.getSIStatus()) {
 
-            case Unknown:
+            case NotConnected:
                 break;
             case CD:
                 // TODO

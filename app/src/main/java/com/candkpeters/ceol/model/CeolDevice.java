@@ -21,7 +21,7 @@ public class CeolDevice {
     }
 
     // Common
-    private SIStatusType siStatus = SIStatusType.Unknown;
+    private SIStatusType siStatus = SIStatusType.NotConnected;
     private int masterVolume = 0;
     private boolean isMuted = false;
     private PlayStatusType playStatus = PlayStatusType.Unknown;
@@ -29,6 +29,8 @@ public class CeolDevice {
     public CeolDeviceNetServer NetServer;
     public CeolDeviceTuner Tuner;
     private long appStartedMsecs;
+    private static final int REPEATRATE_MSECS = 900;
+    private static final int REPEATRATE_MSECS_SPOTIFY = 8000;
 
     private CeolDevice() {
         NetServer = new CeolDeviceNetServer();
@@ -54,24 +56,24 @@ public class CeolDevice {
             switch (this.deviceStatus) {
                 case Connecting:
                     // We don't know how long the device has been on, just assume long enough
-                    this.deviceStatus = DeviceStatusType.On;
+                    setDeviceStatus(DeviceStatusType.On);
                     deviceOnTimeMsecs = now - wakeUpPeriodMsecs;
                     break;
                 case Standby:
                     // We are switching on. Start a timer before we try to communicate
                     deviceOnTimeMsecs = now;
-                    this.deviceStatus = DeviceStatusType.Starting;
+                    setDeviceStatus(DeviceStatusType.Starting);
                     break;
                 case Starting:
                     if ((now - deviceOnTimeMsecs) > wakeUpPeriodMsecs) {
-                        this.deviceStatus = DeviceStatusType.On;
+                        setDeviceStatus(DeviceStatusType.On);
                     }
                     break;
                 case On:
                     break;
             }
         } else {
-            this.deviceStatus = DeviceStatusType.Standby;
+            setDeviceStatus(DeviceStatusType.Standby);
         }
     }
 
@@ -178,7 +180,7 @@ public class CeolDevice {
 
 /*
         if ( newSiStatus == SIStatusType.NetServer &&
-                (siStatus != SIStatusType.Unknown && siStatus != SIStatusType.NetServer) ) {
+                (siStatus != SIStatusType.NotConnected && siStatus != SIStatusType.NetServer) ) {
             // We are trying to switch to NetServer
             if (netServerOnTimeMsecs == 0) {
                 // Start timer but don't change setting
@@ -203,7 +205,7 @@ public class CeolDevice {
             case Tuner:
                 isNetServer = false;
                 break;
-            case Unknown:
+            case NotConnected:
             case DigitalIn1:
             case DigitalIn2:
             case Bluetooth:

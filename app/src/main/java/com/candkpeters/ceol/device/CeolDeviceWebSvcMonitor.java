@@ -14,7 +14,10 @@ import com.candkpeters.ceol.model.CeolDeviceTuner;
 
 import org.simpleframework.xml.util.Dictionary;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import retrofit.Callback;
@@ -100,6 +103,13 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
         activeThreadUpdater.startUpdates();
     }
 
+    private void initiateDelayedUpdate() {
+        if ( activeThreadUpdater == null ) {
+            activeThreadUpdater = new UIThreadUpdater(this, REPEATRATE_MSECS);
+        }
+        activeThreadUpdater.next();
+    }
+
     private void stopActiveUpdates() {
         if (activeThreadUpdater != null) {
             activeThreadUpdater.stopUpdates();
@@ -114,47 +124,79 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
         checkBackgroundUpdate();
     }
 
-    public void getStatus() {
+    public void getStatus_Sync() {
+        try {
+            WebSvcHttpStatusLiteResponse webSvcHttpStatusLiteResponse = webSvcApiService.appStatusLite();
+            updateDeviceStatusLite(webSvcHttpStatusLiteResponse);
+            getStatus2();
+        } catch (RetrofitError retrofitError) {
+            Log.w(TAG, "Could not connect to CEOL: " + retrofitError.getMessage());
+            updateDeviceErrorStatus();
+            checkBackgroundUpdate();
+        }
+    }
+
+    private void logdTime( String tag, String msg) {
+        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+        Log.d(tag, currentDateTimeString + ": " + msg);
+    }
+
+    public void getStatus_Async() {
         webSvcApiService.appStatusLiteAsync(new Callback<WebSvcHttpStatusLiteResponse>() {
             @Override
             public void success(WebSvcHttpStatusLiteResponse webSvcHttpStatusLiteResponse, Response response) {
                 //Log.d(TAG, "success: Got successful response: " + response.getBody());
                 //Log.d(TAG, "success: power: " + webSvcHttpAppCommandResponse.power);
+                logdTime(TAG, "StatusLite success: ");
                 updateDeviceStatusLite(webSvcHttpStatusLiteResponse);
-                getStatus2();
+                getStatus2_Async();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.w(TAG, "Could not connect to CEOL: " + error);
+                logdTime(TAG, "CEOL StatusLite failed: " + error);
                 updateDeviceErrorStatus();
-                checkBackgroundUpdate();
+                initiateDelayedUpdate();
             }
         });
     }
 
     public void getStatus2() {
         TypedString statusQuery = determineStatusQuery(ceolDevice.getSIStatus());
+        try {
+            WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse = webSvcApiService.appCommand(statusQuery);
+            if (webSvcHttpAppCommandResponse.texts == null) {
+//                    Log.d(TAG, "success: Hmm - texts is null");
+            } else {
+                //Log.d(TAG, "success: title: " + webSvcHttpAppCommandResponse.texts.get("title"));
+                logdTime(TAG, "AppCommand success: ");
+            }
+            updateDeviceStatus(webSvcHttpAppCommandResponse);
+            checkBackgroundUpdate();
+        } catch ( RetrofitError retrofitError) {
+            logdTime(TAG, "CEOL AppCommand failed: " + retrofitError.getMessage());
+            updateDeviceErrorStatus();
+            checkBackgroundUpdate();
+        }
+    }
+
+    public void getStatus2_Async() {
+        TypedString statusQuery = determineStatusQuery(ceolDevice.getSIStatus());
         webSvcApiService.appCommandAsync(statusQuery, new Callback<WebSvcHttpAppCommandResponse>() {
             @Override
             public void success(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse, Response response) {
                 //Log.d(TAG, "success: Got successful response: " + response.getBody());
                 //Log.d(TAG, "success: power: " + webSvcHttpAppCommandResponse.power);
-                if (webSvcHttpAppCommandResponse.texts == null) {
-//                    Log.d(TAG, "success: Hmm - texts is null");
-                } else {
-                    //Log.d(TAG, "success: title: " + webSvcHttpAppCommandResponse.texts.get("title"));
-                    Log.d(TAG, "AppCommand success: ");
-                }
+                logdTime(TAG, "CEOL AppCommand success: ");
                 updateDeviceStatus(webSvcHttpAppCommandResponse);
-                checkBackgroundUpdate();
+                initiateDelayedUpdate();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.w(TAG, "Could not connect to CEOL: " + error);
+                logdTime(TAG, "CEOL AppCommand error: " + error);
                 updateDeviceErrorStatus();
-                checkBackgroundUpdate();
+                initiateDelayedUpdate();
             }
         });
     }
@@ -217,7 +259,8 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     private void updateDeviceErrorStatus() {
         synchronized (ceolDevice) {
             ceolDevice.setDeviceStatus(DeviceStatusType.Connecting);
-//            ceolDevice.setSIStatus(SIStatusType.Unknown);
+            ceolDevice.setSIStatus(SIStatusType.NotConnected);
+//            ceolDevice.setSIStatus(SIStatusType.NotConnected);
         }
         notifyObservers();
 //        onCeolStatusChangedListener.onCeolStatusChanged(ceolDevice);
@@ -286,7 +329,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                 } else {
                     switch (ceolDevice.getSIStatus()) {
 
-                        case Unknown:
+                        case NotConnected:
                             break;
                         case CD:
                             // TODO
@@ -322,7 +365,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 
     @Override
     public void run() {
-        getStatus();
+        getStatus_Async();
     }
 
     @Override

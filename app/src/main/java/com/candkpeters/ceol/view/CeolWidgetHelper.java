@@ -35,6 +35,7 @@ public abstract class CeolWidgetHelper extends AppWidgetProvider {
         }
 
         updateWidgetsFirstTime(context, "Widget updated");
+        startService(context,0);
     }
 
     protected PendingIntent createPendingIntent(Context context, int appWidgetId, Intent intent) {
@@ -61,7 +62,6 @@ public abstract class CeolWidgetHelper extends AppWidgetProvider {
         views.setOnClickPendingIntent(resId, clickPendingIntent);
     }
 
-/*
     public void startService(Context context, int appWidgetId) {
         Intent intent = new Intent();
         intent.setAction(CeolService.START_SERVICE);
@@ -69,7 +69,6 @@ public abstract class CeolWidgetHelper extends AppWidgetProvider {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         context.startService(intent);
     }
-*/
 
     protected abstract RemoteViews buildRemoteView(Context context, int widgetId);
 
