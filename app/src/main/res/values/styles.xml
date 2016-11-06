@@ -64,10 +64,12 @@
     <style name="SIButton">
         <item name="android:textColor">#000</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:layout_width">@dimen/av_button_width_large</item>
-        <item name="android:layout_height">@dimen/av_button_size_minimum</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/av_button_size_standard</item>
         <item name="android:layout_margin">@dimen/av_button_margin</item>
         <item name="android:background">@drawable/button_whitecircle_states</item>
+        <item name="android:maxWidth">@dimen/av_button_size_si</item>
+        <item name="android:minWidth">@dimen/av_button_width_large</item>
     </style>
     <style name="SIButton.Small" >
         <item name="android:textColor">#000</item>
