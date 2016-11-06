@@ -39,10 +39,11 @@ public abstract class CeolWidgetProvider extends AppWidgetProvider {
             this.prefs = new Prefs(context);
         }
 
+        startService(context, 0);
         ceolWidgetHelper.updateWidgetsFirstTime(context, "Widget updated");
     }
 
-/*
+
     public void startService(Context context, int appWidgetId) {
         Intent intent = new Intent();
         intent.setAction(CeolService.START_SERVICE);
@@ -50,6 +51,6 @@ public abstract class CeolWidgetProvider extends AppWidgetProvider {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         context.startService(intent);
     }
-*/
+
 
 }

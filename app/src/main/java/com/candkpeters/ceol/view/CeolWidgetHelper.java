@@ -15,17 +15,20 @@ import com.candkpeters.ceol.device.command.Command;
 /**
  * Created by crisp on 22/03/2016.
  */
-public abstract class CeolWidgetHelper extends AppWidgetProvider {
+public abstract class CeolWidgetHelper /*extends AppWidgetProvider*/ {
 
     private static final String TAG = "WidgetProvider";
     private Prefs prefs;
     boolean isWaiting = false;
 
     // On creation of first widget
+/*
     public void onEnabled(Context context) {
         super.onEnabled(context);
     }
+*/
 
+/*
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
 
@@ -37,6 +40,7 @@ public abstract class CeolWidgetHelper extends AppWidgetProvider {
         updateWidgetsFirstTime(context, "Widget updated");
         startService(context,0);
     }
+*/
 
     protected PendingIntent createPendingIntent(Context context, int appWidgetId, Intent intent) {
         intent.setClass(context, CeolService.class);
