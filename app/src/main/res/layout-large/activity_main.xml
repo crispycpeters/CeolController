@@ -59,15 +59,12 @@
                 android:id="@+id/dimV"
                 android:alpha="0"
                 android:visibility="gone"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
                 android:background="#000"
                 />
         </FrameLayout>
         <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
         <!--To dim the entire view if not connected-->
     </android.support.design.widget.AppBarLayout>
-
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

@@ -82,6 +82,7 @@
     <string name="si_bluetooth">Bluetooth</string>
     <string name="power_toggle">Power Toggle</string>
     <string name="volume_down">Volume down</string>
-    <string name="not_connected">Not Connected</string>
+    <string name="not_connected">CEOL Controller\nNot Connected</string>
+    <string name="ceol_controller">CEOL Controller</string>
 
 </resources>

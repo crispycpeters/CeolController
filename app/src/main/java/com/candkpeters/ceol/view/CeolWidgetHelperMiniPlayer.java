@@ -31,6 +31,7 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
     protected RemoteViews buildRemoteView(Context context, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout_miniplayer);
         setOnClickCommandIntent(context, appWidgetId, views, R.id.powerB, new CommandSetPowerToggle());
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.powerB2, new CommandSetPowerToggle());
         setOnClickCommandIntent(context, appWidgetId, views, R.id.volumeupB, new CommandMasterVolumeUp());
         setOnClickCommandIntent(context, appWidgetId, views, R.id.volumedownB, new CommandMasterVolumeDown());
         setOnClickCommandIntent(context, appWidgetId, views, R.id.skipBackwardsB, new CommandSkipBackward());
@@ -97,6 +98,27 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
                 break;
         }
 
+        switch ( ceolDevice.getDeviceStatus()) {
+
+            case Connecting:
+                views.setViewVisibility(R.id.waitingPB, View.GONE);
+                break;
+            case Standby:
+                views.setViewVisibility(R.id.powerV, View.VISIBLE);
+                views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power_back);
+                views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_back);
+                views.setViewVisibility(R.id.waitingPB, View.GONE);
+                break;
+            case Starting:
+                views.setViewVisibility(R.id.powerV, View.VISIBLE);
+                views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_back);
+                views.setViewVisibility(R.id.waitingPB, View.VISIBLE);
+                break;
+            case On:
+                views.setViewVisibility(R.id.powerV, View.GONE);
+                views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power);
+                break;
+        }
     }
 
 }

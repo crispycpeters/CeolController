@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity
 
             updatePowerButton(ceolDevice);
 
-            showConnection( ceolDevice.getDeviceStatus() == DeviceStatusType.On ) ;
+            showConnection( ceolDevice.getDeviceStatus() != DeviceStatusType.Connecting ) ;
 
             updateNavigation( ceolDevice);
 
@@ -574,13 +574,13 @@ public class MainActivity extends AppCompatActivity
         View rootView = findViewById(R.id.dimV);
         if (rootView == null) return;
 
-        boolean isFullyUnDimmed = ( rootView.getAlpha() == TRANSPARENT);
+        boolean isFullyUnDimmed = ( rootView.getAlpha() == TRANSPARENT || rootView.getVisibility() != View.VISIBLE );
         boolean isFullyDimmed = ( rootView.getAlpha() == DIMMED );
-//        Log.d(TAG, "showConnection: alpha="+rootView.getAlpha()+" isDimmerVisible="+isDimmerVisible);
+        Log.d(TAG, "showConnection: alpha="+rootView.getAlpha()+" isFullyUnDimmed="+isFullyUnDimmed + " isFullyDimmed="+isFullyDimmed);
         if ( isFullyUnDimmed ) {
             if (isConnected) {
                 // Connected - ensure view is removed
-                rootView.setVisibility(View.INVISIBLE);
+                rootView.setVisibility(View.GONE);
             } else {
                 // Animate to disconnected
                 rootView.setVisibility(View.VISIBLE);
