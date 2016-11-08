@@ -575,7 +575,7 @@ public class MainActivity extends AppCompatActivity
         if (rootView == null) return;
 
         boolean isFullyUnDimmed = ( rootView.getAlpha() == TRANSPARENT || rootView.getVisibility() != View.VISIBLE );
-        boolean isFullyDimmed = ( rootView.getAlpha() == DIMMED );
+        boolean isFullyDimmed = ( rootView.getAlpha() == DIMMED || rootView.getVisibility() == View.VISIBLE );
         Log.d(TAG, "showConnection: alpha="+rootView.getAlpha()+" isFullyUnDimmed="+isFullyUnDimmed + " isFullyDimmed="+isFullyDimmed);
         if ( isFullyUnDimmed ) {
             if (isConnected) {
