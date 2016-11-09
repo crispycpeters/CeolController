@@ -111,8 +111,8 @@ public class CeolController implements View.OnClickListener {
         setClickHandler( rootView, R.id.performMacro3B, new CommandMacro(3));
         setClickHandler( rootView, R.id.volumeupB, new CommandMasterVolumeUp());
         setClickHandler( rootView, R.id.volumedownB, new CommandMasterVolumeDown());
-        setClickHandler( rootView, R.id.fastBackwardsB, new CommandFastBackward());
-        setClickHandler( rootView, R.id.fastForwardsB, new CommandFastForward());
+//        setClickHandler( rootView, R.id.fastBackwardsB, new CommandFastBackward());
+//        setClickHandler( rootView, R.id.fastForwardsB, new CommandFastForward());
         setClickHandler( rootView, R.id.skipBackwardsB, new CommandSkipBackward());
         setClickHandler( rootView, R.id.skipForwardsB, new CommandSkipForward());
         setClickHandler( rootView, R.id.playpauseB, new CommandControlToggle());

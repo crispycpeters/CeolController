@@ -39,28 +39,56 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 >
-                <android.support.design.widget.TabLayout
-                    android:id="@+id/tabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
 
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/container"
-                    android:layout_width="match_parent"
+                <include layout="@layout/layout_navigator"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    />
+                    android:layout_weight="1"/>
+
+                <include layout="@layout/layout_player"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"/>
+
             </LinearLayout>
 
-            <ImageView
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/dimV"
-                android:alpha="0"
                 android:visibility="gone"
-                android:background="#000"
+                android:background="@drawable/shape_background"
+                android:gravity="center"
+                android:text="@string/not_connected"
                 />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/powerV"
+                android:visibility="invisible"
+                android:background="@drawable/shape_background"
+                >
+                <ImageButton
+                    android:id="@+id/powerB2"
+                    android:src="@drawable/ic_av_power"
+                    style="@style/PowerButton"
+                    android:onClick="buttonClick"
+                    android:contentDescription="@string/power_toggle"
+                    android:layout_centerInParent="true"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ceol_controller"
+                    style="@style/WhiteText"
+                    android:layout_above="@id/powerB2"
+                    android:layout_centerHorizontal="true"
+                    />
+            </RelativeLayout>
+
         </FrameLayout>
         <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
         <!--To dim the entire view if not connected-->

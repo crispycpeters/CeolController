@@ -76,16 +76,12 @@ public class MainActivity extends AppCompatActivity
      * may be best to switch to a
      * {@link FragmentStatePagerAdapter}.
      */
-    private SectionsPagerAdapter sectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager viewPager;
 
     private static CeolController ceolController;
 
     private Animation powerAnimation;
+    private boolean isLargeDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,18 +93,22 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+//        prefs = new Prefs(this);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
         // Set up the ViewPager with the sections adapter.
-        viewPager = (ViewPager) findViewById(R.id.container);
-        viewPager.setAdapter(sectionsPagerAdapter);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
+        if ( viewPager != null) {
+            isLargeDevice=false;
+            SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+            viewPager.setAdapter(sectionsPagerAdapter);
+            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+            tabLayout.setupWithViewPager(viewPager);
 
-        prefs = new Prefs(this);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        } else {
+            isLargeDevice=true;
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageTrack);
+//        ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageTrack);
 //        if (imageV != null) imageV.setMinimumHeight();width(ceolDevice.NetServer.getImageBitmap());
 
         powerAnimation = new AlphaAnimation(1,0);
@@ -150,7 +150,6 @@ public class MainActivity extends AppCompatActivity
         powerAnimation.setRepeatMode(Animation.REVERSE);
 
     }
-
 
     private void setupWaitingDialog() {
         waitingDialog = new ProgressDialog(this);
@@ -171,13 +170,6 @@ public class MainActivity extends AppCompatActivity
         try {
 
             hideWaitingDialog();
-/*
-            TextView textView = (TextView) viewPager.findViewById(R.id.title);
-            textView.setText("Status=" + ceolDevice.getDeviceStatus() +
-                            " SI=" + ceolDevice.getSIStatus() + " Vol=" + ceolDevice.getMasterVolume() +
-                            " ScridValue=" + ceolDevice.NetServer.getScridValue()
-            );
-*/
 
             setTextViewText(R.id.textTrack, ceolDevice.NetServer.getTrack());
 
@@ -575,7 +567,7 @@ public class MainActivity extends AppCompatActivity
         if (rootView == null) return;
 
         boolean isFullyUnDimmed = ( rootView.getAlpha() == TRANSPARENT || rootView.getVisibility() != View.VISIBLE );
-        boolean isFullyDimmed = ( rootView.getAlpha() == DIMMED );
+        boolean isFullyDimmed = ( rootView.getAlpha() == DIMMED && rootView.getVisibility() == View.VISIBLE);
         Log.d(TAG, "showConnection: alpha="+rootView.getAlpha()+" isFullyUnDimmed="+isFullyUnDimmed + " isFullyDimmed="+isFullyDimmed);
         if ( isFullyUnDimmed ) {
             if (isConnected) {
@@ -638,7 +630,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
+            View rootView = inflater.inflate(R.layout.tablayout_navigator, container, false);
 //            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
 
             return rootView;
@@ -661,7 +653,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.layout_player, container, false);
+            View rootView = inflater.inflate(R.layout.tablayout_player, container, false);
 
             return rootView;
         }
