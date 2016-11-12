@@ -84,5 +84,9 @@
     <string name="volume_down">Volume down</string>
     <string name="not_connected">CEOL Controller\nNot Connected</string>
     <string name="ceol_controller">CEOL Controller</string>
+    <string name="si_analog">Analog In</string>
+    <string name="si_cd">CD</string>
+    <string name="si_digital1">Digital In 1</string>
+    <string name="si_digital2">Digital In 2</string>
 
 </resources>

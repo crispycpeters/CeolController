@@ -701,18 +701,48 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         Command command = null;
 
-        if (id == R.id.nav_tuner) {
-            command = new CommandSetSI(SIStatusType.Tuner);
-        } else if (id == R.id.nav_server) {
-            command = new CommandSetSI(SIStatusType.NetServer);
+        SIStatusType siStatusType;
+        switch (id) {
+            case R.id.nav_tuner:
+                siStatusType = SIStatusType.Tuner;
+                break;
+            case R.id.nav_server:
+                siStatusType = SIStatusType.NetServer;
+                break;
+            case R.id.nav_bluetooth:
+                siStatusType = SIStatusType.Bluetooth;
+                break;
+            case R.id.nav_iradio:
+                siStatusType = SIStatusType.IRadio;
+                break;
+            case R.id.nav_usb:
+                siStatusType = SIStatusType.Ipod;
+                break;
+            case R.id.nav_analog:
+                siStatusType = SIStatusType.AnalogIn;
+                break;
+            case R.id.nav_cd:
+                siStatusType = SIStatusType.CD;
+                break;
+            case R.id.nav_digital1:
+                siStatusType = SIStatusType.DigitalIn1;
+                break;
+            case R.id.nav_digital2:
+                siStatusType = SIStatusType.DigitalIn2;
+                break;
+            default:
+                siStatusType = SIStatusType.NotConnected;
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-        if (command != null) {
+        if (siStatusType != SIStatusType.NotConnected) {
+            command = new CommandSetSI(siStatusType);
             ceolController.performCommand(command);
         }
+
         return true;
     }
 

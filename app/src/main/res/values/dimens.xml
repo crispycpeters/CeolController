@@ -5,13 +5,17 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
-    <dimen name="av_button_margin">3dp</dimen>
-    <dimen name="av_button_size_minimum">30dp</dimen>
-    <dimen name="av_button_size_standard">40dp</dimen>
+    <dimen name="av_button_margin">5dp</dimen>
+    <dimen name="av_button_margin_si">8dp</dimen>
+    <dimen name="av_button_size_small">30dp</dimen>
+    <dimen name="av_button_size_standard">45dp</dimen>
     <dimen name="av_button_size_medium">60dp</dimen>
     <dimen name="av_button_size_maximum">90dp</dimen>
     <dimen name="av_button_size_si">200dp</dimen>
     <dimen name="av_button_width_large">120dp</dimen>
+    <dimen name="av_button_margin_standard">4dp</dimen>
+
+    <dimen name="power_bar_height">56dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="nav_header_vertical_spacing">16dp</dimen>

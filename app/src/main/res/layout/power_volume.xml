@@ -2,15 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/glayout3"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/av_button_size_standard"
+    android:layout_height="wrap_content"
     android:layout_margin="0dp"
-    android:padding="3dp"
     android:orientation="horizontal"
     android:background="@drawable/shape_background"
+    android:gravity="fill_vertical"
     >
     <ImageButton
         android:id="@+id/powerB"
         android:src="@drawable/ic_av_power"
+        android:layout_height="@dimen/av_button_size_standard"
+        android:layout_width="@dimen/av_button_size_standard"
+        android:layout_margin="@dimen/av_button_margin_standard"
         style="@style/PowerButton"
         android:onClick="buttonClick"
         android:contentDescription="@string/power_toggle"
@@ -18,6 +21,8 @@
 
     <Button
         android:id="@+id/siB"
+        android:layout_height="@dimen/av_button_size_standard"
+        android:layout_margin="@dimen/av_button_margin_standard"
         style="@style/SIButton"
         android:onClick="siBClick"
         android:text="Music server"
@@ -27,16 +32,19 @@
         android:id="@+id/volumedownB"
         android:src="@drawable/ic_av_down"
         style="@style/WhiteCircleButton"
+        android:layout_height="@dimen/av_button_size_standard"
+        android:layout_width="@dimen/av_button_size_standard"
+        android:layout_margin="@dimen/av_button_margin_standard"
         android:onClick="buttonClick"
-        android:contentDescription="@string/volume_down"
         />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/av_button_size_standard"
+        android:layout_margin="@dimen/av_button_margin_standard"
         android:layout_gravity="center_vertical"
         android:id="@+id/volume"
-        style="@style/VolumeText"
+        style="@style/VolumeText.Medium"
         android:text="00"
         android:onClick="buttonClick"
         />
@@ -45,6 +53,9 @@
         android:id="@+id/volumeupB"
         android:src="@drawable/ic_av_up"
         style="@style/WhiteCircleButton"
+        android:layout_height="@dimen/av_button_size_standard"
+        android:layout_width="@dimen/av_button_size_standard"
+        android:layout_margin="@dimen/av_button_margin_standard"
         android:onClick="buttonClick"
         />
 

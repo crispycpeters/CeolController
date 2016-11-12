@@ -9,25 +9,37 @@
             android:id="@+id/nav_server"
             android:title="@string/si_netserver" />
         <item
+            android:id="@+id/nav_bluetooth"
+            android:title="@string/si_bluetooth" />
+        <item
             android:id="@+id/nav_iradio"
             android:title="@string/si_iradio" />
         <item
             android:id="@+id/nav_usb"
             android:title="@string/si_usb" />
         <item
-            android:id="@+id/nav_bluetooth"
-            android:title="@string/si_bluetooth" />
+            android:id="@+id/nav_analog"
+            android:title="@string/si_analog" />
+        <item
+            android:id="@+id/nav_cd"
+            android:title="@string/si_cd" />
+        <item
+            android:id="@+id/nav_digital1"
+            android:title="@string/si_digital1" />
+        <item
+            android:id="@+id/nav_digital2"
+            android:title="@string/si_digital2" />
     </group>
 
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:title="Send" />
-        </menu>
-    </item>
+    <!--<item android:title="Communicate">-->
+        <!--<menu>-->
+            <!--<item-->
+                <!--android:id="@+id/nav_share"-->
+                <!--android:title="Share" />-->
+            <!--<item-->
+                <!--android:id="@+id/nav_send"-->
+                <!--android:title="Send" />-->
+        <!--</menu>-->
+    <!--</item>-->
 
 </menu>
