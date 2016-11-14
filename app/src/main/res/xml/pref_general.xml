@@ -42,7 +42,7 @@
 
         <EditTextPreference
             android:capitalize="words"
-            android:defaultValue=""
+            android:defaultValue="@string/pref_default_macro1"
             android:inputType="textMultiLine"
             android:key="@string/pref_key_macro1"
             android:maxLines="30"
@@ -71,6 +71,26 @@
             android:selectAllOnFocus="false"
             android:singleLine="false"
             android:title="@string/pref_title_macro2" />
+
+        <EditTextPreference
+            android:capitalize="words"
+            android:defaultValue="@string/pref_default_macro3name"
+            android:inputType="textCapWords"
+            android:key="@string/pref_key_macro3name"
+            android:maxLines="5"
+            android:selectAllOnFocus="false"
+            android:singleLine="true"
+            android:title="@string/pref_title_macro3name" />
+
+        <EditTextPreference
+            android:capitalize="words"
+            android:defaultValue=""
+            android:inputType="textCapWords"
+            android:key="@string/pref_key_macro3"
+            android:maxLines="5"
+            android:selectAllOnFocus="false"
+            android:singleLine="false"
+            android:title="@string/pref_title_macro3" />
 
     </PreferenceCategory>
 

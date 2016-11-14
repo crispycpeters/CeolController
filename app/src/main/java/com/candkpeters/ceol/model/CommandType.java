@@ -24,7 +24,7 @@ public enum CommandType {
     Cursor_Left,
     Cursor_Right,
     Play_Pause, //TODO
-    Play,
+    Playing,
     Pause,
     Stop,
     Skip_Forwards,

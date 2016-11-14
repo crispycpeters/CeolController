@@ -31,15 +31,20 @@
             android:title="@string/si_digital2" />
     </group>
 
-    <!--<item android:title="Communicate">-->
-        <!--<menu>-->
-            <!--<item-->
-                <!--android:id="@+id/nav_share"-->
-                <!--android:title="Share" />-->
-            <!--<item-->
-                <!--android:id="@+id/nav_send"-->
-                <!--android:title="Send" />-->
-        <!--</menu>-->
-    <!--</item>-->
+    <item
+        android:id="@+id/nav_macros"
+        android:title="@string/macros">
+        <menu>
+            <item
+                android:id="@+id/nav_macro1"
+                android:title="Macro 1" />
+            <item
+                android:id="@+id/nav_macro2"
+                android:title="Macro 2" />
+            <item
+                android:id="@+id/nav_macro3"
+                android:title="Macro 3" />
+        </menu>
+    </item>
 
 </menu>

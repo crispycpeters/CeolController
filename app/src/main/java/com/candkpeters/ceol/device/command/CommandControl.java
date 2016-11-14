@@ -1,7 +1,6 @@
 package com.candkpeters.ceol.device.command;
 
-import android.util.Log;
-
+import com.candkpeters.ceol.model.CommandType;
 import com.candkpeters.ceol.model.PlayStatusType;
 
 /**
@@ -13,7 +12,7 @@ public class CommandControl extends Command {
     protected PlayStatusType playStatusType;
 
     public CommandControl() {
-        this( PlayStatusType.Stop);
+        this( PlayStatusType.Stopped);
     }
 
     public CommandControl(PlayStatusType playStatusType) {
@@ -40,6 +39,7 @@ public class CommandControl extends Command {
     @Override
     public void execute() {
         String commandString = null;
+        boolean isSpotify = false;
 
         switch (ceolDevice.getSIStatus()) {
 
@@ -56,21 +56,38 @@ public class CommandControl extends Command {
                 switch (playStatusType) {
                     case Unknown:
                         break;
-                    case Play:
+                    case Playing:
                         commandString = "NS9A";
                         break;
-                    case Pause:
+                    case Paused:
                         commandString = "NS9B";
                         break;
-                    case Stop:
+                    case Stopped:
                         commandString = "NS9C";
                         break;
                 }
                 break;
             case AnalogIn:
                 break;
+            case Spotify:
+                isSpotify = true;
+                switch (playStatusType) {
+                    case Unknown:
+                        break;
+                    case Playing:
+                        commandString = "PLAY";
+                        break;
+                    case Paused:
+                    case Stopped:
+                        commandString = "PAUSE";
+                        break;
+                }
         }
-        ceolCommandManager.sendCommand(commandString);
+        if ( isSpotify) {
+            ceolCommandManager.sendMediaCommand(commandString);
+        } else {
+            ceolCommandManager.sendCommand(commandString);
+        }
     }
 
     @Override

@@ -1,8 +1,15 @@
 package com.candkpeters.ceol.device;
 
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.model.CeolDevice;
@@ -21,7 +28,7 @@ public class CeolCommandManager {
     private CeolDeviceWebSvcCommand ceolDeviceWebSvcCommand;
 //    private int webStatusRepeatRateMsecs;
     private static CeolCommandManager ourInstance = new CeolCommandManager();
-
+    private Context context;
     private MacroInflater macroInflater;
 
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
@@ -41,7 +48,7 @@ public class CeolCommandManager {
     To be called when config changes or on start
      */
     public void initialize(final Context context) {
-
+        this.context = context;
         if ( this.device == null ) {
             this.device = CeolDevice.getInstance();
             if (onSharedPreferenceChangeListener == null) {
@@ -119,5 +126,49 @@ public class CeolCommandManager {
 
     public void start() {
         ceolDeviceMonitor.start();
+    }
+
+    public void sendMediaCommand(String commandString) {
+        if ( context != null ) {
+            if ( commandString.equalsIgnoreCase("PLAY")) {
+                try {
+                    /*
+                     * ISSUE - Not working yet - it starts then stops
+                     */
+                    final String CMDTOGGLEPAUSE = "togglepause";
+                    final String CMDPAUSE = "pause";
+                    final String CMDPREVIOUS = "previous";
+                    final String CMDNEXT = "next";
+                    final String SERVICECMD = "com.android.music.musicservicecommand";
+                    final String CMDNAME = "command";
+                    final String CMDSTOP = "stop";
+
+
+                    AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+                    if(mAudioManager.isMusicActive()) {
+                        Intent i = new Intent(SERVICECMD);
+                        i.putExtra(CMDNAME , CMDTOGGLEPAUSE );
+                        context.sendBroadcast(i);
+                    }
+                    /*
+                    Intent i = new Intent(Intent.ACTION_MEDIA_BUTTON);
+                    i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
+                    i.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
+                    context.sendOrderedBroadcast(i, null);
+
+                    //release the button
+                    i = new Intent(Intent.ACTION_MEDIA_BUTTON);
+                    i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
+                    i.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
+                    context.sendOrderedBroadcast(i, null);
+*/
+                } catch (Exception exc) {
+                    Log.d(TAG, "sendSpotifyCommand: Got exception:" + exc.toString());
+                }
+            }
+            Intent intent = new Intent("com.spotify.mobile.android.ui.widget." + commandString);
+            context.sendBroadcast(intent);
+        }
     }
 }

@@ -68,6 +68,7 @@ public class Prefs {
         String[] macroNames = new String[MACRO_COUNT];
         macroNames[0] = getMacro1Name();
         macroNames[1] = getMacro2Name();
+        macroNames[2] = getMacro3Name();
         return macroNames;
     }
 
@@ -75,6 +76,7 @@ public class Prefs {
         String[] macroValues = new String[MACRO_COUNT];
         macroValues[0] = getMacro1Value();
         macroValues[1] = getMacro2Value();
+        macroValues[2] = getMacro3Value();
         return macroValues;
     }
 
@@ -98,6 +100,17 @@ public class Prefs {
 
     public String getMacro2Value() {
         return preferences.getString(context.getResources().getString(R.string.pref_key_macro2),
+                "");
+    }
+
+    public String getMacro3Name() {
+        Map m = preferences.getAll();
+        return preferences.getString(context.getResources().getString(R.string.pref_key_macro3name),
+                context.getResources().getString(R.string.pref_default_macro2name));
+    }
+
+    public String getMacro3Value() {
+        return preferences.getString(context.getResources().getString(R.string.pref_key_macro3),
                 "");
     }
 

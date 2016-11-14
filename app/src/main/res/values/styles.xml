@@ -118,6 +118,11 @@
         <item name="android:background">@color/imageOverlay</item>
     </style>
 
+    <style name="AlbumArtPlayStatus.Small" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">#f9a616</item>
+        <item name="android:textStyle">bold|italic</item>
+    </style>
+
     <style name="SI.Small" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@color/white</item>
     </style>

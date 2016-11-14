@@ -47,6 +47,7 @@ import com.candkpeters.ceol.device.command.CommandCursorEnter;
 import com.candkpeters.ceol.device.command.CommandCursorLeft;
 import com.candkpeters.ceol.device.command.CommandCursorRight;
 import com.candkpeters.ceol.device.command.CommandCursorUp;
+import com.candkpeters.ceol.device.command.CommandMacro;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeDown;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeUp;
 import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
@@ -130,8 +131,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        setNavigationMenuStrings(navigationView);
-
         Log.i(TAG, "Created");
         ceolController = new CeolController(this, new OnCeolStatusChangedListener() {
             @Override
@@ -139,6 +138,8 @@ public class MainActivity extends AppCompatActivity
                 updateViewsOnDeviceChange(ceolDevice);
             }
         });
+
+        setNavigationMenuStrings(navigationView);
 
 //        ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageTrack);
 //        if (imageV != null) imageV.setMinimumHeight();width(ceolDevice.NetServer.getImageBitmap());
@@ -176,6 +177,8 @@ public class MainActivity extends AppCompatActivity
             setTextViewText(R.id.textArtist, ceolDevice.NetServer.getArtist());
 
             setTextViewText(R.id.textAlbum, ceolDevice.NetServer.getAlbum());
+
+            setTextViewText(R.id.playStatus, ceolDevice.getPlayStatus().toString());
 
             String currString = Long.toString(System.currentTimeMillis() % 100);
             setTextViewText(R.id.textUpdate, currString);
@@ -288,13 +291,23 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setNavigationMenuStrings(NavigationView navigationView) {
+        Prefs prefs = new Prefs(this);
+
         Menu menu = navigationView.getMenu();
 
+        menu.findItem(R.id.nav_tuner).setTitle(SIStatusType.Tuner.name);
+        menu.findItem(R.id.nav_server).setTitle(SIStatusType.NetServer.name);
         menu.findItem(R.id.nav_bluetooth).setTitle(SIStatusType.Bluetooth.name);
         menu.findItem(R.id.nav_iradio).setTitle(SIStatusType.IRadio.name);
-        menu.findItem(R.id.nav_server).setTitle(SIStatusType.NetServer.name);
-        menu.findItem(R.id.nav_tuner).setTitle(SIStatusType.Tuner.name);
         menu.findItem(R.id.nav_usb).setTitle(SIStatusType.Ipod.name);
+        menu.findItem(R.id.nav_analog).setTitle(SIStatusType.AnalogIn.name);
+        menu.findItem(R.id.nav_cd).setTitle(SIStatusType.CD.name);
+        menu.findItem(R.id.nav_digital1).setTitle(SIStatusType.DigitalIn1.name);
+        menu.findItem(R.id.nav_digital2).setTitle(SIStatusType.DigitalIn2.name);
+
+        menu.findItem(R.id.nav_macro1).setTitle(prefs.getMacro1Name());
+        menu.findItem(R.id.nav_macro2).setTitle(prefs.getMacro2Name());
+        menu.findItem(R.id.nav_macro3).setTitle(prefs.getMacro3Name());
     }
 
     @Override
@@ -699,9 +712,10 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        int macroId = -1;
         Command command = null;
 
-        SIStatusType siStatusType;
+        SIStatusType siStatusType = SIStatusType.NotConnected;
         switch (id) {
             case R.id.nav_tuner:
                 siStatusType = SIStatusType.Tuner;
@@ -730,6 +744,15 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_digital2:
                 siStatusType = SIStatusType.DigitalIn2;
                 break;
+            case R.id.nav_macro1:
+                macroId = 1;
+                break;
+            case R.id.nav_macro2:
+                macroId = 2;
+                break;
+            case R.id.nav_macro3:
+                macroId = 3;
+                break;
             default:
                 siStatusType = SIStatusType.NotConnected;
                 break;
@@ -740,6 +763,11 @@ public class MainActivity extends AppCompatActivity
 
         if (siStatusType != SIStatusType.NotConnected) {
             command = new CommandSetSI(siStatusType);
+        } else if ( macroId != -1 ) {
+            command = new CommandMacro( macroId);
+        }
+
+        if ( command != null) {
             ceolController.performCommand(command);
         }
 

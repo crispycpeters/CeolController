@@ -73,6 +73,7 @@ public class MacroInflater {
         return Command.newInstance(commandString, parameterString);
     }
 
+    /* macroNumber = 1,2,3 ... */
     public ArrayList<Command> getMacro(int macroNumber) {
         if ( macroNumber <= 0 || macroNumber > MACRO_COUNT) return null;
         return macroValues.get(macroNumber-1);

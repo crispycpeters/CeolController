@@ -8,7 +8,7 @@ import com.candkpeters.ceol.model.PlayStatusType;
 public class CommandControlStop extends CommandControl {
 
     public CommandControlStop() {
-        super(PlayStatusType.Stop);
+        super(PlayStatusType.Stopped);
     }
 
     public String toString() {

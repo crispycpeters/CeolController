@@ -121,7 +121,7 @@
             <TextView
                 android:id="@+id/textTrack"
                 android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                android:paddingEnd="40dp"
                 android:paddingBottom="8dp"
                 style="@style/AlbumArtText.Medium"
                 android:layout_width="match_parent"
@@ -130,6 +130,18 @@
             />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/playStatus"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:paddingEnd="5dp"
+            android:paddingBottom="5dp"
+            style="@style/AlbumArtPlayStatus.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="P"
+            />
 
     </RelativeLayout>
 

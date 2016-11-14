@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/dimV"
-                android:visibility="gone"
+                android:visibility="invisible"
                 android:background="@drawable/shape_background"
                 android:gravity="center"
                 android:text="@string/not_connected"

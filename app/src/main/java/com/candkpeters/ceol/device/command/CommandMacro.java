@@ -37,23 +37,25 @@ public class CommandMacro extends CommandBaseInteger {
     };
 
     private void checkProgress() {
-        Command currentCommand = commands.get(commandPosition);
-        Log.d(TAG, "checkProgress: checking " + currentCommand);
-        if ( currentCommand.isDone() ) {
-            if ( currentCommand.isSuccessful()) {
-                Log.d(TAG, "checkProgress: Success, move to next");
-                commandPosition++;
-                if (commandPosition < commandSize) {
-                    Command command = commands.get(commandPosition);
-                    executeIfNeeded(command);
+        if ( commandSize > 0 ) {
+            Command currentCommand = commands.get(commandPosition);
+            Log.d(TAG, "checkProgress: checking " + currentCommand);
+            if (currentCommand.isDone()) {
+                if (currentCommand.isSuccessful()) {
+                    Log.d(TAG, "checkProgress: Success, move to next");
+                    commandPosition++;
+                    if (commandPosition < commandSize) {
+                        Command command = commands.get(commandPosition);
+                        executeIfNeeded(command);
+                    } else {
+                        // We're done
+                        setIsDone(true);
+                    }
                 } else {
-                    // We're done
+                    // Stop remaining commands
+                    Log.e(TAG, "checkProgress: Stopping macro as command " + currentCommand + " is done but was unsuccessful");
                     setIsDone(true);
                 }
-            } else {
-                // Stop remaining commands
-                Log.e(TAG, "checkProgress: Stopping macro as command " + currentCommand + " is done but was unsuccessful");
-                setIsDone(true);
             }
         }
     }
@@ -64,7 +66,8 @@ public class CommandMacro extends CommandBaseInteger {
 
     @Override
     protected boolean isSuccessful() {
-        return false; // TODO
+        if ( commandSize == 0 ) return true;
+        else return false; // TODO
     }
 
     @Override

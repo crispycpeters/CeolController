@@ -8,6 +8,6 @@ import com.candkpeters.ceol.model.PlayStatusType;
 public class CommandControlPause extends CommandControl {
 
     public CommandControlPause() {
-        super(PlayStatusType.Pause);
+        super(PlayStatusType.Paused);
     }
 }

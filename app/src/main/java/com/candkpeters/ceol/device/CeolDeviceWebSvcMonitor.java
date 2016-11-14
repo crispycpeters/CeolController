@@ -307,7 +307,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                                 }
                             }
                         }
-                        if ( ceolDevice.getPlayStatus() == PlayStatusType.Stop) {
+                        if ( ceolDevice.getPlayStatus() == PlayStatusType.Stopped) {
                             netServer.setTrackInfo("","","","", "");
                             netServer.setImageBitmap(null);
                         } else {
@@ -336,7 +336,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                             break;
                         case Tuner:
                             CeolDeviceTuner tuner = ceolDevice.Tuner;
-                            ceolDevice.setPlayStatus(PlayStatusType.Stop);
+                            ceolDevice.setPlayStatus(PlayStatusType.Stopped);
                             tuner.setBand(webSvcHttpAppCommandResponse.band);
                             tuner.setFrequency(webSvcHttpAppCommandResponse.frequency);
                             tuner.setName(webSvcHttpAppCommandResponse.name);

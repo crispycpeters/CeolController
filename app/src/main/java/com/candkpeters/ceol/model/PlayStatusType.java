@@ -5,7 +5,7 @@ package com.candkpeters.ceol.model;
  */
 public enum PlayStatusType {
     Unknown,
-    Play,
-    Pause,
-    Stop
+    Playing,
+    Paused,
+    Stopped
 }

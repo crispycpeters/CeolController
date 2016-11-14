@@ -263,13 +263,13 @@ public class CeolDevice {
         if ( playStatusString != null) {
             switch (playStatusString.toUpperCase()) {
                 case "PLAY":
-                    this.playStatus = PlayStatusType.Play;
+                    this.playStatus = PlayStatusType.Playing;
                     return;
                 case "PAUSE":
-                    this.playStatus = PlayStatusType.Pause;
+                    this.playStatus = PlayStatusType.Paused;
                     return;
                 case "STOP":
-                    this.playStatus = PlayStatusType.Stop;
+                    this.playStatus = PlayStatusType.Stopped;
                     return;
                 default:
                     this.playStatus = PlayStatusType.Unknown;

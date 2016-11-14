@@ -12,7 +12,7 @@ public class CommandControlToggle extends CommandControl {
     private static final String TAG = "CmdControlToggle";
 
     public CommandControlToggle() {
-        super(PlayStatusType.Stop);
+        super(PlayStatusType.Stopped);
     }
 
     @Override
@@ -33,11 +33,14 @@ public class CommandControlToggle extends CommandControl {
             case Tuner:
                 break;
             case NetServer:
-            case Spotify: // Doesn't work
             case IRadio:
             case Ipod:
                 playStatusType = toggleCurrentStatus();
-                ceolCommandManager.sendCommand(playStatusType==PlayStatusType.Play?"NS9A":"NS9B");
+                ceolCommandManager.sendCommand(playStatusType==PlayStatusType.Playing?"NS9A":"NS9B");
+                break;
+            case Spotify:
+                ceolCommandManager.sendMediaCommand("PLAY");
+                playStatusType = toggleCurrentStatus();
                 break;
             case AnalogIn:
                 break;
@@ -47,14 +50,14 @@ public class CommandControlToggle extends CommandControl {
     private PlayStatusType toggleCurrentStatus() {
         PlayStatusType currentPlayStatus;
         switch (ceolDevice.getPlayStatus()) {
-            case Play:
-                currentPlayStatus = PlayStatusType.Pause;
+            case Playing:
+                currentPlayStatus = PlayStatusType.Paused;
                 break;
             default:
             case Unknown:
-            case Pause:
-            case Stop:
-                currentPlayStatus = PlayStatusType.Play;
+            case Paused:
+            case Stopped:
+                currentPlayStatus = PlayStatusType.Playing;
                 break;
         }
         return currentPlayStatus;

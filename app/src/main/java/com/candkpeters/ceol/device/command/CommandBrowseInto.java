@@ -56,7 +56,7 @@ public class CommandBrowseInto extends CommandBaseString {
                 ceolDevice.getSIStatus() == SIStatusType.NetServer ) {
             if ( ceolDevice.NetServer.getTitle().equalsIgnoreCase(getValue())) {
                 if ( playFirstEntry ) {
-                    return (ceolDevice.getPlayStatus() == PlayStatusType.Play);
+                    return (ceolDevice.getPlayStatus() == PlayStatusType.Playing);
                 } else {
                     return true;
                 }
@@ -101,10 +101,10 @@ public class CommandBrowseInto extends CommandBaseString {
             if ( playFirstEntry ) {
                 Log.d(TAG, "checkForRight: Playing entry");
 //                searchSteps = SearchSteps.Playing;
-                new CommandControl(PlayStatusType.Play).execute(ceolCommandManager, new OnCeolStatusChangedListener() {
+                new CommandControl(PlayStatusType.Playing).execute(ceolCommandManager, new OnCeolStatusChangedListener() {
                     @Override
                     public void onCeolStatusChanged(CeolDevice ceolDevice) {
-                        if ( ceolDevice.getPlayStatus() == PlayStatusType.Play) {
+                        if ( ceolDevice.getPlayStatus() == PlayStatusType.Playing) {
                             finish(true);
                         }
                     }
