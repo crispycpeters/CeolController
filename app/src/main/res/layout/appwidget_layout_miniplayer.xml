@@ -108,13 +108,15 @@
         <ImageButton
             android:id="@+id/powerB2"
             android:src="@drawable/ic_av_power"
+            android:layout_width="@dimen/av_button_size_small"
+            android:layout_height="@dimen/av_button_size_small"
             style="@style/PowerButton"
             android:onClick="buttonClick"
             android:contentDescription="@string/power_toggle"
             android:layout_centerInParent="true"
             />
         <TextView
-            android:layout_width="@dimen/av_button_size_small"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/av_button_size_small"
             android:text="@string/ceol_controller"
             style="@style/WhiteText"

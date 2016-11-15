@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity
 
     private Animation powerAnimation;
     private boolean isLargeDevice;
+    private boolean isSelectSIStart = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -320,6 +321,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void openDrawer() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (!drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.openDrawer(GravityCompat.START);
+        }
+    }
+
     private void updateNavigation(CeolDevice ceolDevice) {
 
         updateNavigationRow( ceolDevice, R.id.textRow0, 0);
@@ -408,12 +416,23 @@ public class MainActivity extends AppCompatActivity
     public void onStart() {
         super.onStart();
         ceolController.activityOnStart();
+        if ( isSelectSIStart) {
+            openDrawer();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
         ceolController.activityOnStop();
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        Bundle b = intent.getExtras();
+        if (b != null) {
+            isSelectSIStart = b.getBoolean("SelectSI");
+        }
     }
 
     private Command getCommandFromId(int id) {

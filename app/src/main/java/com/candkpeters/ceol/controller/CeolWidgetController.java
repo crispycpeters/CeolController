@@ -10,6 +10,7 @@ import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.device.command.CommandApp;
+import com.candkpeters.ceol.device.command.CommandAppSelectSI;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.view.CeolIntentFactory;
 import com.candkpeters.ceol.view.CeolService;
@@ -104,6 +105,7 @@ public class CeolWidgetController {
                 Intent i = new Intent();
                 i.setClass(context, MainActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.putExtra("SelectSI",(command instanceof CommandAppSelectSI));
                 context.startActivity(i);
             }
         } else {
