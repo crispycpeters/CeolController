@@ -151,7 +151,7 @@
             style="@style/InfoCircleButton"
             android:onClick="buttonClick"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
+            android:layout_above="@id/playStatus"
             android:text="i"
             />
     </RelativeLayout>
