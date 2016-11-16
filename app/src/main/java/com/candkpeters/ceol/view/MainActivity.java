@@ -3,10 +3,12 @@ package com.candkpeters.ceol.view;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.icu.text.IDNA;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
@@ -504,8 +506,17 @@ public class MainActivity extends AppCompatActivity
             case R.id.siCdB:
                 command = new CommandSetSI(SIStatusType.CD);
                 break;
+
+            // Other
+            case R.id.infoB:
+                showInfo();
+                break;
         }
         return command;
+    }
+
+    private void showInfo() {
+        showInfoDialog();
     }
 
     public void buttonClick(View view) {
@@ -545,6 +556,79 @@ public class MainActivity extends AppCompatActivity
         // Open menu
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.openDrawer(GravityCompat.START);
+    }
+
+    // NAVIGATION VIEW
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        int macroId = -1;
+        Command command = null;
+
+        SIStatusType siStatusType = SIStatusType.NotConnected;
+        switch (id) {
+            case R.id.nav_tuner:
+                siStatusType = SIStatusType.Tuner;
+                break;
+            case R.id.nav_server:
+                siStatusType = SIStatusType.NetServer;
+                break;
+            case R.id.nav_bluetooth:
+                siStatusType = SIStatusType.Bluetooth;
+                break;
+            case R.id.nav_iradio:
+                siStatusType = SIStatusType.IRadio;
+                break;
+            case R.id.nav_usb:
+                siStatusType = SIStatusType.Ipod;
+                break;
+            case R.id.nav_analog:
+                siStatusType = SIStatusType.AnalogIn;
+                break;
+            case R.id.nav_cd:
+                siStatusType = SIStatusType.CD;
+                break;
+            case R.id.nav_digital1:
+                siStatusType = SIStatusType.DigitalIn1;
+                break;
+            case R.id.nav_digital2:
+                siStatusType = SIStatusType.DigitalIn2;
+                break;
+            case R.id.nav_macro1:
+                macroId = 1;
+                break;
+            case R.id.nav_macro2:
+                macroId = 2;
+                break;
+            case R.id.nav_macro3:
+                macroId = 3;
+                break;
+            default:
+                siStatusType = SIStatusType.NotConnected;
+                break;
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
+        if (siStatusType != SIStatusType.NotConnected) {
+            command = new CommandSetSI(siStatusType);
+        } else if ( macroId != -1 ) {
+            command = new CommandMacro( macroId);
+        }
+
+        if ( command != null) {
+            ceolController.performCommand(command);
+        }
+
+        return true;
+    }
+
+    private void showInfoDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        InfoFragment infoFragment = new InfoFragment();
+        infoFragment.show(fm,"infoFragment");
     }
 
     /**
@@ -725,72 +809,4 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
-    // NAVIGATION VIEW
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        int macroId = -1;
-        Command command = null;
-
-        SIStatusType siStatusType = SIStatusType.NotConnected;
-        switch (id) {
-            case R.id.nav_tuner:
-                siStatusType = SIStatusType.Tuner;
-                break;
-            case R.id.nav_server:
-                siStatusType = SIStatusType.NetServer;
-                break;
-            case R.id.nav_bluetooth:
-                siStatusType = SIStatusType.Bluetooth;
-                break;
-            case R.id.nav_iradio:
-                siStatusType = SIStatusType.IRadio;
-                break;
-            case R.id.nav_usb:
-                siStatusType = SIStatusType.Ipod;
-                break;
-            case R.id.nav_analog:
-                siStatusType = SIStatusType.AnalogIn;
-                break;
-            case R.id.nav_cd:
-                siStatusType = SIStatusType.CD;
-                break;
-            case R.id.nav_digital1:
-                siStatusType = SIStatusType.DigitalIn1;
-                break;
-            case R.id.nav_digital2:
-                siStatusType = SIStatusType.DigitalIn2;
-                break;
-            case R.id.nav_macro1:
-                macroId = 1;
-                break;
-            case R.id.nav_macro2:
-                macroId = 2;
-                break;
-            case R.id.nav_macro3:
-                macroId = 3;
-                break;
-            default:
-                siStatusType = SIStatusType.NotConnected;
-                break;
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-
-        if (siStatusType != SIStatusType.NotConnected) {
-            command = new CommandSetSI(siStatusType);
-        } else if ( macroId != -1 ) {
-            command = new CommandMacro( macroId);
-        }
-
-        if ( command != null) {
-            ceolController.performCommand(command);
-        }
-
-        return true;
-    }
-
 }

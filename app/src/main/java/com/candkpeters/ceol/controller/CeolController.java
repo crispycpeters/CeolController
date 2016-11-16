@@ -53,10 +53,16 @@ public class CeolController implements View.OnClickListener {
 //        this.prefs = new Prefs(context);
 //        String baseurl = prefs.getBaseUrl();
 
-        this.onCeolStatusChangedListener = onCeolStatusChangedListener;
+        if ( onCeolStatusChangedListener != null) {
+            this.onCeolStatusChangedListener = onCeolStatusChangedListener;
+        }
         ceolCommandManager = CeolCommandManager.getInstance();
         ceolDevice = ceolCommandManager.getCeolDevice();
         ceolCommandManager.initialize(context);//ceolDevice, baseurl, prefs.getMacroNames(), prefs.getMacroValues());
+    }
+
+    public CeolDevice getCeolDevice() {
+        return ceolDevice;
     }
 
     private void stopListening() {

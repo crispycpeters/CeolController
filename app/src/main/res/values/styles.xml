@@ -89,6 +89,16 @@
         <item name="android:maxHeight">@dimen/av_button_size_maximum</item>
         <item name="android:background">@drawable/button_whitecircle_states</item>
     </style>
+    <style name="InfoCircleButton">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">#000</item>
+        <item name="android:maxWidth">@dimen/av_button_size_maximum</item>
+        <item name="android:maxHeight">@dimen/av_button_size_maximum</item>
+        <item name="android:background">@drawable/button_whitecircle_states</item>
+        <item name="android:textStyle">italic|bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">20sp</item>
+    </style>
     <style name="TestButton">
         <item name="android:textColor">#000</item>
         <item name="android:layout_margin">2.5mm</item>
@@ -102,6 +112,13 @@
         <item name="android:textAlignment">center</item>
         <item name="android:minWidth">30sp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+    <style name="InfoLabel" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:layout_margin">@dimen/av_button_margin</item>
+    </style>
+    <style name="InfoContent" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:layout_margin">@dimen/av_button_margin</item>
+        <item name="android:textColor">#00f</item>
     </style>
 
     <style name="VolumeText.Small" parent="TextAppearance.AppCompat.Small">
