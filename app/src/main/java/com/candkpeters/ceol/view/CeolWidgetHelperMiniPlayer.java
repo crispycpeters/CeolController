@@ -9,7 +9,6 @@ import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.device.command.CommandAppBasic;
 import com.candkpeters.ceol.device.command.CommandAppInfo;
 import com.candkpeters.ceol.device.command.CommandAppSelectSI;
-import com.candkpeters.ceol.device.command.CommandBaseApp;
 import com.candkpeters.ceol.device.command.CommandControlStop;
 import com.candkpeters.ceol.device.command.CommandControlToggle;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeDown;

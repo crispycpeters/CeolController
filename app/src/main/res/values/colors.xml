@@ -4,9 +4,11 @@
     <color name="colorPrimaryDark">#111111</color>
     <color name="colorAccent">#e80d0d</color>
     <color name="white">#ffffffff</color>
-    <color name="background">#ff000000</color>
+<!--    <color name="background">#ff000000</color>-->
     <color name="imageOverlay">#aa000000</color>
+<!--
     <color name="itemBackground">#ccc</color>
+-->
     <!--
         <color name="colorPrimary">#3F51B5</color>
         <color name="colorPrimaryDark">#303F9F</color>

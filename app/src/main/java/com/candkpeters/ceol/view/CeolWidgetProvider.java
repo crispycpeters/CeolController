@@ -1,16 +1,10 @@
 package com.candkpeters.ceol.view;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.RemoteViews;
-
-import com.candkpeters.ceol.device.CeolCommandManager;
-import com.candkpeters.ceol.device.command.Command;
 
 /**
  * Created by crisp on 22/03/2016.

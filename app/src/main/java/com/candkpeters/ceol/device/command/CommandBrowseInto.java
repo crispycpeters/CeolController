@@ -1,6 +1,5 @@
 package com.candkpeters.ceol.device.command;
 
-import android.content.Intent;
 import android.util.Log;
 
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
@@ -126,17 +125,17 @@ public class CommandBrowseInto extends CommandBaseString {
                 Log.e(TAG, "checkForEntry: GetBrowseList: Problem - no selected entry");
                 finish(false);
             }
-            if (entry.isEmpty()) {
+            else if (entry.isEmpty()) {
                 Log.e(TAG, "checkForEntry: GetBrowseList: Problem - entry is empty");
                 finish(false);
             }
-            if (!entry.Text.equalsIgnoreCase(getValue())) {
+            else if (!entry.Text.equalsIgnoreCase(getValue())) {
                 if ( isBackToWhereWeStarted()) {
                     Log.e(TAG, "checkForEntry: GetBrowseList: Sorry, could not find \"" + getValue() + "\"");
                     finish(false);
                 } else {
                     Log.d(TAG, "checkForEntry: GetBrowseList: Wrong entry \"" + entry.Text + "\" found. Go down.");
-                    searchSteps = searchSteps.MovingDown;
+                    searchSteps = SearchSteps.MovingDown;
                     advancePosition();
                     //Todo - use callback method - need to send string to Cursor down like cursor left
                     new CommandCursor(DirectionType.Down).execute(ceolCommandManager);

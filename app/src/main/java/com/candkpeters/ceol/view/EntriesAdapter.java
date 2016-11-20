@@ -31,7 +31,7 @@ public class EntriesAdapter extends ArrayAdapter<CeolBrowseEntry> {
         int chunkStartIdx = entries.getChunkStartIndex();
         CeolBrowseEntry[] ceolBrowseEntries = entries.getBrowseChunk();
 
-        for ( int i = 0; i<entries.MAX_LINES; i++ ) {
+        for (int i = 0; i< CeolBrowseEntries.MAX_LINES; i++ ) {
             int listIndex = chunkStartIdx + i;
             entryList.set( listIndex, ceolBrowseEntries[i]);
         }

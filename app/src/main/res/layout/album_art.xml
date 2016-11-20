@@ -29,7 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/tunerCentre"
             android:layout_centerInParent="true"
-            android:text="tunerName"
             />
         <TextView
             android:id="@+id/tunerFrequency"
@@ -37,7 +36,6 @@
             style="@style/AlbumArtText.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="100.00"
             android:textAlignment="viewEnd"
             android:layout_below="@id/tunerName"
             android:layout_alignEnd="@id/tunerCentre"
@@ -47,8 +45,8 @@
             style="@style/AlbumArtText.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MHz"
             android:paddingStart="3dp"
+            android:paddingEnd="0dp"
             android:textAlignment="textStart"
             android:layout_toEndOf="@id/tunerFrequency"
             android:layout_alignBaseline="@id/tunerFrequency"
@@ -59,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="10dp"
-            android:text="FM"
+            android:paddingEnd="0dp"
             android:textAlignment="textStart"
             android:layout_toEndOf="@id/tunerUnits"
             android:layout_alignBaseline="@id/tunerFrequency"
@@ -90,7 +88,7 @@
             android:id="@+id/albumTextPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:orientation="vertical"
             android:padding="1dp"
@@ -104,7 +102,6 @@
                 style="@style/AlbumArtText.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Artist"
                 android:background="@drawable/playinfo"
             />
 
@@ -115,7 +112,6 @@
                 style="@style/AlbumArtText.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Album"
             />
 
             <TextView
@@ -126,21 +122,20 @@
                 style="@style/AlbumArtText.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Track"
             />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/playStatus"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:paddingEnd="5dp"
+            android:paddingStart="0dp"
             android:paddingBottom="5dp"
             style="@style/AlbumArtPlayStatus.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="P"
             />
 
         <Button
@@ -150,9 +145,9 @@
             android:layout_margin="@dimen/av_button_margin_standard"
             style="@style/InfoCircleButton"
             android:onClick="buttonClick"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_above="@id/playStatus"
-            android:text="i"
+            android:text="@string/i_button_text"
             />
     </RelativeLayout>
 

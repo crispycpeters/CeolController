@@ -9,14 +9,13 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Artist:"
+            android:text="@string/artist_label"
             style="@style/InfoLabel"
             />
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/infoArtist"
-            android:text="Artist info"
             style="@style/InfoContent"
             android:onClick="buttonClick"
             />
@@ -25,14 +24,13 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Album:"
+            android:text="@string/album_label"
             style="@style/InfoLabel"
             />
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/infoAlbum"
-            android:text="Album info"
             style="@style/InfoContent"
             android:onClick="buttonClick"
             />
@@ -41,14 +39,13 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Track:"
+            android:text="@string/track_label"
             style="@style/InfoLabel"
             />
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/infoTrack"
-            android:text="Track info"
             style="@style/InfoContent"
             android:onClick="buttonClick"
             />
@@ -57,14 +54,13 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Format:"
+            android:text="@string/format_label"
             style="@style/InfoLabel"
             />
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/infoFormat"
-            android:text="Format info"
             style="@style/InfoLabel"
             android:onClick="buttonClick"
             />
@@ -73,14 +69,14 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Lyrics:"
+            android:text="@string/lyrics_label"
             style="@style/InfoLabel"
             />
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/infoLyrics"
-            android:text="Search for lyrics"
+            android:text="@string/search_for_lyrics"
             style="@style/InfoContent"
             android:onClick="buttonClick"
             />
@@ -90,7 +86,7 @@
         android:id="@+id/infoDone"
         android:layout_height="@dimen/av_button_size_standard"
         android:layout_margin="@dimen/av_button_margin_standard"
-        android:text="Done"
+        android:text="@string/info_done"
         />
 
 </TableLayout>

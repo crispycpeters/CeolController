@@ -37,13 +37,13 @@
         <menu>
             <item
                 android:id="@+id/nav_macro1"
-                android:title="Macro 1" />
+                android:title="" />
             <item
                 android:id="@+id/nav_macro2"
-                android:title="Macro 2" />
+                android:title="" />
             <item
                 android:id="@+id/nav_macro3"
-                android:title="Macro 3" />
+                android:title="" />
         </menu>
     </item>
 

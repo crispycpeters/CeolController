@@ -1,15 +1,10 @@
 package com.candkpeters.ceol.device;
 
-import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.os.SystemClock;
 import android.util.Log;
-import android.view.KeyEvent;
 
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.model.CeolDevice;
@@ -102,7 +97,7 @@ public class CeolCommandManager {
 
     public void sendCommand(String commandString) {
         Log.d(TAG, "sendCommand: Sending: " + commandString);
-        if ( commandString!= null && commandString != "") {
+        if ( commandString!= null && !commandString.isEmpty()) {
             ceolDeviceWebSvcCommand.SendCommand( commandString, null);   //TODO We need use callback
             ceolDeviceMonitor.getStatusSoon();
         }

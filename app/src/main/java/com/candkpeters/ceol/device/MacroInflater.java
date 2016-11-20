@@ -5,7 +5,6 @@ import android.util.Log;
 import com.candkpeters.ceol.device.command.Command;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by crisp on 12/03/2016.

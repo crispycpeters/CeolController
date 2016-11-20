@@ -1,7 +1,5 @@
 package com.candkpeters.ceol.model;
 
-import android.util.Log;
-
 /**
  * Created by crisp on 06/01/2016.
  */

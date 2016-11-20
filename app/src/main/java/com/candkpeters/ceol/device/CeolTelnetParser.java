@@ -21,8 +21,8 @@ public class CeolTelnetParser {
     public void setCeolStatus(String telnetEntry) {
 
         String[] rows = telnetEntry.split("\r");
-        for (int i = 0; i < rows.length; i++) {
-            String row = rows[i];
+        for (String row1 : rows) {
+            String row = row1;
             if (row.startsWith("NSE")) {
                 String rownumberstring = row.substring(3, 4);
                 row = row.substring(4);
@@ -42,7 +42,7 @@ public class CeolTelnetParser {
                             Log.d(TAG, "Parsed NSE0: " + NseRows[0]);
                             break;
                         default:
-                            if ( row.length() > 0) {
+                            if (row.length() > 0) {
                                 NseRows[rownumber] = row.substring(1);
                                 status = row.charAt(0);
                                 isPlayable = (status & 0x01) != 0;
@@ -50,15 +50,15 @@ public class CeolTelnetParser {
                             } else {
                                 NseRows[rownumber] = "";
                             }
-                            Log.d(TAG, "Parsed NSE" + rownumber + ": " + NseRows[rownumber] + (isPlayable?" [P]":"") + (isSelected?" [S]":"") + status);
+                            Log.d(TAG, "Parsed NSE" + rownumber + ": " + NseRows[rownumber] + (isPlayable ? " [P]" : "") + (isSelected ? " [S]" : "") + status);
                             break;
                     }
                 }
             } else if (row.startsWith("PW")) {
-                boolean isOn = row.substring(2).equals("ON") ? true : false;
+                boolean isOn = row.substring(2).equals("ON");
                 CeolDevice.getInstance().setDeviceStatus(DeviceStatusType.On);
             } else if (row.startsWith("MU")) {
-                CeolDevice.getInstance().setIsMuted( row.substring(2).equals("ON") ? true : false );
+                CeolDevice.getInstance().setIsMuted(row.substring(2).equals("ON"));
             } else if (row.startsWith("MV")) {
                 int volume = 0;
                 try {

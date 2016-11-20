@@ -1,1 +1,1 @@
-include ':app', ':apachetelnet'
+include ':app'

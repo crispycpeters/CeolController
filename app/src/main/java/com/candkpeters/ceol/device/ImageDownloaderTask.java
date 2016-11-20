@@ -5,8 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.FilterInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
@@ -72,8 +70,8 @@ class ImageDownloaderTask extends AsyncTask<Void, Void, Bitmap> {
             if (inputStream != null) {
 //                bitmap = BitmapFactory.decodeStream(new FlushedInputStream(inputStream));
                 bitmap = BitmapFactory.decodeStream(inputStream);
+                inputStream.close();
             }
-            inputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

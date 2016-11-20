@@ -1,15 +1,10 @@
 package com.candkpeters.ceol.device.command;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 
 import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.model.CeolDevice;
-import com.candkpeters.ceol.view.CeolService;
-
-import java.util.List;
 
 /**
  * Created by crisp on 22/01/2016.
@@ -52,8 +47,7 @@ public abstract class Command {
             finishUp();
             return;
         }
-        return; // Not finished
-     }
+    }
 
     private void finishUp() {
         ceolCommandManager.unregister(onCeolStatusChangedListener);
@@ -63,8 +57,7 @@ public abstract class Command {
     }
 
     protected void onCeolStatusChangedListener() {
-        return;
-    };
+    }
 
     protected abstract boolean isSuccessful( );
 
@@ -81,15 +74,14 @@ public abstract class Command {
 
     public final boolean isDone() {
         return isDone;
-    };
+    }
 
     protected void setIsDone(boolean isDone) {
         this.isDone = isDone;
     }
 
     protected void preExecute() {
-        return;
-    };
+    }
 
     protected abstract void execute();
 

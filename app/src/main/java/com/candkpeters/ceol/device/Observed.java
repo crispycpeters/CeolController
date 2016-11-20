@@ -5,10 +5,10 @@ package com.candkpeters.ceol.device;
  */
 public interface Observed {
     //methods to register and unregister observers
-    public void register(OnCeolStatusChangedListener obj);
-    public void unregister(OnCeolStatusChangedListener obj);
+    void register(OnCeolStatusChangedListener obj);
+    void unregister(OnCeolStatusChangedListener obj);
 
     //method to notify observers of change
-    public void notifyObservers();
+    void notifyObservers();
 
 }

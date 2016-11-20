@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">Ceol controller</string>
     <string name="label_settings_activity">Settings</string>
-    <string name="label_ceol_remote">Ceol Remote</string>
 
     <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
 
     <!-- Preferences -->
     <!--<bool name="is_debug_mode">false</bool>-->
@@ -96,5 +94,13 @@
     <string name="si_digital2">Digital In 2</string>
     <string name="macros">Macros</string>
     <string name="pref_default_macro1">CommandSetPower:true\nCommandSetSI:Music Server\nCommandBrowseToRoot\nCommandBrowseInto:naspeters2 FLAC\nBrowseInto:7 Playlists\nBrowseIntoAndPlay:Random Pop 1</string>
+    <string name="artist_label">Artist:</string>
+    <string name="album_label">Album:</string>
+    <string name="track_label">Track:</string>
+    <string name="format_label">Format:</string>
+    <string name="lyrics_label">Lyrics:</string>
+    <string name="search_for_lyrics">Search for lyrics</string>
+    <string name="info_done">Done</string>
+    <string name="i_button_text">i</string>
 
 </resources>

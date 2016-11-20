@@ -12,8 +12,8 @@ public class CeolDevice {
     private static final long DEFAULT_NETSERVERON_PERIOD_MSECS = 6000; // Give NetServer a chance to settle down be believing its settings
 
     private static CeolDevice ourInstance = new CeolDevice();
-    private long wakeUpPeriodMsecs = DEFAULT_WAKEUP_PERIOD_MSECS;
-    private long netServerOnPeriodMsecs = DEFAULT_NETSERVERON_PERIOD_MSECS;
+    private static final long wakeUpPeriodMsecs = DEFAULT_WAKEUP_PERIOD_MSECS;
+//    private static final long netServerOnPeriodMsecs = DEFAULT_NETSERVERON_PERIOD_MSECS;
     private boolean isNetServer;
 
     public static CeolDevice getInstance() {
@@ -273,7 +273,6 @@ public class CeolDevice {
                     return;
                 default:
                     this.playStatus = PlayStatusType.Unknown;
-                    return;
             }
         }
     }

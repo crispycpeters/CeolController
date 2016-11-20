@@ -3,7 +3,6 @@ package com.candkpeters.ceol.controller;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
 import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.device.CeolDeviceWebSvcMonitor;
@@ -13,20 +12,16 @@ import com.candkpeters.ceol.device.command.CommandControlStop;
 import com.candkpeters.ceol.device.command.CommandControlToggle;
 import com.candkpeters.ceol.device.command.CommandCursor;
 import com.candkpeters.ceol.device.command.CommandCursorEnter;
-import com.candkpeters.ceol.device.command.CommandFastBackward;
-import com.candkpeters.ceol.device.command.CommandFastForward;
 import com.candkpeters.ceol.device.command.CommandMacro;
 import com.candkpeters.ceol.device.command.CommandMasterVolume;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeDown;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeUp;
 import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
-import com.candkpeters.ceol.device.command.CommandSetSI;
 import com.candkpeters.ceol.device.command.CommandSkip;
 import com.candkpeters.ceol.device.command.CommandSkipBackward;
 import com.candkpeters.ceol.device.command.CommandSkipForward;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.DirectionType;
-import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.view.Prefs;
 import com.candkpeters.chris.ceol.R;
 

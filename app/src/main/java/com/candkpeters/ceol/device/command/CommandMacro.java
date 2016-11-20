@@ -1,10 +1,6 @@
 package com.candkpeters.ceol.device.command;
 
-import android.content.Intent;
 import android.util.Log;
-
-import com.candkpeters.ceol.model.PlayStatusType;
-import com.candkpeters.ceol.model.SIStatusType;
 
 import java.util.ArrayList;
 
@@ -34,7 +30,7 @@ public class CommandMacro extends CommandBaseInteger {
     protected void onCeolStatusChangedListener() {
         checkProgress();
         return;
-    };
+    }
 
     private void checkProgress() {
         if ( commandSize > 0 ) {
@@ -66,8 +62,8 @@ public class CommandMacro extends CommandBaseInteger {
 
     @Override
     protected boolean isSuccessful() {
-        if ( commandSize == 0 ) return true;
-        else return false; // TODO
+        // TODO
+        return commandSize == 0;
     }
 
     @Override

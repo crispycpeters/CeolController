@@ -1,6 +1,5 @@
 package com.candkpeters.ceol.device.command;
 
-import com.candkpeters.ceol.model.CommandType;
 import com.candkpeters.ceol.model.PlayStatusType;
 
 /**

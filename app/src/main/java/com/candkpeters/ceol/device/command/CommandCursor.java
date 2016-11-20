@@ -1,8 +1,5 @@
 package com.candkpeters.ceol.device.command;
 
-import com.candkpeters.ceol.device.CeolCommandManager;
-import com.candkpeters.ceol.model.CeolDevice;
-import com.candkpeters.ceol.model.CommandType;
 import com.candkpeters.ceol.model.DirectionType;
 
 /**

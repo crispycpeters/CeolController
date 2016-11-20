@@ -41,7 +41,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     public WebSvcApiService webSvcApiService = null;
     private UIThreadUpdater activeThreadUpdater;
     private UIThreadUpdater backgroundThreadUpdater;
-    public CeolDevice ceolDevice;
+    final public CeolDevice ceolDevice;
 
     // Observer
     private final Object MUTEX = new Object();

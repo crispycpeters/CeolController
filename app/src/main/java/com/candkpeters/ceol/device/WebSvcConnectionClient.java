@@ -1,8 +1,5 @@
 package com.candkpeters.ceol.device;
 
-import com.mobprofs.retrofit.converters.SimpleXmlConverter;
-
-import retrofit.RestAdapter;
 import retrofit.client.Request;
 import retrofit.client.UrlConnectionClient;
 

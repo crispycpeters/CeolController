@@ -20,9 +20,9 @@ public class CeolDeviceWebSvcCommand {
 
     OnCeolCommandListener onCeolCommandListener;
 
-    public static interface OnCeolCommandListener {
-        public abstract void success();
-        public abstract void failure();
+    public interface OnCeolCommandListener {
+        void success();
+        void failure();
     }
 
     public CeolDeviceWebSvcCommand(String baseUrl) {
@@ -40,7 +40,6 @@ public class CeolDeviceWebSvcCommand {
             public void success(Void responseStr, Response response) {
                 Log.d(TAG, "success: SendCommand worked successful response: " + response.getBody());
                 if (onCeolCommandListener != null) onCeolCommandListener.success();
-                return;
             }
 
             @Override
@@ -54,7 +53,6 @@ public class CeolDeviceWebSvcCommand {
                     Log.e(TAG, "failure: error: " + error);
                     if (onCeolCommandListener!=null) onCeolCommandListener.failure();
                 }
-                return;
             }
         });
     }

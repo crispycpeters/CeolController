@@ -1,7 +1,5 @@
 package com.candkpeters.ceol.device;
 
-import android.support.annotation.NonNull;
-
 import org.simpleframework.xml.ElementMap;
 import org.simpleframework.xml.Root;
 

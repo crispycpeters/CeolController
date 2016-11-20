@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:layout_weight="1"
         android:gravity="bottom"
@@ -39,7 +39,7 @@
             android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="row0" >
+            >
         </TextView>
         <TextView
             android:id="@+id/textRow1"
@@ -47,7 +47,7 @@
             android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="row1" >
+             >
         </TextView>
         <TextView
             android:id="@+id/textRow2"
@@ -55,7 +55,7 @@
             android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="row2" >
+             >
         </TextView>
         <TextView
             android:id="@+id/textRow3"
@@ -63,7 +63,7 @@
             android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="row2" >
+            >
         </TextView>
         <TextView
             android:id="@+id/textRow4"
@@ -71,7 +71,7 @@
             android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="row2" >
+             >
         </TextView>
         <TextView
             android:id="@+id/textRow5"
@@ -79,7 +79,7 @@
             android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="row2" >
+            >
         </TextView>
         <TextView
             android:id="@+id/textRow6"
@@ -87,7 +87,7 @@
             android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="row2" >
+             >
         </TextView>
         <TextView
             android:id="@+id/textRow7"
@@ -95,7 +95,7 @@
             android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="row2" >
+            >
         </TextView>
 
     </LinearLayout>
@@ -137,7 +137,7 @@
             style="@style/DarkRectangleButton"
             android:layout_width="@dimen/av_button_size_standard"
             android:layout_height="@dimen/av_button_size_medium"
-            android:layout_toLeftOf="@id/navEnterB"
+            android:layout_toStartOf="@id/navEnterB"
             android:layout_centerVertical="true"
             android:onClick="buttonClick"
             />
@@ -148,7 +148,7 @@
             style="@style/DarkRectangleButton"
             android:layout_width="@dimen/av_button_size_standard"
             android:layout_height="@dimen/av_button_size_medium"
-            android:layout_toRightOf="@+id/navEnterB"
+            android:layout_toEndOf="@+id/navEnterB"
             android:layout_centerVertical="true"
             android:onClick="buttonClick"
             />
