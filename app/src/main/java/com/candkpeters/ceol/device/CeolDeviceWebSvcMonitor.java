@@ -16,7 +16,6 @@ import org.simpleframework.xml.util.Dictionary;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -295,7 +294,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                     if (texts != null) {
                         netServer.setIsBrowsing(true);
                         if (webSvcHttpAppCommandResponse.type.equals("browse")) {
-                            netServer.initializeEntries(texts.get("title").text,
+                            netServer.initialiseChunk(texts.get("title").text,
                                     texts.get("scridValue").text,
                                     texts.get("scrid").text,
                                     webSvcHttpAppCommandResponse.listmax,
@@ -303,7 +302,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                             for (int i = 0; i < CeolDeviceNetServer.MAX_LINES; i++) {
                                 WebSvcHttpResponseText responseText = texts.get("line" + i);
                                 if (responseText != null) {
-                                    netServer.setBrowseLine(i, responseText.text, responseText.flag);
+                                    netServer.setChunkLine(i, responseText.text, responseText.flag);
                                 }
                             }
                         }

@@ -3,10 +3,10 @@ package com.candkpeters.ceol.device.command;
 /**
  * Created by crisp on 25/01/2016.
  */
-public class CommandAppSelectSI extends CommandBaseApp {
+public class CommandAppBasic extends CommandBaseApp {
 
-    public CommandAppSelectSI() {
-        super(Action.SELECTSI);
+    public CommandAppBasic() {
+        super(Action.BASIC);
     }
 
     @Override

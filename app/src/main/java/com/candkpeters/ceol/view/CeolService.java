@@ -35,6 +35,8 @@ public class CeolService extends Service {
     public static final String CONFIG_CHANGED = "ConfigChanged";
     public static final String START_SERVICE = "StartService";
     public static final String BOOT_COMPLETED = "BootCompleted";
+    public static final String START_ACTIVITY_ACTION = "CeolAction";
+
     //    public static final String EXECUTE_COMMAND_NAME = "ExecuteCommandName";
 //    public static final String EXECUTE_COMMAND_VALUE = "ExecuteCommandValue";
     private Prefs prefs;

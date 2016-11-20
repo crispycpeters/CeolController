@@ -1,9 +1,18 @@
 package com.candkpeters.ceol.model;
 
-import android.util.Log;
-
 /**
  * Created by crisp on 06/01/2016.
+ *
+ * "List" is the full list of entries in a given folder
+ *      Ceol provides:
+ *          listMax - Number of entries in entire list
+ *          listPosition - The position in the entire list (starting from 1) of the currently-selected entry
+ *
+ * "Chunk" is the moving chunk of entries. It is all that is returned from CEOL at any given time.
+ *      Ceol provides:
+ *          MAX_LINES - Number of entries in the chunk (7 rows)
+ *          One of the entries is marked as "selected"
+ *          chunkStartIdx - Index of start of chunk
  */
 public class CeolBrowseEntries {
 
@@ -14,7 +23,7 @@ public class CeolBrowseEntries {
     private String scrid;
     private int listMax = 0;
     private int listPosition = -1;
-    private int listOffset = -1;
+    private int chunkStartIdx = -1;
     private int selectedEntryIndex = -1;
 
     enum BrowseEntryType {
@@ -23,7 +32,7 @@ public class CeolBrowseEntries {
     }
     public static final int MAX_LINES = 7;
 
-    private CeolBrowseEntry[] browseLines = new CeolBrowseEntry[MAX_LINES];
+    private CeolBrowseEntry[] browseChunk = new CeolBrowseEntry[MAX_LINES];
 
     public CeolBrowseEntries() {
         title = "";
@@ -32,7 +41,7 @@ public class CeolBrowseEntries {
         clear();
     }
 
-    public void initializeEntries(String title, String scridValue, String scrid, String listmax, String listposition) {
+    public void initialiseChunk(String title, String scridValue, String scrid, String listmax, String listposition) {
         this.title = title;
         int oldListMax = listMax;
         selectedEntryIndex = -1;
@@ -47,12 +56,19 @@ public class CeolBrowseEntries {
             this.listMax = 0;
             this.listPosition = -1;
         }
-        listOffset = -1;
-
+        chunkStartIdx = -1;
     }
 
-    public int getSelectedPosition() {
+    public int getListPosition() {
         return listPosition;
+    }
+
+    public int getListStartOffset() {
+        if ( selectedEntryIndex != -1) {
+            return listPosition - selectedEntryIndex - 1;
+        } else {
+            return 0;
+        }
     }
 
     public int getSelectedEntryIndex() {
@@ -61,7 +77,7 @@ public class CeolBrowseEntries {
 
     public CeolBrowseEntry getSelectedEntry() {
         if ( selectedEntryIndex != -1 ) {
-            return browseLines[selectedEntryIndex];
+            return browseChunk[selectedEntryIndex];
         } else {
             return null;
         }
@@ -69,7 +85,7 @@ public class CeolBrowseEntries {
 
     public String getBrowseLineText( int row) {
         if ( row >=0 && row < MAX_LINES) {
-            return browseLines[row] != null ? browseLines[row].Text : "";
+            return browseChunk[row] != null ? browseChunk[row].Text : "";
         } else {
             return "";
         }
@@ -85,28 +101,32 @@ public class CeolBrowseEntries {
 
     public void clear() {
         for ( int i =0; i<MAX_LINES; i++) {
-            browseLines[i] = null;
+            browseChunk[i] = null;
         }
         selectedEntryIndex = -1;
     }
 
-    public void setBrowseLine( int line, String text, String attributes) {
-        if ( line >= 0 && line < MAX_LINES ) {
+    public void setChunkLine(int lineIdx, String text, String attributes) {
+        if ( lineIdx >= 0 && lineIdx < MAX_LINES ) {
             if ( text==null || attributes==null ) {
-                browseLines[line] = null;
+                browseChunk[lineIdx] = null;
             } else {
-                browseLines[line] = new CeolBrowseEntry(text, attributes);
-                if (browseLines[line].isSelected) {
-                    listOffset = listPosition - line;
-                    selectedEntryIndex = line;
+                browseChunk[lineIdx] = new CeolBrowseEntry(text, attributes);
+                if (browseChunk[lineIdx].isSelected) {
+                    chunkStartIdx = listPosition - lineIdx - 1;
+                    selectedEntryIndex = lineIdx;
                 }
-                //Log.d(TAG, "setBrowseLine: On line " + line + "("+attributes+"): " + browseLines[line]);
+                //Log.d(TAG, "setChunkLine: On line " + line + "("+attributes+"): " + browseChunk[line]);
             }
         }
     }
 
-    public CeolBrowseEntry[] getBrowseLines() {
-        return browseLines;
+    public CeolBrowseEntry[] getBrowseChunk() {
+        return browseChunk;
+    }
+
+    public int getChunkStartIndex() {
+        return chunkStartIdx;
     }
 
     public String getTitle() {

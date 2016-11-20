@@ -112,13 +112,8 @@ public class CeolController implements View.OnClickListener {
     public void setViewCommandHandlers(View rootView) {
 
         setClickHandler( rootView, R.id.powerB, new CommandSetPowerToggle());
-        setClickHandler( rootView, R.id.performMacro1B, new CommandMacro(1));
-        setClickHandler( rootView, R.id.performMacro2B, new CommandMacro(2));
-        setClickHandler( rootView, R.id.performMacro3B, new CommandMacro(3));
         setClickHandler( rootView, R.id.volumeupB, new CommandMasterVolumeUp());
         setClickHandler( rootView, R.id.volumedownB, new CommandMasterVolumeDown());
-//        setClickHandler( rootView, R.id.fastBackwardsB, new CommandFastBackward());
-//        setClickHandler( rootView, R.id.fastForwardsB, new CommandFastForward());
         setClickHandler( rootView, R.id.skipBackwardsB, new CommandSkipBackward());
         setClickHandler( rootView, R.id.skipForwardsB, new CommandSkipForward());
         setClickHandler( rootView, R.id.playpauseB, new CommandControlToggle());
@@ -128,14 +123,6 @@ public class CeolController implements View.OnClickListener {
         setClickHandler( rootView, R.id.navUpB, new CommandCursor(DirectionType.Up));
         setClickHandler( rootView, R.id.navDownB, new CommandCursor(DirectionType.Down));
         setClickHandler( rootView, R.id.navEnterB, new CommandCursorEnter());
-        setClickHandler( rootView, R.id.siInternetRadioB, new CommandSetSI(SIStatusType.IRadio));
-        setClickHandler( rootView, R.id.siIpodB, new CommandSetSI(SIStatusType.Ipod));
-        setClickHandler( rootView, R.id.siMusicServerB, new CommandSetSI(SIStatusType.NetServer));
-        setClickHandler( rootView, R.id.siTunerB, new CommandSetSI(SIStatusType.Tuner));
-        setClickHandler( rootView, R.id.siAnalogInB, new CommandSetSI(SIStatusType.AnalogIn));
-        setClickHandler( rootView, R.id.siDigitalInB, new CommandSetSI(SIStatusType.DigitalIn1));
-        setClickHandler( rootView, R.id.siBluetoothB, new CommandSetSI(SIStatusType.Bluetooth));
-        setClickHandler( rootView, R.id.siCdB, new CommandSetSI(SIStatusType.CD));
 
     }
 

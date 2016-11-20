@@ -6,8 +6,10 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.candkpeters.ceol.device.CeolCommandManager;
-import com.candkpeters.ceol.device.command.CommandApp;
+import com.candkpeters.ceol.device.command.CommandAppBasic;
+import com.candkpeters.ceol.device.command.CommandAppInfo;
 import com.candkpeters.ceol.device.command.CommandAppSelectSI;
+import com.candkpeters.ceol.device.command.CommandBaseApp;
 import com.candkpeters.ceol.device.command.CommandControlStop;
 import com.candkpeters.ceol.device.command.CommandControlToggle;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeDown;
@@ -39,8 +41,9 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
         setOnClickCommandIntent(context, appWidgetId, views, R.id.skipForwardsB, new CommandSkipForward());
         setOnClickCommandIntent(context, appWidgetId, views, R.id.playpauseB, new CommandControlToggle());
         setOnClickCommandIntent(context, appWidgetId, views, R.id.stopB, new CommandControlStop());
-        setOnClickCommandIntent(context, appWidgetId, views, R.id.album_art, new CommandApp());
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.album_art, new CommandAppBasic());
         setOnClickCommandIntent(context, appWidgetId, views, R.id.siB, new CommandAppSelectSI());
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.infoB, new CommandAppInfo());
         return views;
     }
 

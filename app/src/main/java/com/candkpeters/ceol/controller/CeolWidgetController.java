@@ -9,14 +9,12 @@ import android.util.Log;
 import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
-import com.candkpeters.ceol.device.command.CommandApp;
-import com.candkpeters.ceol.device.command.CommandAppSelectSI;
+import com.candkpeters.ceol.device.command.CommandBaseApp;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.view.CeolIntentFactory;
 import com.candkpeters.ceol.view.CeolService;
 import com.candkpeters.ceol.view.CeolWidgetHelper;
 import com.candkpeters.ceol.view.CeolWidgetHelperMiniPlayer;
-import com.candkpeters.ceol.view.CeolWidgetHelperToplevel;
 import com.candkpeters.ceol.view.MainActivity;
 import com.candkpeters.ceol.view.Prefs;
 
@@ -26,7 +24,6 @@ import com.candkpeters.ceol.view.Prefs;
 public class CeolWidgetController {
     private static final String TAG = "WidgetController";
     CeolWidgetHelper[] ceolWidgetHelpers = {
-            new CeolWidgetHelperToplevel(),
             new CeolWidgetHelperMiniPlayer()
     };
 
@@ -101,11 +98,11 @@ public class CeolWidgetController {
                 }
             });
             updateWidgets(command.toString());
-            if ( command instanceof CommandApp ) {
+            if ( command instanceof CommandBaseApp) {
                 Intent i = new Intent();
                 i.setClass(context, MainActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra("SelectSI",(command instanceof CommandAppSelectSI));
+                i.putExtra(CeolService.START_ACTIVITY_ACTION,((CommandBaseApp) command).getAction());
                 context.startActivity(i);
             }
         } else {

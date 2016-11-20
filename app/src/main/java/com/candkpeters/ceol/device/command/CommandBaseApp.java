@@ -5,10 +5,19 @@ import com.candkpeters.ceol.model.PlayStatusType;
 /**
  * Created by crisp on 25/01/2016.
  */
-public class CommandApp extends Command {
+public class CommandBaseApp extends Command {
 
-    public CommandApp() {
+    public enum Action {
+        BASIC,
+        INFO,
+        SELECTSI
+    };
+
+    Action action = Action.BASIC;
+
+    public CommandBaseApp(Action action) {
         super();
+        this.action = action;
     }
 
     @Override
@@ -33,6 +42,10 @@ public class CommandApp extends Command {
 
     public String toString() {
         return this.getClass().getSimpleName();
+    }
+
+    public String getAction() {
+        return action.name();
     }
 
 }

@@ -56,18 +56,18 @@ public class CeolDeviceNetServer {
         scridValue = "";
     }
 
-    public void setBrowseLine( int line, String text, String attributes) {
-        entries.setBrowseLine(line, text, attributes);
+    public void setChunkLine(int lineIdx, String text, String attributes) {
+        entries.setChunkLine(lineIdx, text, attributes);
     }
 
-    public void initializeEntries(String title, String scridValue, String scrid, String listmax, String listposition) {
+    public void initialiseChunk(String title, String scridValue, String scrid, String listmax, String listposition) {
         setIsBrowsing(true);
-        entries.initializeEntries(title, scridValue, scrid, listmax, listposition);
+        entries.initialiseChunk(title, scridValue, scrid, listmax, listposition);
         this.title = title;
     }
 
     public int getSelectedPosition() {
-        return entries.getSelectedPosition();
+        return entries.getListPosition();
     }
 
     public CeolBrowseEntry getSelectedEntry() {
@@ -83,7 +83,7 @@ public class CeolDeviceNetServer {
     }
 
     public int selectedPosition() {
-        return entries.getSelectedPosition();
+        return entries.getListPosition();
     }
 
     public CeolBrowseEntries getEntries() {
@@ -120,10 +120,10 @@ public class CeolDeviceNetServer {
     }
 
     public String getBitrate() {
-        return bitrate;
+        return bitrate == null? "": bitrate;
     }
 
     public String getFormat() {
-        return format;
+        return format == null? "": format;
     }
 }

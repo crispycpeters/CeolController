@@ -37,11 +37,14 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.candkpeters.ceol.controller.CeolController;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
+import com.candkpeters.ceol.device.command.CommandBaseApp;
 import com.candkpeters.ceol.device.command.CommandControlStop;
 import com.candkpeters.ceol.device.command.CommandControlToggle;
 import com.candkpeters.ceol.device.command.CommandCursorDown;
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity
     private Animation powerAnimation;
     private boolean isLargeDevice;
     private boolean isSelectSIStart = false;
+    private String action = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,7 +227,7 @@ public class MainActivity extends AppCompatActivity
             }
             updateSIEntries(ceolDevice);
 
-            updateMacroButtons();
+//            updateMacroButtons();
 
             updatePowerButton(ceolDevice);
 
@@ -340,6 +344,10 @@ public class MainActivity extends AppCompatActivity
         updateNavigationRow( ceolDevice, R.id.textRow5, 5);
         updateNavigationRow( ceolDevice, R.id.textRow6, 6);
         updateNavigationRow( ceolDevice, R.id.textRow7, 7);
+
+        ListView entriesList = (ListView)findViewById(R.id.entriesList);
+        ListAdapter adapter = entriesList.getAdapter();
+
     }
 
     private void updateNavigationRow(CeolDevice ceolDevice, int rowResId, int rowIndex) {
@@ -394,6 +402,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+/*
     public void updateMacroButtons() {
         Prefs prefs = new Prefs(this);
         String[] macroNames = prefs.getMacroNames();
@@ -403,7 +412,9 @@ public class MainActivity extends AppCompatActivity
         updateMacroButton( R.id.performMacro3B, macroNames, 2);
 
     }
+*/
 
+/*
     private void updateMacroButton(int resId, String[] macroNames, int macroIndex) {
 
         if ( macroIndex < macroNames.length) {
@@ -413,14 +424,20 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+*/
 
     @Override
     public void onStart() {
         super.onStart();
         ceolController.activityOnStart();
-        if ( isSelectSIStart) {
-            openDrawer();
+        if ( action != null ) {
+            if ( action.equals( CommandBaseApp.Action.SELECTSI.name())) {
+                openDrawer();
+            } else if ( action.equals( CommandBaseApp.Action.INFO.name())) {
+                showInfo();
+            }
         }
+        action = null;
     }
 
     @Override
@@ -432,8 +449,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onNewIntent(Intent intent) {
         Bundle b = intent.getExtras();
-        if (b != null) {
-            isSelectSIStart = b.getBoolean("SelectSI");
+        if (b != null ) {
+            action = b.getString(CeolService.START_ACTIVITY_ACTION);
         }
     }
 
@@ -479,32 +496,6 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.volumeupB:
                 command = new CommandMasterVolumeUp();
-                break;
-
-            // Select
-            case R.id.siInternetRadioB:
-                command = new CommandSetSI(SIStatusType.IRadio);
-                break;
-            case R.id.siIpodB:
-                command = new CommandSetSI(SIStatusType.Ipod);
-                break;
-            case R.id.siMusicServerB:
-                command = new CommandSetSI(SIStatusType.NetServer);
-                break;
-            case R.id.siTunerB:
-                command = new CommandSetSI(SIStatusType.Tuner);
-                break;
-            case R.id.siAnalogInB:
-                command = new CommandSetSI(SIStatusType.AnalogIn);
-                break;
-            case R.id.siDigitalInB:
-                command = new CommandSetSI(SIStatusType.DigitalIn1);
-                break;
-            case R.id.siBluetoothB:
-                command = new CommandSetSI(SIStatusType.Bluetooth);
-                break;
-            case R.id.siCdB:
-                command = new CommandSetSI(SIStatusType.CD);
                 break;
 
             // Other
@@ -704,30 +695,6 @@ public class MainActivity extends AppCompatActivity
                 // Already not connected
             }
         }
-    }
-
-    /**
-     * Section 1 - Ceol main controls page.
-     */
-    public static class CeolRemoteFragmentMainControls extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "1";
-
-        public CeolRemoteFragmentMainControls() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.appwidget_layout_toplevel, container, false);
-            ceolController.setViewCommandHandlers( rootView );
-
-            return rootView;
-        }
-
     }
 
     /**
