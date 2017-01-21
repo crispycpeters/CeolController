@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.candkpeters.ceol.controller.CeolController;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
@@ -52,6 +54,7 @@ import com.candkpeters.ceol.device.command.CommandCursorLeft;
 import com.candkpeters.ceol.device.command.CommandCursorRight;
 import com.candkpeters.ceol.device.command.CommandCursorUp;
 import com.candkpeters.ceol.device.command.CommandMacro;
+import com.candkpeters.ceol.device.command.CommandMasterVolume;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeDown;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeUp;
 import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
@@ -60,6 +63,7 @@ import com.candkpeters.ceol.device.command.CommandSkipBackward;
 import com.candkpeters.ceol.device.command.CommandSkipForward;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.DeviceStatusType;
+import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.chris.ceol.R;
 
@@ -772,5 +776,35 @@ public class MainActivity extends AppCompatActivity
                 return null;
             }
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if ( action == KeyEvent.ACTION_DOWN) {
+                    doVolumeControl(DirectionType.Up);
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if ( action == KeyEvent.ACTION_DOWN) {
+                    doVolumeControl(DirectionType.Down);
+                }
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
+        }
+    }
+
+    private void doVolumeControl( DirectionType direction) {
+        Command command = new CommandMasterVolume(direction);
+        ceolController.performCommand(command);
+        String text = String.format(getResources().getString(R.string.volume_toast),direction.toString());
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(getApplicationContext(), text, duration );
+        toast.show();
     }
 }

@@ -103,4 +103,5 @@
     <string name="info_done">Done</string>
     <string name="i_button_text">i</string>
 
+    <string name="volume_toast">Volume %1$s</string>
 </resources>
