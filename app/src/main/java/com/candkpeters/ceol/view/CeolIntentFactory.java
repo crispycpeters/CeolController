@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.candkpeters.ceol.device.command.Command;
+import com.candkpeters.ceol.service.CeolService;
 
 import java.util.List;
 

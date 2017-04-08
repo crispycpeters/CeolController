@@ -1,4 +1,4 @@
-package com.candkpeters.ceol.view;
+package com.candkpeters.ceol.service;
 
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
@@ -11,6 +11,7 @@ import android.util.Log;
 import com.candkpeters.ceol.controller.CeolWidgetController;
 import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.view.Prefs;
 
 /**
  * Created by crisp on 14/02/2016.
@@ -31,19 +32,22 @@ public class CeolService extends Service {
     private Prefs prefs;
     final Context context = this;
 
-    CeolCommandManager ceolCommandManager = null;
-    CeolDevice ceolDevice = null;
-
     CeolWidgetController ceolWidgetController;
+    private CeolCommandManager ceolCommandManager;
+    private CeolServiceBinder ceolServiceBinder;
 
     public CeolService() {
+        ceolCommandManager = CeolCommandManager.getInstance();
         ceolWidgetController = new CeolWidgetController(this);
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        Log.d(TAG, "onBind: Entering");
+        initializeService();
+        ceolServiceBinder = new CeolServiceBinder(ceolCommandManager);
+        return ceolServiceBinder;
     }
 
     /*
@@ -119,7 +123,7 @@ public class CeolService extends Service {
     }
 
     private void initializeService() {
-        ceolWidgetController.initialize();
+        ceolWidgetController.initialize(ceolCommandManager);
     }
 
 }

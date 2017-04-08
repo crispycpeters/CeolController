@@ -1,10 +1,12 @@
-package com.candkpeters.ceol.view;
+package com.candkpeters.ceol.service;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+
+import com.candkpeters.ceol.service.CeolService;
 
 /**
  * Created by crisp on 17/03/2016.

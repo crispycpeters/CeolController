@@ -8,7 +8,7 @@ import android.util.Log;
 public class CeolDevice {
 
     private static final String TAG = "CeolDevice";
-    private static final long DEFAULT_WAKEUP_PERIOD_MSECS = 14000;  // Give machine a chance to wake up before sending commands
+    private static final long DEFAULT_WAKEUP_PERIOD_MSECS = 3000;  // Give machine a chance to wake up before sending commands
     private static final long DEFAULT_NETSERVERON_PERIOD_MSECS = 6000; // Give NetServer a chance to settle down be believing its settings
 
     private static CeolDevice ourInstance = new CeolDevice();

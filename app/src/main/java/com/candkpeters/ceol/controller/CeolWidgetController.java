@@ -12,7 +12,7 @@ import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.device.command.CommandBaseApp;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.view.CeolIntentFactory;
-import com.candkpeters.ceol.view.CeolService;
+import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.ceol.view.CeolWidgetHelper;
 import com.candkpeters.ceol.view.CeolWidgetHelperMiniPlayer;
 import com.candkpeters.ceol.view.MainActivity;
@@ -28,7 +28,7 @@ public class CeolWidgetController {
     };
 
     private Prefs prefs;
-    CeolCommandManager ceolCommandManager = null;
+    public CeolCommandManager ceolCommandManager = null;
     CeolDevice ceolDevice = null;
     OnCeolStatusChangedListener onCeolStatusChangedListener = new OnCeolStatusChangedListener() {
         @Override
@@ -44,14 +44,15 @@ public class CeolWidgetController {
         context = ceolService;
     }
 
-    public void initialize() {
+    public void initialize( CeolCommandManager ceolCommandManager) {
 /*
         this.prefs = new Prefs(context);
         String baseUrl = prefs.getBaseUrl();
 */
 
-        ceolCommandManager = CeolCommandManager.getInstance();
-        ceolCommandManager.initialize(context);//CeolDevice.getInstance(), baseUrl, prefs.getMacroNames(), prefs.getMacroValues());
+        this.ceolCommandManager = ceolCommandManager;
+//        ceolCommandManager = CeolCommandManager.getInstance();
+//        ceolCommandManager.initialize(context);//CeolDevice.getInstance(), baseUrl, prefs.getMacroNames(), prefs.getMacroValues());
         ceolDevice = ceolCommandManager.getCeolDevice();
         ceolCommandManager.start();
         startService();

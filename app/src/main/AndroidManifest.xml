@@ -5,6 +5,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -31,10 +36,10 @@
                 android:value="com.candkpeters.ceol.view.MainActivity" />
         </activity>
 
-        <service android:name="com.candkpeters.ceol.view.CeolService" >
+        <service android:name="com.candkpeters.ceol.service.CeolService" >
         </service>
 
-        <receiver android:name="com.candkpeters.ceol.view.CeolServiceReceiver" >
+        <receiver android:name="com.candkpeters.ceol.service.CeolServiceReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
@@ -50,6 +55,9 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/ceol_appwidget_miniplayer" />
         </receiver>
+
+        <!-- com.candkpeters.ceol.cling.BrowserUpnpService -->
+        <service android:name="org.fourthline.cling.android.AndroidUpnpServiceImpl"/>
 
     </application>
 

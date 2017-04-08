@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.candkpeters.ceol.service.CeolService;
+
 /**
  * Created by crisp on 22/03/2016.
  */
