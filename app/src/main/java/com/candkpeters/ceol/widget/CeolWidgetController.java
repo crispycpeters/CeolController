@@ -1,4 +1,4 @@
-package com.candkpeters.ceol.controller;
+package com.candkpeters.ceol.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -13,8 +13,8 @@ import com.candkpeters.ceol.device.command.CommandBaseApp;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.view.CeolIntentFactory;
 import com.candkpeters.ceol.service.CeolService;
-import com.candkpeters.ceol.view.CeolWidgetHelper;
-import com.candkpeters.ceol.view.CeolWidgetHelperMiniPlayer;
+import com.candkpeters.ceol.widget.CeolWidgetHelper;
+import com.candkpeters.ceol.widget.CeolWidgetHelperMiniPlayer;
 import com.candkpeters.ceol.view.MainActivity;
 import com.candkpeters.ceol.view.Prefs;
 
@@ -51,6 +51,7 @@ public class CeolWidgetController {
 */
 
         this.ceolCommandManager = ceolCommandManager;
+        this.ceolCommandManager.initialize(context);
 //        ceolCommandManager = CeolCommandManager.getInstance();
 //        ceolCommandManager.initialize(context);//CeolDevice.getInstance(), baseUrl, prefs.getMacroNames(), prefs.getMacroValues());
         ceolDevice = ceolCommandManager.getCeolDevice();
