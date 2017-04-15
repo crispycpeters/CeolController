@@ -1,5 +1,7 @@
 package com.candkpeters.ceol.device.command;
 
+import android.util.Log;
+
 import com.candkpeters.ceol.model.SIStatusType;
 
 /**
@@ -7,6 +9,7 @@ import com.candkpeters.ceol.model.SIStatusType;
  */
 public class CommandSetSI extends Command {
 
+    private static final String TAG = "CommandSetSI";
     private SIStatusType value;
 
     public CommandSetSI(SIStatusType value) {
@@ -81,7 +84,11 @@ public class CommandSetSI extends Command {
     }
 
     protected void initialize(String valueString) {
-        value = SIStatusType.valueOf(valueString);
+        try {
+            value = SIStatusType.valueOf(valueString);
+        } catch ( IllegalArgumentException e ) {
+            Log.e(TAG, "initialize: Could not initialize SIStatus with: " + valueString + ": Stack: " + e.getStackTrace() );
+        }
     }
 
     public String toString() {

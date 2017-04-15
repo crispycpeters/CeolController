@@ -32,12 +32,14 @@ public class CeolCommandManager {
     private String message;
 //    private final Object MUTEX = new Object();
 
-    private CeolCommandManager() {
+    public CeolCommandManager() {
     }
 
+/*
     public static CeolCommandManager getInstance() {
         return ourInstance;
     }
+*/
 
     /*
     To be called when config changes or on start
@@ -63,9 +65,11 @@ public class CeolCommandManager {
     private void updateConfig(Context context) {
         Prefs prefs = new Prefs(context);
         if ( ceolDeviceMonitor == null) {
-            ceolDeviceMonitor = new CeolDeviceWebSvcMonitor(prefs.getBaseUrl(),
+            ceolDeviceMonitor = new CeolDeviceWebSvcMonitor(prefs.getBaseUrl());
+/*
                     prefs.getBackgroundTimeoutSecs() * 1000,
                     prefs.getBackgroundRateSecs() * 1000);
+*/
         } else {
             ceolDeviceMonitor.recreateService(prefs.getBaseUrl());
         }

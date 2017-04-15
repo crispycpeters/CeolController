@@ -51,7 +51,6 @@ public class CeolWidgetController {
 */
 
         this.ceolCommandManager = ceolCommandManager;
-        this.ceolCommandManager.initialize(context);
 //        ceolCommandManager = CeolCommandManager.getInstance();
 //        ceolCommandManager.initialize(context);//CeolDevice.getInstance(), baseUrl, prefs.getMacroNames(), prefs.getMacroValues());
         ceolDevice = ceolCommandManager.getCeolDevice();

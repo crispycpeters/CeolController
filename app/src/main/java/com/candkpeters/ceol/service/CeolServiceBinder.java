@@ -11,14 +11,14 @@ import com.candkpeters.ceol.device.CeolCommandManager;
 
 public class CeolServiceBinder extends Binder {
 
-    private CeolCommandManager ceolCommandManager;
+    private CeolService ceolService;
 
-    public CeolServiceBinder( CeolCommandManager ceolCommandManager) {
+    public CeolServiceBinder( CeolService ceolService) {
         super();
-        this.ceolCommandManager = ceolCommandManager;
+        this.ceolService = ceolService;
     }
 
-    public CeolCommandManager getCeolCommandManager() {
-        return ceolCommandManager;
+    public CeolService getCeolService() {
+        return ceolService;
     }
 }

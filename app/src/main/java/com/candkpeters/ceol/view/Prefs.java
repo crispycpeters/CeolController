@@ -129,6 +129,11 @@ public class Prefs {
                 context.getResources().getInteger(R.integer.pref_default_backgroundratesecs));
     }
 
+    public String getOpenhomeName() {
+        return preferences.getString(context.getResources().getString(R.string.pref_key_openhome_name),
+                context.getResources().getString(R.string.pref_default_openhome_name));
+    }
+
 
 
 /*

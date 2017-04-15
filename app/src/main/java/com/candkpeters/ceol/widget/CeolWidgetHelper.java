@@ -1,4 +1,4 @@
-package com.candkpeters.ceol.view;
+package com.candkpeters.ceol.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -10,6 +10,9 @@ import android.content.ComponentName;
 import com.candkpeters.ceol.device.CeolCommandManager;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.service.CeolService;
+import com.candkpeters.ceol.view.CeolIntentFactory;
+import com.candkpeters.ceol.view.MainActivity;
+import com.candkpeters.ceol.view.Prefs;
 
 /**
  * Created by crisp on 22/03/2016.

@@ -35,8 +35,8 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 //    private static final int BACKGROUNDRATE_MSECS = 5000;
     private static final int REPEATONCE_MSECS = 600;
 //    private static final long BACKGROUNDTIMEOUT_MSECS = 10000;
-    private final int backgroundTimeoutMsecs;
-    private final int backgroundRateMsecs;
+//    private final int backgroundTimeoutMsecs;
+//    private final int backgroundRateMsecs;
 
     public WebSvcApiService webSvcApiService = null;
     private UIThreadUpdater activeThreadUpdater;
@@ -76,14 +76,14 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     ImageDownloaderTask imageDownloaderTask;
     private long lastSuccessMsecs;
 
-    public CeolDeviceWebSvcMonitor(String baseUrl, int backgroundTimeoutMsecs, int backgroundRateMsecs) {
+    public CeolDeviceWebSvcMonitor(String baseUrl) {
         ceolDevice = CeolDevice.getInstance();
         this.observers=new ArrayList<OnCeolStatusChangedListener>();
         imageDownloaderTask = new ImageDownloaderTask(this);
         recreateService(baseUrl);
-        resetBackgroundCountdown();
-        this.backgroundTimeoutMsecs = backgroundTimeoutMsecs;
-        this.backgroundRateMsecs = backgroundRateMsecs;
+//        resetBackgroundCountdown();
+//        this.backgroundTimeoutMsecs = backgroundTimeoutMsecs;
+//        this.backgroundRateMsecs = backgroundRateMsecs;
     }
 
     public void recreateService(String baseUrl) {
@@ -92,7 +92,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 
     public void getStatusSoon() {
         activeThreadUpdater.fireOnce(REPEATONCE_MSECS);
-        resetBackgroundCountdown();
+//        resetBackgroundCountdown();
     }
 
     private void startActiveUpdates() {
@@ -116,11 +116,13 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     }
 
     public void start() {
+/*
         if ( backgroundThreadUpdater == null ) {
             backgroundThreadUpdater = new UIThreadUpdater(this, backgroundRateMsecs);
             backgroundThreadUpdater.startUpdates();
         }
         checkBackgroundUpdate();
+*/
     }
 
     public void getStatus_Sync() {
@@ -131,7 +133,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
         } catch (RetrofitError retrofitError) {
             Log.w(TAG, "Could not connect to CEOL: " + retrofitError.getMessage());
             updateDeviceErrorStatus();
-            checkBackgroundUpdate();
+//            checkBackgroundUpdate();
         }
     }
 
@@ -171,11 +173,11 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
                 logdTime(TAG, "AppCommand success: ");
             }
             updateDeviceStatus(webSvcHttpAppCommandResponse);
-            checkBackgroundUpdate();
+//            checkBackgroundUpdate();
         } catch ( RetrofitError retrofitError) {
             logdTime(TAG, "CEOL AppCommand failed: " + retrofitError.getMessage());
             updateDeviceErrorStatus();
-            checkBackgroundUpdate();
+//            checkBackgroundUpdate();
         }
     }
 

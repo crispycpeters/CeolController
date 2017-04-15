@@ -39,13 +39,18 @@ public class BrowserUpnpService extends AndroidUpnpServiceImpl {
             // DOC:REGISTRY
 
             // DOC:SERVICE_TYPE
+/*
             @Override
             public ServiceType[] getExclusiveServiceTypes() {
                 return new ServiceType[]{
-                        new UDAServiceType("SwitchPower")
+                        new ServiceType("av-openhome-org","Product")
                 };
             }
+*/
             // DOC:SERVICE_TYPE
+
+
+
         };
     }
 }

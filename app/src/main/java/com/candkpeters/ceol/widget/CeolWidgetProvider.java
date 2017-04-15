@@ -1,4 +1,4 @@
-package com.candkpeters.ceol.view;
+package com.candkpeters.ceol.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.candkpeters.ceol.service.CeolService;
+import com.candkpeters.ceol.view.Prefs;
+import com.candkpeters.ceol.widget.CeolWidgetHelper;
 
 /**
  * Created by crisp on 22/03/2016.

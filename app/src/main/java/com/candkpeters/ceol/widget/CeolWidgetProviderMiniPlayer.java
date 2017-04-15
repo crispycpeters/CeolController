@@ -1,4 +1,7 @@
-package com.candkpeters.ceol.view;
+package com.candkpeters.ceol.widget;
+
+import com.candkpeters.ceol.widget.CeolWidgetHelperMiniPlayer;
+import com.candkpeters.ceol.widget.CeolWidgetProvider;
 
 /**
  * Created by crisp on 12/02/2016.

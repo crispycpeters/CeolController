@@ -1,4 +1,4 @@
-package com.candkpeters.ceol.view;
+package com.candkpeters.ceol.widget;
 
 import android.content.ComponentName;
 import android.content.Context;

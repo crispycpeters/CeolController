@@ -46,7 +46,7 @@
         </receiver>
 
         <receiver
-            android:name="com.candkpeters.ceol.view.CeolWidgetProviderMiniPlayer"
+            android:name="com.candkpeters.ceol.widget.CeolWidgetProviderMiniPlayer"
             android:label="Ceol Mini Player">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

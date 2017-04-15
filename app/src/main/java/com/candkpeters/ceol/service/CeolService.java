@@ -8,9 +8,9 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.candkpeters.ceol.controller.CeolWidgetController;
+import com.candkpeters.ceol.cling.ClingManager;
+import com.candkpeters.ceol.widget.CeolWidgetController;
 import com.candkpeters.ceol.device.CeolCommandManager;
-import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.view.Prefs;
 
 /**
@@ -34,10 +34,11 @@ public class CeolService extends Service {
 
     CeolWidgetController ceolWidgetController;
     private CeolCommandManager ceolCommandManager;
+    private ClingManager clingManager;
     private CeolServiceBinder ceolServiceBinder;
 
     public CeolService() {
-        ceolCommandManager = CeolCommandManager.getInstance();
+        ceolCommandManager = new CeolCommandManager();//.getInstance();
         ceolWidgetController = new CeolWidgetController(this);
     }
 
@@ -46,8 +47,12 @@ public class CeolService extends Service {
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind: Entering");
         initializeService();
-        ceolServiceBinder = new CeolServiceBinder(ceolCommandManager);
+        ceolServiceBinder = new CeolServiceBinder(this);
         return ceolServiceBinder;
+    }
+
+    public CeolCommandManager getCeolCommandManager() {
+        return ceolCommandManager;
     }
 
     /*
@@ -62,11 +67,13 @@ public class CeolService extends Service {
         // register receiver that handles various events
         CeolServiceReceiver mReceiver = new CeolServiceReceiver();
         registerReceiver(mReceiver, mReceiver.createIntentFilter());
+
+        clingManager = new ClingManager(this);
+        clingManager.bindToCling();
     }
 
     /*
     * On starting service
-    *
     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -119,10 +126,13 @@ public class CeolService extends Service {
 
     @Override
     public void onDestroy() {
+        //TODO - how to destroy service
+        clingManager.unbindFromCling();
         ceolWidgetController.destroy();
     }
 
     private void initializeService() {
+        ceolCommandManager.initialize(context);
         ceolWidgetController.initialize(ceolCommandManager);
     }
 
