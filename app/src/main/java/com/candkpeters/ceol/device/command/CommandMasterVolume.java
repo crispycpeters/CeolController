@@ -22,7 +22,7 @@ public class CommandMasterVolume extends CommandBaseDirection {
 
     @Override
     public void execute() {
-        ceolCommandManager.sendCommand(getDirectionType().isPositiveDirection ? "MVUP" : "MVDOWN");
+        ceolManager.sendCommand(getDirectionType().isPositiveDirection ? "MVUP" : "MVDOWN");
     }
 
 }

@@ -44,7 +44,7 @@ public class CommandCursor extends CommandBaseDirection {
                 commandString = "NS92";
                 break;
         }
-        ceolCommandManager.sendCommand(commandString);
+        ceolManager.sendCommand(commandString);
     }
 
 

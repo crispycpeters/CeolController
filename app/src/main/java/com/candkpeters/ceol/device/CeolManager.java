@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.util.Log;
 
+import com.candkpeters.ceol.cling.ClingManager;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.view.Prefs;
@@ -15,61 +16,48 @@ import java.util.ArrayList;
 /**
  * Created by crisp on 25/01/2016.
  */
-public class CeolCommandManager {
+public class CeolManager {
 
-    private static final String TAG = "CeolCommandManager" ;
-    private CeolDevice device;
+    private static final String TAG = "CeolManager" ;
+    private CeolDevice ceolDevice;
+    private ClingManager clingManager;
     private CeolDeviceWebSvcMonitor ceolDeviceMonitor;
     private CeolDeviceWebSvcCommand ceolDeviceWebSvcCommand;
-//    private int webStatusRepeatRateMsecs;
-    private static CeolCommandManager ourInstance = new CeolCommandManager();
-    private Context context;
+    private final Context context;
     private MacroInflater macroInflater;
 
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
 
-//    private List<OnCeolStatusChangedListener> observers;
     private String message;
-//    private final Object MUTEX = new Object();
 
-    public CeolCommandManager() {
+    public CeolManager(final Context context) {
+        this.context = context;
+        ceolDevice = new CeolDevice();
+        clingManager = new ClingManager(context, ceolDevice);
     }
-
-/*
-    public static CeolCommandManager getInstance() {
-        return ourInstance;
-    }
-*/
 
     /*
     To be called when config changes or on start
      */
-    public void initialize(final Context context) {
-        this.context = context;
-        if ( this.device == null ) {
-            this.device = CeolDevice.getInstance();
-            if (onSharedPreferenceChangeListener == null) {
-                Prefs prefs = new Prefs(context);
-                onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-                    @Override
-                    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                        updateConfig(context);
-                    }
-                };
-                prefs.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
-            }
-            updateConfig(context);
+    public void initialize() {
+        if (onSharedPreferenceChangeListener == null) {
+            Prefs prefs = new Prefs(context);
+            onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    updateConfig(context);
+                }
+            };
+            prefs.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
         }
+        updateConfig(context);
+        clingManager.bindToCling();
     }
 
     private void updateConfig(Context context) {
         Prefs prefs = new Prefs(context);
         if ( ceolDeviceMonitor == null) {
-            ceolDeviceMonitor = new CeolDeviceWebSvcMonitor(prefs.getBaseUrl());
-/*
-                    prefs.getBackgroundTimeoutSecs() * 1000,
-                    prefs.getBackgroundRateSecs() * 1000);
-*/
+            ceolDeviceMonitor = new CeolDeviceWebSvcMonitor(getCeolDevice(), prefs.getBaseUrl());
         } else {
             ceolDeviceMonitor.recreateService(prefs.getBaseUrl());
         }
@@ -93,10 +81,12 @@ public class CeolCommandManager {
 
     public void register(OnCeolStatusChangedListener obj) {
         ceolDeviceMonitor.register(obj);
+        // TODO: Potentially unpause ClingManager events if paused
     }
 
     public void unregister(OnCeolStatusChangedListener obj) {
         ceolDeviceMonitor.unregister(obj);
+        // TODO: Potentially pause ClingManager events if nothing is registered to listen
     }
 
     public void sendCommand(String commandString) {
@@ -120,7 +110,7 @@ public class CeolCommandManager {
     }
 
     public CeolDevice getCeolDevice() {
-        return CeolDevice.getInstance();
+        return ceolDevice;
     }
 
     public void start() {

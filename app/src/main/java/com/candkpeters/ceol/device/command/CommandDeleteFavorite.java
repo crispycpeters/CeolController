@@ -18,7 +18,7 @@ public class CommandDeleteFavorite extends CommandBaseInteger {
     @Override
     public void execute() {
 
-        ceolCommandManager.sendCommand("FVDEL " + String.format("%02d", getValue()));
+        ceolManager.sendCommand("FVDEL " + String.format("%02d", getValue()));
 
     }
 }

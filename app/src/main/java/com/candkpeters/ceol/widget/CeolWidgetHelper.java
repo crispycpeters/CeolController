@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 import android.content.ComponentName;
 
-import com.candkpeters.ceol.device.CeolCommandManager;
+import com.candkpeters.ceol.device.CeolManager;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.ceol.view.CeolIntentFactory;
@@ -95,14 +95,14 @@ public abstract class CeolWidgetHelper /*extends AppWidgetProvider*/ {
 
     protected abstract void updateViewsFirstTime(Context context, RemoteViews views, String text);
 
-    public boolean widgetsExist(CeolCommandManager ceolCommandManager, Context context) {
+    public boolean widgetsExist(CeolManager ceolManager, Context context) {
         AppWidgetManager appWidgetMan = AppWidgetManager.getInstance(context);
         ComponentName myWidget = getComponentName(context);
 
         return appWidgetMan.getAppWidgetIds(myWidget).length > 0;
     }
 
-    public void updateWidgets(CeolCommandManager ceolCommandManager, Context context, String text) {
+    public void updateWidgets(CeolManager ceolManager, Context context, String text) {
 
         AppWidgetManager appWidgetMan = AppWidgetManager.getInstance(context);
         ComponentName myWidget = getComponentName(context);
@@ -112,13 +112,13 @@ public abstract class CeolWidgetHelper /*extends AppWidgetProvider*/ {
             RemoteViews views =
                 buildRemoteView(context, widgetId);
             if ( views != null ) {
-                updateViews(views, ceolCommandManager, context, text);
+                updateViews(views, ceolManager, context, text);
                 pushWidgetUpdate(context, views);
             }
         }
     }
 
-    protected abstract void updateViews(RemoteViews views, CeolCommandManager ceolCommandManager, Context context, String text);
+    protected abstract void updateViews(RemoteViews views, CeolManager ceolManager, Context context, String text);
 
     protected void pushWidgetUpdate(Context context, RemoteViews views) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);

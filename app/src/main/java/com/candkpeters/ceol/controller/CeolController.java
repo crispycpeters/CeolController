@@ -8,7 +8,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 
-import com.candkpeters.ceol.device.CeolCommandManager;
+import com.candkpeters.ceol.device.CeolManager;
 import com.candkpeters.ceol.device.CeolDeviceWebSvcMonitor;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
@@ -16,19 +16,15 @@ import com.candkpeters.ceol.device.command.CommandControlStop;
 import com.candkpeters.ceol.device.command.CommandControlToggle;
 import com.candkpeters.ceol.device.command.CommandCursor;
 import com.candkpeters.ceol.device.command.CommandCursorEnter;
-import com.candkpeters.ceol.device.command.CommandMacro;
-import com.candkpeters.ceol.device.command.CommandMasterVolume;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeDown;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeUp;
 import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
-import com.candkpeters.ceol.device.command.CommandSkip;
 import com.candkpeters.ceol.device.command.CommandSkipBackward;
 import com.candkpeters.ceol.device.command.CommandSkipForward;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.ceol.service.CeolServiceBinder;
-import com.candkpeters.ceol.view.Prefs;
 import com.candkpeters.chris.ceol.R;
 
 //import org.apache.commons.net.telnet.EchoOptionHandler;
@@ -48,7 +44,7 @@ public class CeolController implements View.OnClickListener {
     Context context;
     CeolService ceolService;
     CeolDevice ceolDevice;
-    CeolCommandManager ceolCommandManager;
+    CeolManager ceolManager;
     boolean bound = false;
 
     OnCeolStatusChangedListener onCeolStatusChangedListener;
@@ -61,10 +57,10 @@ public class CeolController implements View.OnClickListener {
             this.onCeolStatusChangedListener = onCeolStatusChangedListener;
         }
         this.context = context;
-        //ceolCommandManager = CeolCommandManager.getInstance();
-//        this.ceolCommandManager = ceolCommandManager;
-//        ceolDevice = ceolCommandManager.getCeolDevice();
-        //ceolCommandManager.initialize(context);//ceolDevice, baseurl, prefs.getMacroNames(), prefs.getMacroValues());
+        //ceolManager = CeolManager.getInstance();
+//        this.ceolManager = ceolManager;
+//        ceolDevice = ceolManager.getCeolDevice();
+        //ceolManager.initialize(context);//ceolDevice, baseurl, prefs.getMacroNames(), prefs.getMacroValues());
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -75,9 +71,9 @@ public class CeolController implements View.OnClickListener {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             CeolServiceBinder binder = (CeolServiceBinder) service;
             ceolService = binder.getCeolService();
-            ceolCommandManager = ceolService.getCeolCommandManager();
-            ceolDevice = ceolCommandManager.getCeolDevice();
-            ceolCommandManager.register(onCeolStatusChangedListener);
+            ceolManager = ceolService.getCeolManager();
+            ceolDevice = ceolManager.getCeolDevice();
+            ceolManager.register(onCeolStatusChangedListener);
             bound = true;
         }
 
@@ -94,48 +90,48 @@ public class CeolController implements View.OnClickListener {
     private void stopListening() {
         Log.d(TAG, "stopListening: ("+bound+")");
         if (bound) {
-            ceolCommandManager.unregister(onCeolStatusChangedListener);
+            ceolManager.unregister(onCeolStatusChangedListener);
         }
     }
 
     private void startListening() {
         Log.d(TAG, "startListening: ("+bound+")");
         if (bound) {
-            ceolCommandManager.register(onCeolStatusChangedListener);
+            ceolManager.register(onCeolStatusChangedListener);
         } else {
             Intent intent = new Intent(context, CeolService.class);
             context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         }
-        //ceolCommandManager.register(onCeolStatusChangedListener);
+        //ceolManager.register(onCeolStatusChangedListener);
     }
 /*
 
     public void volumeUp() {
-        ceolCommandManager.execute(new CommandMasterVolume(DirectionType.Up));
+        ceolManager.execute(new CommandMasterVolume(DirectionType.Up));
     }
 
     public void volumeDown() {
-        ceolCommandManager.execute(new CommandMasterVolume(DirectionType.Down));
+        ceolManager.execute(new CommandMasterVolume(DirectionType.Down));
     }
 
     public void skipBackwards() {
-        ceolCommandManager.execute(new CommandSkip(DirectionType.Backward));
+        ceolManager.execute(new CommandSkip(DirectionType.Backward));
     }
 
     public void skipForwards() {
-        ceolCommandManager.execute(new CommandSkip(DirectionType.Forward));
+        ceolManager.execute(new CommandSkip(DirectionType.Forward));
     }
 */
 
     public void performCommand( Command command ) {
         if ( command != null && bound) {
-            ceolCommandManager.execute(command);
+            ceolManager.execute(command);
         }
     }
 
 /*
     public void performMacro() {
-        ceolCommandManager.execute(new CommandMacro(1));
+        ceolManager.execute(new CommandMacro(1));
     }
 */
 
@@ -176,7 +172,7 @@ public class CeolController implements View.OnClickListener {
     public void onClick(View v) {
         if ( bound && v.getTag() != null && v.getTag() instanceof Command ) {
             Command command = (Command)v.getTag();
-            ceolCommandManager.execute(command);
+            ceolManager.execute(command);
         }
     }
 }

@@ -2,7 +2,7 @@ package com.candkpeters.ceol.device.command;
 
 import android.util.Log;
 
-import com.candkpeters.ceol.device.CeolCommandManager;
+import com.candkpeters.ceol.device.CeolManager;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.model.CeolDevice;
 
@@ -13,7 +13,7 @@ public abstract class Command {
 
     private static final String TAG = "Command";
     //private final CommandType type;
-    protected CeolCommandManager ceolCommandManager;
+    protected CeolManager ceolManager;
     protected CeolDevice ceolDevice;
     protected int maxExecutionTimeMsecs = 30000;
     private OnCeolStatusChangedListener onCeolStatusChangedListener;
@@ -50,7 +50,7 @@ public abstract class Command {
     }
 
     private void finishUp() {
-        ceolCommandManager.unregister(onCeolStatusChangedListener);
+        ceolManager.unregister(onCeolStatusChangedListener);
         if ( onDoneCeolStatusChangedListener != null) {
             onDoneCeolStatusChangedListener.onCeolStatusChanged(ceolDevice);
         }
@@ -61,10 +61,10 @@ public abstract class Command {
 
     protected abstract boolean isSuccessful( );
 
-    public boolean isSuccessful(CeolCommandManager ceolCommandManager) {
+    public boolean isSuccessful(CeolManager ceolManager) {
         setIsDone(false);
-        this.ceolCommandManager = ceolCommandManager;
-        this.ceolDevice = ceolCommandManager.getCeolDevice();
+        this.ceolManager = ceolManager;
+        this.ceolDevice = ceolManager.getCeolDevice();
         boolean result = isSuccessful();
         if (result) {
             setIsDone(true);
@@ -85,18 +85,18 @@ public abstract class Command {
 
     protected abstract void execute();
 
-    public void execute( CeolCommandManager ceolCommandManager) {
-        execute(ceolCommandManager,null);
+    public void execute( CeolManager ceolManager) {
+        execute(ceolManager,null);
     }
 
-    public void execute( CeolCommandManager ceolCommandManager, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
+    public void execute(CeolManager ceolManager, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
 
         setIsDone(false);
         this.onDoneCeolStatusChangedListener = onDoneCeolStatusChangedListener;
         commandStartTime = System.currentTimeMillis();
 
-        this.ceolCommandManager = ceolCommandManager;
-        this.ceolDevice = ceolCommandManager.getCeolDevice();
+        this.ceolManager = ceolManager;
+        this.ceolDevice = ceolManager.getCeolDevice();
 
         preExecute();
         onCeolStatusChangedListener = new OnCeolStatusChangedListener() {
@@ -105,7 +105,7 @@ public abstract class Command {
                 checkOverallStatus();
             }
         };
-        ceolCommandManager.register(onCeolStatusChangedListener);
+        ceolManager.register(onCeolStatusChangedListener);
         execute();
     }
 

@@ -83,9 +83,9 @@ public class CommandControl extends Command {
                 }
         }
         if ( isSpotify) {
-            ceolCommandManager.sendMediaCommand(commandString);
+            ceolManager.sendMediaCommand(commandString);
         } else {
-            ceolCommandManager.sendCommand(commandString);
+            ceolManager.sendCommand(commandString);
         }
     }
 

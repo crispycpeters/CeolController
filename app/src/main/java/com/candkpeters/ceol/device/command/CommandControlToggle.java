@@ -34,10 +34,10 @@ public class CommandControlToggle extends CommandControl {
             case IRadio:
             case Ipod:
                 playStatusType = toggleCurrentStatus();
-                ceolCommandManager.sendCommand(playStatusType==PlayStatusType.Playing?"NS9A":"NS9B");
+                ceolManager.sendCommand(playStatusType==PlayStatusType.Playing?"NS9A":"NS9B");
                 break;
             case Spotify:
-                ceolCommandManager.sendMediaCommand("PLAY");
+                ceolManager.sendMediaCommand("PLAY");
                 playStatusType = toggleCurrentStatus();
                 break;
             case AnalogIn:

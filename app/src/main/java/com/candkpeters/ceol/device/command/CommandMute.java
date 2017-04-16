@@ -21,7 +21,7 @@ public class CommandMute extends CommandBaseBoolean {
 
     @Override
     public void execute() {
-        ceolCommandManager.sendCommand(getValue() ? "MUON" : "MUOFF");
+        ceolManager.sendCommand(getValue() ? "MUON" : "MUOFF");
     }
 
 }

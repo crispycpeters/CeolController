@@ -6,15 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.candkpeters.ceol.device.CeolCommandManager;
+import com.candkpeters.ceol.device.CeolManager;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.device.command.CommandBaseApp;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.view.CeolIntentFactory;
 import com.candkpeters.ceol.service.CeolService;
-import com.candkpeters.ceol.widget.CeolWidgetHelper;
-import com.candkpeters.ceol.widget.CeolWidgetHelperMiniPlayer;
 import com.candkpeters.ceol.view.MainActivity;
 import com.candkpeters.ceol.view.Prefs;
 
@@ -28,7 +26,7 @@ public class CeolWidgetController {
     };
 
     private Prefs prefs;
-    public CeolCommandManager ceolCommandManager = null;
+    public CeolManager ceolManager = null;
     CeolDevice ceolDevice = null;
     OnCeolStatusChangedListener onCeolStatusChangedListener = new OnCeolStatusChangedListener() {
         @Override
@@ -44,31 +42,31 @@ public class CeolWidgetController {
         context = ceolService;
     }
 
-    public void initialize( CeolCommandManager ceolCommandManager) {
+    public void initialize( CeolManager ceolManager) {
 /*
         this.prefs = new Prefs(context);
         String baseUrl = prefs.getBaseUrl();
 */
 
-        this.ceolCommandManager = ceolCommandManager;
-//        ceolCommandManager = CeolCommandManager.getInstance();
-//        ceolCommandManager.initialize(context);//CeolDevice.getInstance(), baseUrl, prefs.getMacroNames(), prefs.getMacroValues());
-        ceolDevice = ceolCommandManager.getCeolDevice();
-        ceolCommandManager.start();
+        this.ceolManager = ceolManager;
+//        ceolManager = CeolManager.getInstance();
+//        ceolManager.initialize(context);//CeolDevice.getInstance(), baseUrl, prefs.getMacroNames(), prefs.getMacroValues());
+        ceolDevice = ceolManager.getCeolDevice();
+        ceolManager.start();
         startService();
     }
 
     private void startWidgetUpdates() {
-        ceolCommandManager.register(onCeolStatusChangedListener);
+        ceolManager.register(onCeolStatusChangedListener);
     }
 
     private void stopWidgetUpdates() {
-        ceolCommandManager.unregister(onCeolStatusChangedListener);
+        ceolManager.unregister(onCeolStatusChangedListener);
     }
 
     private boolean widgetsExist() {
         for ( CeolWidgetHelper ceolWidgetHelper : ceolWidgetHelpers) {
-            if (ceolWidgetHelper.widgetsExist(ceolCommandManager, context))
+            if (ceolWidgetHelper.widgetsExist(ceolManager, context))
                 return true;
         }
         return false;
@@ -79,7 +77,7 @@ public class CeolWidgetController {
 
         for ( CeolWidgetHelper ceolWidgetHelper : ceolWidgetHelpers) {
             ceolWidgetHelper.setWaiting(isWaiting());
-            ceolWidgetHelper.updateWidgets(ceolCommandManager, context, text);
+            ceolWidgetHelper.updateWidgets(ceolManager, context, text);
         }
     }
 
@@ -91,7 +89,7 @@ public class CeolWidgetController {
         Log.d(TAG, "onStartCommand: Provider name: " + appWidgetProviderInfo.provider);
         if (command != null) {
             commandStarting(widgetId, appWidgetMan);
-            ceolCommandManager.execute(command, new OnCeolStatusChangedListener() {
+            ceolManager.execute(command, new OnCeolStatusChangedListener() {
                 @Override
                 public void onCeolStatusChanged(CeolDevice ceolDevice) {
                     Log.d(TAG, "onCeolStatusChanged: Stop waiting");
@@ -121,7 +119,7 @@ public class CeolWidgetController {
             Log.d(TAG, "commandStarting: Send waiting");
             for (CeolWidgetHelper ceolWidgetHelper : ceolWidgetHelpers) {
                 ceolWidgetHelper.setWaiting(true);
-                ceolWidgetHelper.updateWidgets(ceolCommandManager, context, "Waiting");
+                ceolWidgetHelper.updateWidgets(ceolManager, context, "Waiting");
             }
         }
     }
@@ -132,7 +130,7 @@ public class CeolWidgetController {
             Log.d(TAG, "commandStarting: Send stop waiting");
             for (CeolWidgetHelper ceolWidgetHelper : ceolWidgetHelpers) {
                 ceolWidgetHelper.setWaiting(false);
-                ceolWidgetHelper.updateWidgets(ceolCommandManager, context, "Waiting");
+                ceolWidgetHelper.updateWidgets(ceolManager, context, "Waiting");
             }
         }
     }

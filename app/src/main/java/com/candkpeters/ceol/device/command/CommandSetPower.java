@@ -30,7 +30,7 @@ public class CommandSetPower extends CommandBaseBoolean {
     public void execute() {
         DeviceStatusType status = ceolDevice.getDeviceStatus();
         if ( status != DeviceStatusType.Starting) {
-            ceolCommandManager.sendCommand(getValue() ? "PWON" : "PWSTANDBY");
+            ceolManager.sendCommand(getValue() ? "PWON" : "PWSTANDBY");
         }
     }
 

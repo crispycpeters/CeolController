@@ -33,7 +33,7 @@ public class CommandBrowseToRoot extends Command {
             setIsDone(true);
         }
         if (!isSuccessful()) {
-            new CommandCursorLeft(ceolDevice.NetServer.getScridValue()).execute(ceolCommandManager, new OnCeolStatusChangedListener() {
+            new CommandCursorLeft(ceolDevice.NetServer.getScridValue()).execute(ceolManager, new OnCeolStatusChangedListener() {
                 @Override
                 public void onCeolStatusChanged(CeolDevice ceolDevice) {
                     checkStatus();

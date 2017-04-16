@@ -17,7 +17,7 @@ public class CommandSetFavorite extends CommandBaseInteger {
     @Override
     public void execute() {
 
-        ceolCommandManager.sendCommand("FVMEM " + String.format("%02d", getValue()));
+        ceolManager.sendCommand("FVMEM " + String.format("%02d", getValue()));
 
     }
 }

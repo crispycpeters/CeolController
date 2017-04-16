@@ -100,7 +100,7 @@ public class CommandBrowseInto extends CommandBaseString {
             if ( playFirstEntry ) {
                 Log.d(TAG, "checkForRight: Playing entry");
 //                searchSteps = SearchSteps.Playing;
-                new CommandControl(PlayStatusType.Playing).execute(ceolCommandManager, new OnCeolStatusChangedListener() {
+                new CommandControl(PlayStatusType.Playing).execute(ceolManager, new OnCeolStatusChangedListener() {
                     @Override
                     public void onCeolStatusChanged(CeolDevice ceolDevice) {
                         if ( ceolDevice.getPlayStatus() == PlayStatusType.Playing) {
@@ -138,13 +138,13 @@ public class CommandBrowseInto extends CommandBaseString {
                     searchSteps = SearchSteps.MovingDown;
                     advancePosition();
                     //Todo - use callback method - need to send string to Cursor down like cursor left
-                    new CommandCursor(DirectionType.Down).execute(ceolCommandManager);
+                    new CommandCursor(DirectionType.Down).execute(ceolManager);
                 }
             } else {
                 Log.d(TAG, "checkForEntry: GetBrowseList: Found entry \"" + entry.Text + "\". Go right. ");
                 resetPosition();
                 searchSteps = SearchSteps.MovingRight;
-                new CommandCursor(DirectionType.Right).execute(ceolCommandManager);
+                new CommandCursor(DirectionType.Right).execute(ceolManager);
             }
         } else {
             // We are waiting for the Move Down to complete

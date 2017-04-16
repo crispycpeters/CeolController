@@ -38,7 +38,7 @@ public class CommandFast extends CommandBaseDirection {
             case AnalogIn:
                 break;
         }
-        ceolCommandManager.sendCommand(commandString);
+        ceolManager.sendCommand(commandString);
     }
 
 }

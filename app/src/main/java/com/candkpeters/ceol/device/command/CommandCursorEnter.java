@@ -17,7 +17,7 @@ public class CommandCursorEnter extends Command {
 
     @Override
     public void execute() {
-        ceolCommandManager.sendCommand("NS94");
+        ceolManager.sendCommand("NS94");
     }
 
     @Override

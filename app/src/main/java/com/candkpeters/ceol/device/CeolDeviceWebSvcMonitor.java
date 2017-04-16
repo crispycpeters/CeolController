@@ -76,8 +76,8 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     ImageDownloaderTask imageDownloaderTask;
     private long lastSuccessMsecs;
 
-    public CeolDeviceWebSvcMonitor(String baseUrl) {
-        ceolDevice = CeolDevice.getInstance();
+    public CeolDeviceWebSvcMonitor(CeolDevice ceolDevice,String baseUrl) {
+        this.ceolDevice = ceolDevice;
         this.observers=new ArrayList<OnCeolStatusChangedListener>();
         imageDownloaderTask = new ImageDownloaderTask(this);
         recreateService(baseUrl);

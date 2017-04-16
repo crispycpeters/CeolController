@@ -11,14 +11,8 @@ public class CeolDevice {
     private static final long DEFAULT_WAKEUP_PERIOD_MSECS = 3000;  // Give machine a chance to wake up before sending commands
     private static final long DEFAULT_NETSERVERON_PERIOD_MSECS = 6000; // Give NetServer a chance to settle down be believing its settings
 
-    private static CeolDevice ourInstance = new CeolDevice();
     private static final long wakeUpPeriodMsecs = DEFAULT_WAKEUP_PERIOD_MSECS;
-//    private static final long netServerOnPeriodMsecs = DEFAULT_NETSERVERON_PERIOD_MSECS;
     private boolean isNetServer;
-
-    public static CeolDevice getInstance() {
-        return ourInstance;
-    }
 
     // Common
     private SIStatusType siStatus = SIStatusType.NotConnected;
@@ -26,15 +20,20 @@ public class CeolDevice {
     private boolean isMuted = false;
     private PlayStatusType playStatus = PlayStatusType.Unknown;
     private DeviceStatusType deviceStatus = DeviceStatusType.Connecting;
+
+    // Sub-devices
     public CeolDeviceNetServer NetServer;
     public CeolDeviceTuner Tuner;
+    public CeolDeviceOpenHome OpenHome;
+
     private long appStartedMsecs;
     private static final int REPEATRATE_MSECS = 900;
     private static final int REPEATRATE_MSECS_SPOTIFY = 8000;
 
-    private CeolDevice() {
+    public CeolDevice() {
         NetServer = new CeolDeviceNetServer();
         Tuner = new CeolDeviceTuner();
+        OpenHome = new CeolDeviceOpenHome();
         appStartedMsecs = System.currentTimeMillis();
     }
 
@@ -125,45 +124,47 @@ public class CeolDevice {
     public SIStatusType setSIStatusLite(String inputFunc) {
         SIStatusType siStatusNew;
 
-        switch (inputFunc) {
-            case "NET":
-                if (!isNetServer()) {
-                    // Not sure yet what the type is yet - assume NetServer
-                    isNetServer = true;
-                    siStatusNew = SIStatusType.NetServer;
-                } else {
+        if ( inputFunc != null) {
+            switch (inputFunc) {
+                case "NET":
+                    if (!isNetServer()) {
+                        // Not sure yet what the type is yet - assume NetServer
+                        isNetServer = true;
+                        siStatusNew = SIStatusType.NetServer;
+                    } else {
+                        siStatusNew = siStatus;
+                    }
+                    break;
+                case "TUNER":
+                    isNetServer = false;
+                    siStatusNew = SIStatusType.Tuner;
+                    break;
+                case "CD":
+                    isNetServer = false;
+                    siStatusNew = SIStatusType.CD;
+                    break;
+                case "USB":
+                    isNetServer = false;
+                    siStatusNew = SIStatusType.Ipod;
+                    break;
+                case "ANALOGIN":
+                    isNetServer = false;
+                    siStatusNew = SIStatusType.AnalogIn;
+                    break;
+                case "DIGITALIN1":
+                    isNetServer = false;
+                    siStatusNew = SIStatusType.DigitalIn1;
+                    break;
+                case "DIGITALIN2":
+                    isNetServer = false;
+                    siStatusNew = SIStatusType.DigitalIn2;
+                    break;
+                default:
                     siStatusNew = siStatus;
-                }
-                break;
-            case "TUNER":
-                isNetServer = false;
-                siStatusNew = SIStatusType.Tuner;
-                break;
-            case "CD":
-                isNetServer = false;
-                siStatusNew = SIStatusType.CD;
-                break;
-            case "USB":
-                isNetServer = false;
-                siStatusNew = SIStatusType.Ipod;
-                break;
-            case "ANALOGIN":
-                isNetServer = false;
-                siStatusNew = SIStatusType.AnalogIn;
-                break;
-            case "DIGITALIN1":
-                isNetServer = false;
-                siStatusNew = SIStatusType.DigitalIn1;
-                break;
-            case "DIGITALIN2":
-                isNetServer = false;
-                siStatusNew = SIStatusType.DigitalIn2;
-                break;
-            default:
-                siStatusNew = siStatus;
-                break;
+                    break;
+            }
+            setSIStatus(siStatusNew);
         }
-        setSIStatus(siStatusNew);
         return siStatus;
     }
 

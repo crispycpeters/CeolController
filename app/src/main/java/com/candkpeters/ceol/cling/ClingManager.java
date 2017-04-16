@@ -7,19 +7,15 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.view.Prefs;
 
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import org.fourthline.cling.android.FixedAndroidLogHandler;
-import org.fourthline.cling.controlpoint.ActionCallback;
-import org.fourthline.cling.model.action.ActionInvocation;
-import org.fourthline.cling.model.message.UpnpResponse;
 import org.fourthline.cling.model.meta.Device;
 import org.fourthline.cling.model.meta.LocalDevice;
 import org.fourthline.cling.model.meta.RemoteDevice;
-import org.fourthline.cling.model.meta.Service;
-import org.fourthline.cling.model.types.ServiceId;
 import org.fourthline.cling.registry.DefaultRegistryListener;
 import org.fourthline.cling.registry.Registry;
 
@@ -32,7 +28,8 @@ import java.util.logging.Logger;
 
 public class ClingManager {
     private static String TAG = "ClingManager";
-//    private BrowserUpnpService browserUpnpService;
+    private final CeolDevice ceolDevice;
+    //    private BrowserUpnpService browserUpnpService;
     private AndroidUpnpService upnpService;
     private BrowseRegistryListener registryListener = new BrowseRegistryListener();
     private final Context context;
@@ -45,9 +42,10 @@ public class ClingManager {
     private void setupCachedPlayer() {
     }
 
-    public ClingManager(Context context) {
+    public ClingManager(Context context, CeolDevice ceolDevice) {
         this.context = context;
-        openHomeDevice = new OpenHomeDevice(context);
+        openHomeDevice = new OpenHomeDevice(context, ceolDevice);
+        this.ceolDevice = ceolDevice;
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -87,7 +85,7 @@ public class ClingManager {
                 new FixedAndroidLogHandler()
         );
         // Now you can enable logging as needed for various categories of Cling:
-        Logger.getLogger("org.fourthline.cling").setLevel(Level.FINEST);
+        Logger.getLogger("org.fourthline.cling").setLevel(Level.INFO);
 
         prefs = new Prefs(context);
 
@@ -161,9 +159,7 @@ public class ClingManager {
 
             if ( friendlyName.compareToIgnoreCase(prefOpenhomeNmae) == 0) {
                 Log.d(TAG, "deviceAdded: Aha - found: " + device.getDisplayString());
-
                 openHomeDevice.addDevice(upnpService, device);
-
             }
 /*            runOnUiThread(new Runnable() {
                 public void run() {
@@ -186,6 +182,7 @@ public class ClingManager {
         public void deviceRemoved(final Device device) {
 
             if ( device.equals(openHomeDevice.getDevice())) {
+                Log.d(TAG, "deviceRemoved: " + device);
                 openHomeDevice.removeDevice();
             }
 /*

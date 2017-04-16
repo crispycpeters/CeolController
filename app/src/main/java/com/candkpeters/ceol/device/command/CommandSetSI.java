@@ -43,7 +43,7 @@ public class CommandSetSI extends Command {
             case Tuner:
 /*
                 webCommand = "SIDIGITALIN1";
-                ceolCommandManager.sendCommand(webCommand);
+                ceolManager.sendCommand(webCommand);
                 TODO: We need to implement a special change to Tuner if we are changing to Tuner from OpenHome/DLNA
                 Just sending SITUNER does not change monitor status away from NET - it's a denon bug
                 We'll need to send, say, SIDIGITAL1 then SITUNER (after a short period)
@@ -75,7 +75,7 @@ public class CommandSetSI extends Command {
             default:
                 webCommand = null;
         }
-        ceolCommandManager.sendCommand(webCommand);
+        ceolManager.sendCommand(webCommand);
     }
 
     @Override

@@ -71,14 +71,14 @@ public class CommandMacro extends CommandBaseInteger {
         super.preExecute();
 
         maxExecutionTimeMsecs = 60000;
-        commands = ceolCommandManager.getMacro(getValue());
+        commands = ceolManager.getMacro(getValue());
         commandSize = commands.size();
     }
 
     private void executeIfNeeded( Command command) {
         Log.d(TAG, "EXECUTE " + command);
-        if ( !command.isSuccessful(ceolCommandManager)) {
-            command.execute(ceolCommandManager);
+        if ( !command.isSuccessful(ceolManager)) {
+            command.execute(ceolManager);
         }
     }
 
