@@ -37,6 +37,10 @@ public class ClingManager {
 
     private OpenHomeDevice openHomeDevice;
 
+    public OpenHomeDevice getOpenHomeDevice() {
+        return openHomeDevice;
+    }
+
     private Device cachedOpenHomeDevice;
 
     private void setupCachedPlayer() {

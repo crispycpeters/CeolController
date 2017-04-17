@@ -37,8 +37,12 @@ public class CommandControlToggle extends CommandControl {
                 ceolManager.sendCommand(playStatusType==PlayStatusType.Playing?"NS9A":"NS9B");
                 break;
             case Spotify:
-                ceolManager.sendMediaCommand("PLAY");
+                ceolManager.sendSpotifyCommand("PLAY");
                 playStatusType = toggleCurrentStatus();
+                break;
+            case OpenHome:
+                playStatusType = toggleCurrentStatus();
+                ceolManager.sendOpenHomeCommand(playStatusType==PlayStatusType.Playing?"Play":"Pause");
                 break;
             case AnalogIn:
                 break;

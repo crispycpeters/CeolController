@@ -41,4 +41,22 @@ public class CeolDeviceOpenHome {
     public void setMetadata(String metadata) {
         this.metadata = metadata;
     }
+
+    public void setTransportState(String value) {
+        // Not sure this is needed
+        switch (value) {
+            case "Playing":
+                break;
+            case "Paused":
+                break;
+            case "Buffering":
+                break;
+            case "Stopped":
+                break;
+        }
+    }
+
+    public long getTrackCount() {
+        return trackCount;
+    }
 }

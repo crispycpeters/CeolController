@@ -32,7 +32,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     private static final String TAG = "CeolDeviceWebSvcMonitor";
 
     private static final int REPEATRATE_MSECS = 900;
-//    private static final int BACKGROUNDRATE_MSECS = 5000;
+    private static final int BACKGROUNDRATE_MSECS = 10000;
     private static final int REPEATONCE_MSECS = 600;
 //    private static final long BACKGROUNDTIMEOUT_MSECS = 10000;
 //    private final int backgroundTimeoutMsecs;
@@ -41,6 +41,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     public WebSvcApiService webSvcApiService = null;
     private UIThreadUpdater activeThreadUpdater;
     private UIThreadUpdater backgroundThreadUpdater;
+    private int repeatrate;
     final public CeolDevice ceolDevice;
 
     // Observer
@@ -366,7 +367,25 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 
     @Override
     public void run() {
-        getStatus_Async();
+        if (!ceolDevice.isOpenHome() || isTimeForBackground()) {
+            getStatus_Async();
+        } else {
+            activeThreadUpdater.next();
+        }
+    }
+
+    private long lastBackgroundRun = 0;
+    private boolean isTimeForBackground() {
+        long now = System.currentTimeMillis();
+
+        if ( now >= lastBackgroundRun + BACKGROUNDRATE_MSECS) {
+            Log.d(TAG, "isTimeForBackground: Time for CEOL background status in OpenHome mode...");
+            lastBackgroundRun = now;
+            return true;
+        } else {
+            // TODO - Remove once observer code is moved to different class, otherwise otherwise there is no easy way to inform observers when OpenHome modifies ceoldevice
+            return true;
+        }
     }
 
     @Override

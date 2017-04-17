@@ -11,6 +11,7 @@ public class CeolDevice {
     private static final long DEFAULT_WAKEUP_PERIOD_MSECS = 3000;  // Give machine a chance to wake up before sending commands
     private static final long DEFAULT_NETSERVERON_PERIOD_MSECS = 6000; // Give NetServer a chance to settle down be believing its settings
 
+    private static final long MAXVOLUME = 60;
     private static final long wakeUpPeriodMsecs = DEFAULT_WAKEUP_PERIOD_MSECS;
     private boolean isNetServer;
 
@@ -83,6 +84,9 @@ public class CeolDevice {
             switch (source) {
                 case "Music Server":
                     siStatusNew = SIStatusType.NetServer;
+                    if ( OpenHome.isOperating() ) {
+                        siStatusNew = SIStatusType.OpenHome;
+                    }
                     break;
                 case "TUNER":
                     siStatusNew = SIStatusType.Tuner;
@@ -117,6 +121,7 @@ public class CeolDevice {
             }
             setSIStatus(siStatusNew);
         }
+
         return siStatus;
     }
 
@@ -174,8 +179,8 @@ public class CeolDevice {
 
     private long netServerOnTimeMsecs = 0;
 
-    public void setSIStatus(SIStatusType newSiStatus) {
-        long now = System.currentTimeMillis();
+    public synchronized void setSIStatus(SIStatusType newSiStatus) {
+//        long now = System.currentTimeMillis();
 
         this.siStatus = newSiStatus;
 
@@ -214,6 +219,7 @@ public class CeolDevice {
             case NetServer:
             case Ipod:
             case Spotify:
+            case OpenHome:
             default:
                 isNetServer = true;
                 break;
@@ -240,6 +246,14 @@ public class CeolDevice {
             this.masterVolume = Integer.valueOf(masterVolume);
         } catch (NumberFormatException e) {
             Log.e(TAG, "setMasterVolume: Bad volume number: " + masterVolume);
+        }
+    }
+
+    public void setMasterVolumePerCent(long value) {
+        if ( value <= 100 ) {
+           int newVolume = (int)((value+1)/2);
+           Log.d(TAG, "setMasterVolumePerCent: " + newVolume);
+           this.masterVolume = newVolume;
         }
     }
 
@@ -281,6 +295,11 @@ public class CeolDevice {
 
     public boolean isNetServer() {
         return isNetServer;
+    }
+
+    public synchronized boolean isOpenHome() {
+        return OpenHome.isOperating();
+//        return false;
     }
 
 }

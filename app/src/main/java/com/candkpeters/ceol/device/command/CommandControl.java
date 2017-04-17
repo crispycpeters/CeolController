@@ -24,6 +24,7 @@ public class CommandControl extends Command {
         switch (ceolDevice.getSIStatus()) {
 
             case NetServer:
+            case OpenHome:
                 return ceolDevice.getPlayStatus() == playStatusType;
             case IRadio:
             case AnalogIn:
@@ -38,7 +39,6 @@ public class CommandControl extends Command {
     @Override
     public void execute() {
         String commandString = null;
-        boolean isSpotify = false;
 
         switch (ceolDevice.getSIStatus()) {
 
@@ -65,11 +65,11 @@ public class CommandControl extends Command {
                         commandString = "NS9C";
                         break;
                 }
+                ceolManager.sendCommand(commandString);
                 break;
             case AnalogIn:
                 break;
             case Spotify:
-                isSpotify = true;
                 switch (playStatusType) {
                     case Unknown:
                         break;
@@ -81,11 +81,24 @@ public class CommandControl extends Command {
                         commandString = "PAUSE";
                         break;
                 }
-        }
-        if ( isSpotify) {
-            ceolManager.sendMediaCommand(commandString);
-        } else {
-            ceolManager.sendCommand(commandString);
+                ceolManager.sendSpotifyCommand(commandString);
+                break;
+            case OpenHome:
+                switch (playStatusType) {
+                    case Unknown:
+                        break;
+                    case Playing:
+                        commandString = "Play";
+                        break;
+                    case Paused:
+                        commandString = "Pause";
+                        break;
+                    case Stopped:
+                        commandString = "Stop";
+                        break;
+                }
+                ceolManager.sendOpenHomeCommand(commandString);
+                break;
         }
     }
 

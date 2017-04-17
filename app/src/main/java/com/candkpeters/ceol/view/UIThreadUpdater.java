@@ -53,7 +53,7 @@ public class UIThreadUpdater {
 
     public synchronized void next() {
         mHandler.removeCallbacks(repeatedRunnable);
-        // TODO Could make this calculate time when last update was initiated.
+        // Could make this calculate time when last update was initiated.
         mHandler.postDelayed(repeatedRunnable, repeatRateMsecs);
     }
 

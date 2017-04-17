@@ -19,7 +19,6 @@ public class CommandSkip extends CommandBaseDirection {
     @Override
     public void execute() {
         String commandString = null;
-        boolean isSpotify = false;
 
         switch (ceolDevice.getSIStatus()) {
 
@@ -35,18 +34,18 @@ public class CommandSkip extends CommandBaseDirection {
                 break;
             case NetServer:
                 commandString = getDirectionType().isPositiveDirection ? "NS9D" : "NS9E";
+                ceolManager.sendCommand(commandString);
                 break;
             case AnalogIn:
                 break;
             case Spotify:
                 commandString = getDirectionType().isPositiveDirection ? "NEXT" : "PREVIOUS";
-                isSpotify = true;
+                ceolManager.sendSpotifyCommand(commandString);
                 break;
-        }
-        if ( isSpotify) {
-            ceolManager.sendMediaCommand(commandString);
-        } else {
-            ceolManager.sendCommand(commandString);
+            case OpenHome:
+                commandString = getDirectionType().isPositiveDirection ? "Next" : "Previous";
+                ceolManager.sendOpenHomeCommand(commandString);
+                break;
         }
     }
 

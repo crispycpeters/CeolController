@@ -89,6 +89,10 @@ public class CeolManager {
         // TODO: Potentially pause ClingManager events if nothing is registered to listen
     }
 
+    public void notifyObservers() {
+        ceolDeviceMonitor.notifyObservers();
+    }
+
     public void sendCommand(String commandString) {
         Log.d(TAG, "sendCommand: Sending: " + commandString);
         if ( commandString!= null && !commandString.isEmpty()) {
@@ -117,7 +121,13 @@ public class CeolManager {
         ceolDeviceMonitor.start();
     }
 
-    public void sendMediaCommand(String commandString) {
+    public void sendOpenHomeCommand(String commandString) {
+        if (context != null) {
+            clingManager.getOpenHomeDevice().performPlaylistCommand(commandString);
+        }
+    }
+
+    public void sendSpotifyCommand(String commandString) {
         if ( context != null ) {
             if ( commandString.equalsIgnoreCase("PLAY")) {
                 try {

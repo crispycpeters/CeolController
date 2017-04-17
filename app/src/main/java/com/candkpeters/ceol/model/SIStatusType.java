@@ -14,7 +14,8 @@ public enum SIStatusType {
     DigitalIn2  ( "Digital In 2"),
     Bluetooth   ( "Bluetooth"),
     Ipod        ( "USB / iPod"),
-    Spotify     ( "Spotify");
+    Spotify     ( "Spotify"),
+    OpenHome    ( "OpenHome" );
 
     public final String name;
 

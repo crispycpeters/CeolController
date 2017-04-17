@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.CeolDeviceOpenHome;
+import com.candkpeters.ceol.model.SIStatusType;
 
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.controlpoint.ActionCallback;
@@ -38,7 +39,12 @@ public class OpenHomeDevice {
     private AndroidUpnpService upnpService;
     private ServiceId infoServiceId = new ServiceId("av-openhome-org","Info");
     private ServiceId timeServiceId = new ServiceId("av-openhome-org","Time");
-
+    private ServiceId playlistServiceId = new ServiceId("av-openhome-org","Playlist");
+    private ServiceId volumeServiceId = new ServiceId("av-openhome-org","Volume");
+    private Service timeService;
+    private Service infoService;
+    private Service playlistService;
+    private Service volumeService;
 
     public OpenHomeDevice(Context context, CeolDevice ceolDevice) {
         this.context = context;
@@ -48,7 +54,7 @@ public class OpenHomeDevice {
 
     public void removeDevice() {
         device = null;
-
+        timeService = infoService = playlistService = null;
         ceolDeviceOpenHome.setDuration(0);
         ceolDeviceOpenHome.setTrackCount(0);
         ceolDeviceOpenHome.setSeconds(0);
@@ -68,14 +74,64 @@ public class OpenHomeDevice {
         DeviceIdentity di = device.getIdentity();
         Log.d(TAG, "Identity: " + di.toString());
 
+        infoService = findService(infoServiceId);
+        playlistService = findService(playlistServiceId);
+        timeService = findService(timeServiceId);
+        volumeService = findService(volumeServiceId);
+
+        setupVolumeEvents();
         setupTimeEvents();
         setupInfoEvents();
+        setupPlaylistEvents();
+    }
+
+    private Service findService( ServiceId serviceId) {
+        Service service;
+        if ((service = device.findService(serviceId)) != null) {
+            Log.d(TAG, "Service discovered: " + service);
+        } else {
+            Log.e(TAG, "No service for " + serviceId);
+        }
+        return service;
+    }
+
+    public void performPlaylistCommand( String command) {
+        if ( playlistService != null ) {
+            executeAction( upnpService, playlistService, command);
+        }
+    }
+
+    private void setupVolumeEvents() {
+        if (volumeService != null) {
+
+//            executeAction(upnpService, infoService);
+
+            SubscriptionCallback callback = new OpenHomeSubscriptionCallback(volumeService) {
+
+                @Override
+                public void eventReceived(GENASubscription sub) {
+
+                    Log.d(TAG,"Volume Event: " + sub.getCurrentSequence().getValue());
+
+                    try {
+                        Map<String, StateVariableValue> values = sub.getCurrentValues();
+
+                        UnsignedIntegerFourBytes volumeV = (UnsignedIntegerFourBytes)(values.get("Volume").getValue());
+                        Log.d(TAG, "EVENT: GOT volume=" + volumeV);
+                        ceolDevice.setMasterVolumePerCent((long) (volumeV.getValue()));
+
+                    } catch ( Exception e ) {
+                        Log.e( TAG, "Bad values from event: " + e);
+                    }
+                }
+
+            };
+            upnpService.getControlPoint().execute(callback);
+        }
     }
 
     private void setupTimeEvents() {
-        Service timeService;
-        if ((timeService = device.findService(timeServiceId)) != null) {
-            Log.d(TAG,"Time service discovered: " + timeService);
+        if (timeService != null) {
 
 //            executeAction(upnpService, infoService);
 
@@ -84,7 +140,7 @@ public class OpenHomeDevice {
                 @Override
                 public void eventReceived(GENASubscription sub) {
 
-                    Log.d(TAG,"Event: " + sub.getCurrentSequence().getValue());
+                    Log.d(TAG,"Time Event: " + sub.getCurrentSequence().getValue());
 
                     try {
                         Map<String, StateVariableValue> values = sub.getCurrentValues();
@@ -103,17 +159,12 @@ public class OpenHomeDevice {
                 }
 
             };
-
             upnpService.getControlPoint().execute(callback);
-
         }
     }
 
     private void setupInfoEvents() {
-        Service infoService;
-        if ((infoService = device.findService(infoServiceId)) != null) {
-            Log.d(TAG,"Info service discovered: " + infoService);
-
+        if (infoService != null) {
 //            executeAction(upnpService, infoService);
 
             SubscriptionCallback callback = new OpenHomeSubscriptionCallback(infoService) {
@@ -121,7 +172,7 @@ public class OpenHomeDevice {
                 @Override
                 public void eventReceived(GENASubscription sub) {
 
-                    Log.d(TAG,"Event: " + sub.getCurrentSequence().getValue());
+                    Log.d(TAG,"Info Event: " + sub.getCurrentSequence().getValue());
 
                     Map<String, StateVariableValue> values = sub.getCurrentValues();
 
@@ -139,22 +190,51 @@ public class OpenHomeDevice {
                 }
 
             };
-
             upnpService.getControlPoint().execute(callback);
+        }
+    }
 
+    private void setupPlaylistEvents() {
+        if (playlistService != null) {
+            SubscriptionCallback callback = new OpenHomeSubscriptionCallback(playlistService) {
+
+                @Override
+                public void eventReceived(GENASubscription sub) {
+
+                    Log.d(TAG,"Playlist Event: " + sub.getCurrentSequence().getValue());
+
+                    Map<String, StateVariableValue> values = sub.getCurrentValues();
+
+                    StateVariableValue transportState = values.get("TransportState");
+                    Log.d(TAG, "EVENT: GOT transportState=" + transportState);
+                    ceolDeviceOpenHome.setTransportState((String)(transportState.getValue()));
+/*
+
+                    StateVariableValue uri = values.get("Uri");
+                    Log.d(TAG, "EVENT: GOT uri="+uri);
+                    ceolDeviceOpenHome.setUri((String)(uri.getValue()));
+
+                    StateVariableValue metadata = values.get("Metadata");
+                    Log.d(TAG, "EVENT: GOT metadata="+metadata);
+                    ceolDeviceOpenHome.setMetadata((String)(metadata.getValue()));
+*/
+                }
+
+            };
+            upnpService.getControlPoint().execute(callback);
         }
     }
 
 
-    private void executeAction(AndroidUpnpService upnpService, final Service infoService) {
-        ActionInvocation actionInvocation = new ActionInvocation(infoService.getAction("Details"));
+    private void executeAction(AndroidUpnpService upnpService, final Service service, final String action) {
+        ActionInvocation actionInvocation = new ActionInvocation(service.getAction(action));
 
         upnpService.getControlPoint().execute(new ActionCallback(actionInvocation) {
 
                                                   @Override
                                                   public void success(ActionInvocation invocation) {
-                                                      assert invocation.getOutput().length == 0;
-                                                      Log.d(TAG,"Successfully called action!");
+                                                      //assert invocation.getOutput().length == 0;
+                                                      Log.d(TAG,"Successfully called action: " + action);
                                                   }
 
                                                   @Override
