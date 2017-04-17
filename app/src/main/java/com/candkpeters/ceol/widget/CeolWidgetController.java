@@ -30,7 +30,7 @@ public class CeolWidgetController {
     CeolDevice ceolDevice = null;
     OnCeolStatusChangedListener onCeolStatusChangedListener = new OnCeolStatusChangedListener() {
         @Override
-        public void onCeolStatusChanged(CeolDevice ceolDevice) {
+        public void onCeolStatusChanged() {
             updateWidgets(null);
         }
     };
@@ -91,7 +91,7 @@ public class CeolWidgetController {
             commandStarting(widgetId, appWidgetMan);
             ceolManager.execute(command, new OnCeolStatusChangedListener() {
                 @Override
-                public void onCeolStatusChanged(CeolDevice ceolDevice) {
+                public void onCeolStatusChanged() {
                     Log.d(TAG, "onCeolStatusChanged: Stop waiting");
                     commandDone(widgetId, appWidgetMan);
                 }

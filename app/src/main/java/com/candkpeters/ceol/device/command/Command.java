@@ -52,7 +52,7 @@ public abstract class Command {
     private void finishUp() {
         ceolManager.unregister(onCeolStatusChangedListener);
         if ( onDoneCeolStatusChangedListener != null) {
-            onDoneCeolStatusChangedListener.onCeolStatusChanged(ceolDevice);
+            onDoneCeolStatusChangedListener.onCeolStatusChanged();
         }
     }
 
@@ -101,7 +101,7 @@ public abstract class Command {
         preExecute();
         onCeolStatusChangedListener = new OnCeolStatusChangedListener() {
             @Override
-            public void onCeolStatusChanged(CeolDevice ceolDevice) {
+            public void onCeolStatusChanged() {
                 checkOverallStatus();
             }
         };

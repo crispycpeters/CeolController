@@ -19,11 +19,12 @@ import java.util.ArrayList;
 public class CeolManager {
 
     private static final String TAG = "CeolManager" ;
-    private CeolDevice ceolDevice;
-    private ClingManager clingManager;
+    private final CeolDevice ceolDevice;
+    private final Context context;
+    private final CeolDeviceObserver ceolDeviceObserver;
+    private final ClingManager clingManager;
     private CeolDeviceWebSvcMonitor ceolDeviceMonitor;
     private CeolDeviceWebSvcCommand ceolDeviceWebSvcCommand;
-    private final Context context;
     private MacroInflater macroInflater;
 
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
@@ -32,7 +33,8 @@ public class CeolManager {
 
     public CeolManager(final Context context) {
         this.context = context;
-        ceolDevice = new CeolDevice();
+        ceolDeviceObserver = new CeolDeviceObserver();
+        ceolDevice = new CeolDevice(ceolDeviceObserver);
         clingManager = new ClingManager(context, ceolDevice);
     }
 
@@ -80,17 +82,23 @@ public class CeolManager {
     }
 
     public void register(OnCeolStatusChangedListener obj) {
-        ceolDeviceMonitor.register(obj);
+//        ceolDeviceMonitor.register(obj);
+        if ( ceolDeviceObserver.register(obj) == 1) {
+            ceolDeviceMonitor.startActiveUpdates();
+        }
         // TODO: Potentially unpause ClingManager events if paused
     }
 
     public void unregister(OnCeolStatusChangedListener obj) {
-        ceolDeviceMonitor.unregister(obj);
+        if ( ceolDeviceObserver.unregister(obj) == 0 ) {
+            ceolDeviceMonitor.stopActiveUpdates();
+        };
         // TODO: Potentially pause ClingManager events if nothing is registered to listen
     }
 
     public void notifyObservers() {
-        ceolDeviceMonitor.notifyObservers();
+//        ceolDeviceMonitor.notifyObservers();
+        ceolDeviceObserver.notifyObservers();
     }
 
     public void sendCommand(String commandString) {

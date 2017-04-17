@@ -120,6 +120,7 @@ public class OpenHomeDevice {
                         Log.d(TAG, "EVENT: GOT volume=" + volumeV);
                         ceolDevice.setMasterVolumePerCent((long) (volumeV.getValue()));
 
+                        ceolDevice.notifyObservers();
                     } catch ( Exception e ) {
                         Log.e( TAG, "Bad values from event: " + e);
                     }

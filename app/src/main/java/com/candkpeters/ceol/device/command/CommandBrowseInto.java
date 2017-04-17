@@ -102,7 +102,7 @@ public class CommandBrowseInto extends CommandBaseString {
 //                searchSteps = SearchSteps.Playing;
                 new CommandControl(PlayStatusType.Playing).execute(ceolManager, new OnCeolStatusChangedListener() {
                     @Override
-                    public void onCeolStatusChanged(CeolDevice ceolDevice) {
+                    public void onCeolStatusChanged() {
                         if ( ceolDevice.getPlayStatus() == PlayStatusType.Playing) {
                             finish(true);
                         }

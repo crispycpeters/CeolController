@@ -145,8 +145,13 @@ public class MainActivity extends AppCompatActivity
         Log.i(TAG, "Created");
         ceolController = new CeolController(this, new OnCeolStatusChangedListener() {
             @Override
-            public void onCeolStatusChanged(CeolDevice ceolDevice) {
-                updateViewsOnDeviceChange(ceolDevice);
+            public void onCeolStatusChanged() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        updateViewsOnDeviceChange(ceolController.getCeolDevice());
+                    }
+                });
+
             }
         });
 

@@ -2,6 +2,8 @@ package com.candkpeters.ceol.model;
 
 import android.util.Log;
 
+import com.candkpeters.ceol.device.Observed;
+
 /**
  * Created by crisp on 06/01/2016.
  */
@@ -13,6 +15,7 @@ public class CeolDevice {
 
     private static final long MAXVOLUME = 60;
     private static final long wakeUpPeriodMsecs = DEFAULT_WAKEUP_PERIOD_MSECS;
+    private final Observed observed;
     private boolean isNetServer;
 
     // Common
@@ -31,11 +34,12 @@ public class CeolDevice {
     private static final int REPEATRATE_MSECS = 900;
     private static final int REPEATRATE_MSECS_SPOTIFY = 8000;
 
-    public CeolDevice() {
+    public CeolDevice( Observed observed) {
         NetServer = new CeolDeviceNetServer();
         Tuner = new CeolDeviceTuner();
         OpenHome = new CeolDeviceOpenHome();
         appStartedMsecs = System.currentTimeMillis();
+        this.observed = observed;
     }
 
     public DeviceStatusType getDeviceStatus() {
@@ -47,6 +51,11 @@ public class CeolDevice {
         this.deviceStatus = deviceStatus;
     }
 
+    public void notifyObservers() {
+        if (observed != null) {
+            observed.notifyObservers();
+        }
+    }
     private long deviceOnTimeMsecs = -1;
 
     public void setDeviceStatus(String powerString) {
@@ -291,7 +300,6 @@ public class CeolDevice {
             }
         }
     }
-
 
     public boolean isNetServer() {
         return isNetServer;

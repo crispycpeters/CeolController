@@ -15,9 +15,7 @@ import com.candkpeters.ceol.model.CeolDeviceTuner;
 import org.simpleframework.xml.util.Dictionary;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -27,7 +25,7 @@ import retrofit.mime.TypedString;
 /**
  * Created by crisp on 08/01/2016.
  */
-public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
+public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
 
     private static final String TAG = "CeolDeviceWebSvcMonitor";
 
@@ -45,8 +43,10 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
     final public CeolDevice ceolDevice;
 
     // Observer
+/*
     private final Object MUTEX = new Object();
     private List<OnCeolStatusChangedListener> observers;
+*/
 
 //    OnCeolStatusChangedListener onCeolStatusChangedListener;
 
@@ -79,7 +79,9 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 
     public CeolDeviceWebSvcMonitor(CeolDevice ceolDevice,String baseUrl) {
         this.ceolDevice = ceolDevice;
+/*
         this.observers=new ArrayList<OnCeolStatusChangedListener>();
+*/
         imageDownloaderTask = new ImageDownloaderTask(this);
         recreateService(baseUrl);
 //        resetBackgroundCountdown();
@@ -96,7 +98,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
 //        resetBackgroundCountdown();
     }
 
-    private void startActiveUpdates() {
+    public void startActiveUpdates() {
         if ( activeThreadUpdater == null ) {
             activeThreadUpdater = new UIThreadUpdater(this, REPEATRATE_MSECS);
         }
@@ -110,7 +112,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
         activeThreadUpdater.next();
     }
 
-    private void stopActiveUpdates() {
+    public void stopActiveUpdates() {
         if (activeThreadUpdater != null) {
             activeThreadUpdater.stopUpdates();
         }
@@ -264,7 +266,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             ceolDevice.setSIStatus(SIStatusType.NotConnected);
 //            ceolDevice.setSIStatus(SIStatusType.NotConnected);
         }
-        notifyObservers();
+        ceolDevice.notifyObservers();
 //        onCeolStatusChangedListener.onCeolStatusChanged(ceolDevice);
     }
 
@@ -360,7 +362,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
         }
 
 //        onCeolStatusChangedListener.onCeolStatusChanged(ceolDevice);
-        notifyObservers();
+        ceolDevice.notifyObservers();
 //        if ( ceol.getSIStatus() != oldSiStatus) {
 //        }
     }
@@ -383,31 +385,39 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             lastBackgroundRun = now;
             return true;
         } else {
-            // TODO - Remove once observer code is moved to different class, otherwise otherwise there is no easy way to inform observers when OpenHome modifies ceoldevice
-            return true;
+            return false;
         }
     }
 
+/*
     @Override
-    public void register(OnCeolStatusChangedListener obj) {
-        if(obj == null) return;  // Ignore null observers
+    public int register(OnCeolStatusChangedListener obj) {
+        int observerSize;
         synchronized (MUTEX) {
-            if(!observers.contains(obj)) observers.add(obj);
+            if ( obj != null ) {
+                if (!observers.contains(obj)) observers.add(obj);
+            }
+            observerSize = observers.size();
         }
-        if ( observers.size() == 1 ) {
+        if ( observerSize == 1 ) {
             startActiveUpdates();
         }
+        return observerSize;
     }
 
     @Override
-    public void unregister(OnCeolStatusChangedListener obj) {
-        if (obj == null) return;
+    public int unregister(OnCeolStatusChangedListener obj) {
+        int observerSize;
         synchronized (MUTEX) {
-            observers.remove(obj);
+            if ( obj != null ) {
+                observers.remove(obj);
+            }
+            observerSize = observers.size();
         }
-        if ( observers.size() == 0 ) {
+        if ( observerSize  == 0 ) {
             stopActiveUpdates();
         }
+        return observerSize;
     }
 
     @Override
@@ -421,5 +431,6 @@ public class CeolDeviceWebSvcMonitor implements Runnable, Observed{
             obj.onCeolStatusChanged(ceolDevice);
         }
     }
+*/
 
 }

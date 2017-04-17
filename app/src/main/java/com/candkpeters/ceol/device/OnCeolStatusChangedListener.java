@@ -6,5 +6,5 @@ import com.candkpeters.ceol.model.CeolDevice;
  * Created by crisp on 20/02/2016.
  */
 public interface OnCeolStatusChangedListener {
-    void onCeolStatusChanged(CeolDevice ceolDevice );
+    void onCeolStatusChanged();
 }
