@@ -43,14 +43,14 @@ public class InfoFragment extends DialogFragment implements View.OnClickListener
         setButtonListener(rootView, R.id.infoTrack);
         setButtonListener(rootView, R.id.infoLyrics);
 
-        setTextViewText(rootView, R.id.infoArtist, ceolDevice.NetServer.getArtist());
-        setTextViewText(rootView, R.id.infoAlbum, ceolDevice.NetServer.getAlbum());
-        setTextViewText(rootView, R.id.infoTrack, ceolDevice.NetServer.getTrack());
-        if ( !ceolDevice.NetServer.getBitrate().isEmpty() ) {
-            setTextViewText(rootView, R.id.infoFormat, ceolDevice.NetServer.getFormat() + "(" +
-                    ceolDevice.NetServer.getBitrate() + ")");
+        setTextViewText(rootView, R.id.infoArtist, ceolDevice.getAudioItem().getArtist());
+        setTextViewText(rootView, R.id.infoAlbum, ceolDevice.getAudioItem().getAlbum());
+        setTextViewText(rootView, R.id.infoTrack, ceolDevice.getAudioItem().getTrack());
+        if ( !ceolDevice.getAudioItem().getBitrate().isEmpty() ) {
+            setTextViewText(rootView, R.id.infoFormat, ceolDevice.getAudioItem().getFormat() + "(" +
+                    ceolDevice.getAudioItem().getBitrate() + ")");
         } else {
-            setTextViewText(rootView, R.id.infoFormat, ceolDevice.NetServer.getFormat());
+            setTextViewText(rootView, R.id.infoFormat, ceolDevice.getAudioItem().getFormat());
         }
 
         return rootView;
@@ -72,16 +72,16 @@ public class InfoFragment extends DialogFragment implements View.OnClickListener
             case R.id.infoDone:
                 break;
             case R.id.infoArtist:
-                query = ceolDevice.NetServer.getArtist();
+                query = ceolDevice.getAudioItem().getArtist();
                 break;
             case R.id.infoAlbum:
-                query = ceolDevice.NetServer.getArtist() + " " + ceolDevice.NetServer.getAlbum();
+                query = ceolDevice.getAudioItem().getArtist() + " " + ceolDevice.getAudioItem().getAlbum();
                 break;
             case R.id.infoTrack:
-                query = ceolDevice.NetServer.getTrack();
+                query = ceolDevice.getAudioItem().getTrack();
                 break;
             case R.id.infoLyrics:
-                query = ceolDevice.NetServer.getArtist() + " " + ceolDevice.NetServer.getTrack()
+                query = ceolDevice.getAudioItem().getArtist() + " " + ceolDevice.getAudioItem().getTrack()
                         + " lyrics";
                 break;
         }

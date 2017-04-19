@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.candkpeters.ceol.model.DeviceStatusType;
+import com.candkpeters.ceol.model.AudioItem;
 import com.candkpeters.ceol.model.PlayStatusType;
 import com.candkpeters.ceol.view.UIThreadUpdater;
 import com.candkpeters.ceol.model.CeolDevice;
@@ -247,7 +248,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
                 return statusQuery_Tuner;
             //TODO case AnalogIn:
             //case IRadio:
-            //case NetServer:
+            //case AudioItem:
             default:
                 return statusQuery_NetServer;
         }
@@ -256,7 +257,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
 
     public void updateDeviceImage(Bitmap bitmap) {
         synchronized (ceolDevice) {
-            ceolDevice.NetServer.setImageBitmap(bitmap);
+            ceolDevice.getAudioItem().setImageBitmap(bitmap);
         }
     }
 
@@ -279,7 +280,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
     private void updateDeviceStatus(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse) {
         SIStatusType oldSiStatus = ceolDevice.getSIStatus();
 
-        String oldTrack = ceolDevice.NetServer.getTrack();
+        String oldTrack = ceolDevice.getAudioItem().getTrack();
         if (oldTrack == null) {
             Log.d(TAG, "updateDeviceStatus: oldtrack is null");
         }
@@ -292,14 +293,15 @@ public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
 
                 if ( ceolDevice.isNetServer() ) {
 
-                    CeolDeviceNetServer netServer = ceolDevice.NetServer;
+                    CeolDeviceNetServer ceolNetServer = ceolDevice.CeolNetServer;
+                    AudioItem audioItem = ceolDevice.getAudioItem();
                     ceolDevice.setPlayStatus( webSvcHttpAppCommandResponse.playstatus);
 
                     Dictionary<WebSvcHttpResponseText> texts = webSvcHttpAppCommandResponse.texts;
                     if (texts != null) {
-                        netServer.setIsBrowsing(true);
+                        ceolNetServer.setIsBrowsing(true);
                         if (webSvcHttpAppCommandResponse.type.equals("browse")) {
-                            netServer.initialiseChunk(texts.get("title").text,
+                            ceolNetServer.initialiseChunk(texts.get("title").text,
                                     texts.get("scridValue").text,
                                     texts.get("scrid").text,
                                     webSvcHttpAppCommandResponse.listmax,
@@ -307,27 +309,27 @@ public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
                             for (int i = 0; i < CeolDeviceNetServer.MAX_LINES; i++) {
                                 WebSvcHttpResponseText responseText = texts.get("line" + i);
                                 if (responseText != null) {
-                                    netServer.setChunkLine(i, responseText.text, responseText.flag);
+                                    ceolNetServer.setChunkLine(i, responseText.text, responseText.flag);
                                 }
                             }
                         }
                         if ( ceolDevice.getPlayStatus() == PlayStatusType.Stopped) {
-                            netServer.setTrackInfo("","","","", "");
-                            netServer.setImageBitmap(null);
+                            audioItem.setTrackInfo("","","","", "");
+                            audioItem.setImageBitmap(null);
                         } else {
                             if (webSvcHttpAppCommandResponse.type.equals("play")) {
-                                netServer.setTrackInfo(
+                                audioItem.setTrackInfo(
                                         texts.get("track").text,
                                         texts.get("artist").text,
                                         texts.get("album").text,
                                         texts.get("format").text,
                                         texts.get("bitrate").text
                                 );
-                                netServer.setIsBrowsing(false);
+                                ceolNetServer.setIsBrowsing(false);
                             }
                         }
                     } else {
-                        netServer.clear();
+                        ceolNetServer.clear();
                     }
 
                 } else {
@@ -357,7 +359,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
             e.printStackTrace();
         }
 
-        if ( !imageDownloaderTask.isRunning() && (oldTrack == null || !ceolDevice.NetServer.getTrack().equalsIgnoreCase(oldTrack))) {
+        if ( !imageDownloaderTask.isRunning() && (oldTrack == null || !ceolDevice.getAudioItem().getTrack().equalsIgnoreCase(oldTrack))) {
             getImage();
         }
 

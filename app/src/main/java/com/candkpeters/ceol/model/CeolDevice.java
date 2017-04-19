@@ -11,7 +11,7 @@ public class CeolDevice {
 
     private static final String TAG = "CeolDevice";
     private static final long DEFAULT_WAKEUP_PERIOD_MSECS = 3000;  // Give machine a chance to wake up before sending commands
-    private static final long DEFAULT_NETSERVERON_PERIOD_MSECS = 6000; // Give NetServer a chance to settle down be believing its settings
+    private static final long DEFAULT_NETSERVERON_PERIOD_MSECS = 6000; // Give audioItem a chance to settle down be believing its settings
 
     private static final long MAXVOLUME = 60;
     private static final long wakeUpPeriodMsecs = DEFAULT_WAKEUP_PERIOD_MSECS;
@@ -26,7 +26,8 @@ public class CeolDevice {
     private DeviceStatusType deviceStatus = DeviceStatusType.Connecting;
 
     // Sub-devices
-    public CeolDeviceNetServer NetServer;
+    private final AudioItem audioItem;
+    public CeolDeviceNetServer CeolNetServer;
     public CeolDeviceTuner Tuner;
     public CeolDeviceOpenHome OpenHome;
 
@@ -35,9 +36,10 @@ public class CeolDevice {
     private static final int REPEATRATE_MSECS_SPOTIFY = 8000;
 
     public CeolDevice( Observed observed) {
-        NetServer = new CeolDeviceNetServer();
+        audioItem = new AudioItem();
+        CeolNetServer = new CeolDeviceNetServer(audioItem);
         Tuner = new CeolDeviceTuner();
-        OpenHome = new CeolDeviceOpenHome();
+        OpenHome = new CeolDeviceOpenHome(audioItem);
         appStartedMsecs = System.currentTimeMillis();
         this.observed = observed;
     }
@@ -142,7 +144,7 @@ public class CeolDevice {
             switch (inputFunc) {
                 case "NET":
                     if (!isNetServer()) {
-                        // Not sure yet what the type is yet - assume NetServer
+                        // Not sure yet what the type is yet - assume audioItem
                         isNetServer = true;
                         siStatusNew = SIStatusType.NetServer;
                     } else {
@@ -194,9 +196,9 @@ public class CeolDevice {
         this.siStatus = newSiStatus;
 
 /*
-        if ( newSiStatus == SIStatusType.NetServer &&
-                (siStatus != SIStatusType.NotConnected && siStatus != SIStatusType.NetServer) ) {
-            // We are trying to switch to NetServer
+        if ( newSiStatus == SIStatusType.audioItem &&
+                (siStatus != SIStatusType.NotConnected && siStatus != SIStatusType.audioItem) ) {
+            // We are trying to switch to audioItem
             if (netServerOnTimeMsecs == 0) {
                 // Start timer but don't change setting
                 netServerOnTimeMsecs = now;
@@ -228,7 +230,7 @@ public class CeolDevice {
             case NetServer:
             case Ipod:
             case Spotify:
-            case OpenHome:
+            case OpenHome:  // TODO - Should be separate?
             default:
                 isNetServer = true;
                 break;
@@ -310,4 +312,7 @@ public class CeolDevice {
 //        return false;
     }
 
+    public AudioItem getAudioItem() {
+        return audioItem;
+    }
 }

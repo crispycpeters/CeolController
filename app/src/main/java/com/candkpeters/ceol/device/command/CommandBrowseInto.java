@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.model.CeolBrowseEntry;
-import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.model.PlayStatusType;
 import com.candkpeters.ceol.model.SIStatusType;
@@ -49,11 +48,11 @@ public class CommandBrowseInto extends CommandBaseString {
 
     @Override
     public boolean isSuccessful() {
-        Log.d(TAG, "isSuccessful: isfound=" + isFound + " here=" + ceolDevice.NetServer.getTitle() + " value=" + getValue());
+        Log.d(TAG, "isSuccessful: isfound=" + isFound + " here=" + ceolDevice.getAudioItem().getTrack() + " value=" + getValue());
 
         if (getValue() != null && ceolDevice != null &&
                 ceolDevice.getSIStatus() == SIStatusType.NetServer ) {
-            if ( ceolDevice.NetServer.getTitle().equalsIgnoreCase(getValue())) {
+            if ( ceolDevice.getAudioItem().getTrack().equalsIgnoreCase(getValue())) {
                 if ( playFirstEntry ) {
                     return (ceolDevice.getPlayStatus() == PlayStatusType.Playing);
                 } else {
@@ -70,7 +69,7 @@ public class CommandBrowseInto extends CommandBaseString {
     @Override
     public void execute() {
         if (getValue() != null && ceolDevice != null && ceolDevice.getSIStatus() == SIStatusType.NetServer &&
-                ceolDevice.NetServer.getListMax() >0 ) {
+                ceolDevice.CeolNetServer.getListMax() >0 ) {
             resetPosition();
             checkForEntry();
         }
@@ -94,8 +93,8 @@ public class CommandBrowseInto extends CommandBaseString {
     }
 
     private void checkForRight() {
-        Log.d(TAG, "checkForRight: title=" +ceolDevice.NetServer.getTitle() + " startpos=" + startPosition + " targetPos=" + targetPosition + ", selpos=" + ceolDevice.NetServer.getSelectedPosition());
-        if ( ceolDevice.NetServer.getTitle().equalsIgnoreCase(getValue())) {
+        Log.d(TAG, "checkForRight: title=" +ceolDevice.getAudioItem().getTrack() + " startpos=" + startPosition + " targetPos=" + targetPosition + ", selpos=" + ceolDevice.CeolNetServer.getSelectedPosition());
+        if ( ceolDevice.getAudioItem().getTrack().equalsIgnoreCase(getValue())) {
 
             if ( playFirstEntry ) {
                 Log.d(TAG, "checkForRight: Playing entry");
@@ -117,10 +116,10 @@ public class CommandBrowseInto extends CommandBaseString {
     }
 
     private void checkForEntry() {
-        Log.d(TAG, "checkForEntry: startpos=" + startPosition + " targetPos=" + targetPosition + ", selpos=" + ceolDevice.NetServer.getSelectedPosition());
-        if ( ceolDevice.NetServer.getSelectedPosition() == targetPosition) {
+        Log.d(TAG, "checkForEntry: startpos=" + startPosition + " targetPos=" + targetPosition + ", selpos=" + ceolDevice.CeolNetServer.getSelectedPosition());
+        if ( ceolDevice.CeolNetServer.getSelectedPosition() == targetPosition) {
 
-            CeolBrowseEntry entry = ceolDevice.NetServer.getSelectedEntry();
+            CeolBrowseEntry entry = ceolDevice.CeolNetServer.getSelectedEntry();
             if (entry == null) {
                 Log.e(TAG, "checkForEntry: GetBrowseList: Problem - no selected entry");
                 finish(false);
@@ -156,10 +155,10 @@ public class CommandBrowseInto extends CommandBaseString {
     private boolean isBackToWhereWeStarted() {
         if ( startPosition == -1 ) {
             // First time
-            startPosition = ceolDevice.NetServer.getSelectedPosition();
+            startPosition = ceolDevice.CeolNetServer.getSelectedPosition();
             return false;
         } else {
-            return ( startPosition == ceolDevice.NetServer.getSelectedPosition());
+            return ( startPosition == ceolDevice.CeolNetServer.getSelectedPosition());
         }
     }
 
@@ -169,12 +168,12 @@ public class CommandBrowseInto extends CommandBaseString {
     }
 
     private void resetPosition() {
-        targetPosition = ceolDevice.NetServer.getSelectedPosition();
+        targetPosition = ceolDevice.CeolNetServer.getSelectedPosition();
         startPosition = -1;
     }
 
     private void advancePosition() {
-        targetPosition = (targetPosition)%ceolDevice.NetServer.getListMax() + 1;
+        targetPosition = (targetPosition)%ceolDevice.CeolNetServer.getListMax() + 1;
     }
 
 }

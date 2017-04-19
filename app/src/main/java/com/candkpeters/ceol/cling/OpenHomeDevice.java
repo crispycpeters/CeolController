@@ -1,11 +1,13 @@
 package com.candkpeters.ceol.cling;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.candkpeters.ceol.device.ImageDownloaderResult;
+import com.candkpeters.ceol.device.ImageDownloaderTask2;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.CeolDeviceOpenHome;
-import com.candkpeters.ceol.model.SIStatusType;
 
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.controlpoint.ActionCallback;
@@ -28,7 +30,7 @@ import java.util.Map;
  * Created by crisp on 14/04/2017.
  */
 
-public class OpenHomeDevice {
+public class OpenHomeDevice implements ImageDownloaderResult {
     private static final String TAG = "OpenHomeDevice";
 
     private static final int DEFAULT_EVENT_RENEWAL_SECS = 600;
@@ -45,6 +47,7 @@ public class OpenHomeDevice {
     private Service infoService;
     private Service playlistService;
     private Service volumeService;
+    private ImageDownloaderTask2 imageDownloaderTask;
 
     public OpenHomeDevice(Context context, CeolDevice ceolDevice) {
         this.context = context;
@@ -166,6 +169,7 @@ public class OpenHomeDevice {
 
     private void setupInfoEvents() {
         if (infoService != null) {
+            final ImageDownloaderResult imageDownloaderResult = this;
 //            executeAction(upnpService, infoService);
 
             SubscriptionCallback callback = new OpenHomeSubscriptionCallback(infoService) {
@@ -188,6 +192,13 @@ public class OpenHomeDevice {
                     StateVariableValue metadata = values.get("Metadata");
                     Log.d(TAG, "EVENT: GOT metadata="+metadata);
                     ceolDeviceOpenHome.setMetadata((String)(metadata.getValue()));
+
+                    if ( ceolDevice.getAudioItem().getImageBitmapUri() != null) {
+                        imageDownloaderTask = new ImageDownloaderTask2(imageDownloaderResult);
+                        imageDownloaderTask.execute(ceolDevice.getAudioItem().getImageBitmapUri().toString());
+                    }
+                    ceolDevice.notifyObservers();
+
                 }
 
             };
@@ -246,6 +257,13 @@ public class OpenHomeDevice {
                                                   }
                                               }
         );
+    }
+
+    @Override
+    public void imageDownloaded(Bitmap bitmap) {
+        Log.d(TAG, "imageDownloaded: Downloaded!");
+        ceolDevice.getAudioItem().setImageBitmap(bitmap);
+        ceolDevice.notifyObservers();
     }
 
     public abstract class OpenHomeSubscriptionCallback extends SubscriptionCallback {

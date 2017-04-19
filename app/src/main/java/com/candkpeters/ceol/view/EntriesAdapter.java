@@ -26,7 +26,7 @@ public class EntriesAdapter extends ArrayAdapter<CeolBrowseEntry> {
     }
 
     private void refreshList() {
-        CeolBrowseEntries entries = ceolDevice.NetServer.getEntries();
+        CeolBrowseEntries entries = ceolDevice.CeolNetServer.getEntries();
 
         int chunkStartIdx = entries.getChunkStartIndex();
         CeolBrowseEntry[] ceolBrowseEntries = entries.getBrowseChunk();

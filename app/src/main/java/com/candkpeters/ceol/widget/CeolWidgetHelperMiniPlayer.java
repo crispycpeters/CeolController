@@ -60,10 +60,10 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
 
         views.setTextViewText(R.id.textUpdate,  Long.toString(curr % 100));
 
-        views.setImageViewBitmap(R.id.imageTrack, ceolDevice.NetServer.getImageBitmap());
-        views.setTextViewText(R.id.textTrack, ceolDevice.NetServer.getTrack());
-        views.setTextViewText(R.id.textArtist, ceolDevice.NetServer.getArtist());
-        views.setTextViewText(R.id.textAlbum, ceolDevice.NetServer.getAlbum());
+        views.setImageViewBitmap(R.id.imageTrack, ceolDevice.getAudioItem().getImageBitmap());
+        views.setTextViewText(R.id.textTrack, ceolDevice.getAudioItem().getTrack());
+        views.setTextViewText(R.id.textArtist, ceolDevice.getAudioItem().getArtist());
+        views.setTextViewText(R.id.textAlbum, ceolDevice.getAudioItem().getAlbum());
         views.setTextViewText(R.id.playStatus, ceolDevice.getPlayStatus().toString());
         views.setTextViewText(R.id.volume, ceolDevice.getMasterVolumeString());
         views.setTextViewText(R.id.tunerBand, ceolDevice.Tuner.getBand());

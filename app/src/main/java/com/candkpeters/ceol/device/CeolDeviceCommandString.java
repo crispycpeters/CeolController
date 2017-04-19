@@ -41,7 +41,7 @@ public class CeolDeviceCommandString {
         switch ( ceolDevice.getSIStatus()) {
             case CD:
             case IRadio:
-            case NetServer:
+            case getAudioItem():
             case Tuner:
                 return "NS9D";
             default:

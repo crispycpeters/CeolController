@@ -13,13 +13,13 @@ public class CeolDeviceNetServer {
         return entries.getListMax();
     }
 
-    public Bitmap getImageBitmap() {
-        return imageBitmap;
-    }
-
-    public void setImageBitmap(Bitmap imageBitmap) {
-        this.imageBitmap = imageBitmap;
-    }
+//    public Bitmap getImageBitmap() {
+//        return imageBitmap;
+//    }
+//
+//    public void setImageBitmap(Bitmap imageBitmap) {
+//        this.imageBitmap = imageBitmap;
+//    }
 
     enum BrowseEntryType {
         Playable,
@@ -37,21 +37,21 @@ public class CeolDeviceNetServer {
     private CeolBrowseEntries entries = new CeolBrowseEntries();
 
     // Playing mode
-    private String track;
-    private String artist;
-    private String album;
-    private String format;
-    private String bitrate;
+//    private String track;
+//    private String artist;
+//    private String album;
+//    private String format;
+//    private String bitrate;
+//
+//    private Bitmap imageBitmap;
 
-    private Bitmap imageBitmap;
-
-    public CeolDeviceNetServer() {
+    public CeolDeviceNetServer(AudioItem audioItem) {
         clear();
     }
 
     public void clear() {
         entries.clear();
-        setTrackInfo("","","","","");
+//        setTrackInfo("","","","","");
         scrid = "";
         scridValue = "";
     }
@@ -74,13 +74,13 @@ public class CeolDeviceNetServer {
         return entries.getSelectedEntry();
     }
 
-    public void setTrackInfo(String track, String artist, String album, String format, String bitrate) {
-        this.track = track;
-        this.artist = artist;
-        this.album = album;
-        this.format = format;
-        this.bitrate = bitrate;
-    }
+//    public void setTrackInfo(String track, String artist, String album, String format, String bitrate) {
+//        this.track = track;
+//        this.artist = artist;
+//        this.album = album;
+//        this.format = format;
+//        this.bitrate = bitrate;
+//    }
 
     public int selectedPosition() {
         return entries.getListPosition();
@@ -99,31 +99,31 @@ public class CeolDeviceNetServer {
         this.isBrowsing = isBrowsing;
     }
 
-    public String getTrack() {
-        return track;
-    }
+//    public String getTrack() {
+//        return track;
+//    }
 
-    public String getArtist() {
-        return artist;
-    }
+//    public String getArtist() {
+//        return artist;
+//    }
 
-    public String getAlbum() {
-        return album;
-    }
+//    public String getAlbum() {
+//        return album;
+//    }
 
     public String getScridValue() {
         return entries.getScridValue();
     }
 
-    public String getTitle() {
-        return title;
-    }
+//    public String getTitle() {
+//        return title;
+//    }
 
-    public String getBitrate() {
-        return bitrate == null? "": bitrate;
-    }
+//    public String getBitrate() {
+//        return bitrate == null? "": bitrate;
+//    }
 
-    public String getFormat() {
-        return format == null? "": format;
-    }
+//    public String getFormat() {
+//        return format == null? "": format;
+//    }
 }

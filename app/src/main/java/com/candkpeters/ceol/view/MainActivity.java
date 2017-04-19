@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity
         setNavigationMenuStrings(navigationView);
 
 //        ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageTrack);
-//        if (imageV != null) imageV.setMinimumHeight();width(ceolDevice.NetServer.getImageBitmap());
+//        if (imageV != null) imageV.setMinimumHeight();width(ceolDevice.getAudioItem().getImageBitmap());
 
         powerAnimation = new AlphaAnimation(1,0);
         powerAnimation.setDuration(1000);
@@ -187,11 +187,11 @@ public class MainActivity extends AppCompatActivity
 
             hideWaitingDialog();
 
-            setTextViewText(R.id.textTrack, ceolDevice.NetServer.getTrack());
+            setTextViewText(R.id.textTrack, ceolDevice.getAudioItem().getTrack());
 
-            setTextViewText(R.id.textArtist, ceolDevice.NetServer.getArtist());
+            setTextViewText(R.id.textArtist, ceolDevice.getAudioItem().getArtist());
 
-            setTextViewText(R.id.textAlbum, ceolDevice.NetServer.getAlbum());
+            setTextViewText(R.id.textAlbum, ceolDevice.getAudioItem().getAlbum());
 
             setTextViewText(R.id.playStatus, ceolDevice.getPlayStatus().toString());
 
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity
             setTextViewText(R.id.volume, ceolDevice.getMasterVolumeString());
 
             ImageView imageV = (ImageView)findViewById(R.id.imageTrack);
-            if (imageV != null) imageV.setImageBitmap(ceolDevice.NetServer.getImageBitmap());
+            if (imageV != null) imageV.setImageBitmap(ceolDevice.getAudioItem().getImageBitmap());
 
             View tunerPanel = findViewById(R.id.tunerPanel);
             View netPanel = findViewById(R.id.netPanel);
@@ -361,11 +361,11 @@ public class MainActivity extends AppCompatActivity
     private void updateNavigationRow(CeolDevice ceolDevice, int rowResId, int rowIndex) {
         TextView textV = (TextView)findViewById(rowResId);
         if ( textV != null) {
-//            if ( ceolDevice.getSIStatus() == SIStatusType.NetServer  ) {
-            if ( ceolDevice.getSIStatus() == SIStatusType.NetServer && ceolDevice.NetServer.isBrowsing() ) {
-//                String s = ceolDevice.NetServer.getEntries().getBrowseLineText(rowIndex);
-                SpannableString s = new SpannableString(ceolDevice.NetServer.getEntries().getBrowseLineText(rowIndex));
-                if ( ceolDevice.NetServer.getEntries().getSelectedEntryIndex() == rowIndex) {
+//            if ( ceolDevice.getSIStatus() == SIStatusType.AudioItem  ) {
+            if ( ceolDevice.getSIStatus() == SIStatusType.NetServer && ceolDevice.CeolNetServer.isBrowsing() ) {
+//                String s = ceolDevice.AudioItem.getEntries().getBrowseLineText(rowIndex);
+                SpannableString s = new SpannableString(ceolDevice.CeolNetServer.getEntries().getBrowseLineText(rowIndex));
+                if ( ceolDevice.CeolNetServer.getEntries().getSelectedEntryIndex() == rowIndex) {
                     s.setSpan(new StyleSpan(Typeface.BOLD_ITALIC),0, s.length(),0);
                 }
                 textV.setText(s);
