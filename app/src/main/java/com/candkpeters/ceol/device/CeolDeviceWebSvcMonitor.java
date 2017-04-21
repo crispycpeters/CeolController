@@ -15,6 +15,8 @@ import com.candkpeters.ceol.model.CeolDeviceTuner;
 
 import org.simpleframework.xml.util.Dictionary;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -26,12 +28,12 @@ import retrofit.mime.TypedString;
 /**
  * Created by crisp on 08/01/2016.
  */
-public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
+public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/*, Observed */{
 
     private static final String TAG = "CeolDeviceWebSvcMonitor";
 
     private static final int REPEATRATE_MSECS = 900;
-    private static final int BACKGROUNDRATE_MSECS = 10000;
+    private static final int BACKGROUNDRATE_MSECS = 1800000;
     private static final int REPEATONCE_MSECS = 600;
 //    private static final long BACKGROUNDTIMEOUT_MSECS = 10000;
 //    private final int backgroundTimeoutMsecs;
@@ -42,6 +44,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
     private UIThreadUpdater backgroundThreadUpdater;
     private int repeatrate;
     final public CeolDevice ceolDevice;
+    private URL imageUrl;
 
     // Observer
 /*
@@ -75,7 +78,9 @@ public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
             " <cmd id=\"4\">GetSourceStatus</cmd>\n" +
             "</tx>\n";
     TypedString statusQuery_Tuner = new TypedString(statusQueryString_Tuner);
+//    ImageDownloaderTask_Old imageDownloaderTask;
     ImageDownloaderTask imageDownloaderTask;
+    private static final String IMAGEURLSPEC = "/NetAudio/art.asp-jpg";
     private long lastSuccessMsecs;
 
     public CeolDeviceWebSvcMonitor(CeolDevice ceolDevice,String baseUrl) {
@@ -83,8 +88,14 @@ public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
 /*
         this.observers=new ArrayList<OnCeolStatusChangedListener>();
 */
-        imageDownloaderTask = new ImageDownloaderTask(this);
+//        imageDownloaderTask = new ImageDownloaderTask_Old(this);
+//        imageDownloaderTask = new ImageDownloaderTask(this);
         recreateService(baseUrl);
+        try {
+            imageUrl = new URL(new URL(baseUrl), IMAGEURLSPEC);
+        } catch ( MalformedURLException e) {
+            Log.e(TAG, "CeolDeviceWebSvcMonitor: Bad URL: " + baseUrl+ " + " + IMAGEURLSPEC,e );
+        }
 //        resetBackgroundCountdown();
 //        this.backgroundTimeoutMsecs = backgroundTimeoutMsecs;
 //        this.backgroundRateMsecs = backgroundRateMsecs;
@@ -223,11 +234,13 @@ public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
 
     public void getImage() {
         imageDownloaderTask = new ImageDownloaderTask(this);
+//        imageDownloaderTask = new ImageDownloaderTask_Old(this);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 try {
-                    imageDownloaderTask.execute();
+//                    imageDownloaderTask.execute();
+                    imageDownloaderTask.execute(imageUrl.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -359,7 +372,8 @@ public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
             e.printStackTrace();
         }
 
-        if ( !imageDownloaderTask.isRunning() && (oldTrack == null || !ceolDevice.getAudioItem().getTrack().equalsIgnoreCase(oldTrack))) {
+        if ( imageDownloaderTask == null ||
+                (!imageDownloaderTask.isRunning() && (oldTrack == null || !ceolDevice.getAudioItem().getTrack().equalsIgnoreCase(oldTrack)))) {
             getImage();
         }
 
@@ -389,6 +403,11 @@ public class CeolDeviceWebSvcMonitor implements Runnable/*, Observed */{
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void imageDownloaded(Bitmap bitmap) {
+        updateDeviceImage(bitmap);
     }
 
 /*

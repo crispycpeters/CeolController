@@ -15,18 +15,21 @@ import retrofit.client.Response;
 /**
  * Created by crisp on 25/03/2016.
  */
-public class ImageDownloaderTask2 extends AsyncTask<String, Void, Bitmap> {
-    private static final String TAG = "ImageDownloaderTask2";
-    private final WeakReference<ImageDownloaderResult> imageDownloaderResultRef;
+public class ImageDownloaderTask_Old extends AsyncTask<Void, Void, Bitmap> {
+    private static final String TAG = "ImageDownloader";
+    private final WeakReference<CeolDeviceWebSvcMonitor> ceolDeviceWebSvcMonitorRef;
 
-    public ImageDownloaderTask2(ImageDownloaderResult imageDownloaderResult) {
-        this.imageDownloaderResultRef = new WeakReference<ImageDownloaderResult>(imageDownloaderResult);
+    private Bitmap bitmap;
+
+
+    public ImageDownloaderTask_Old(CeolDeviceWebSvcMonitor ceolDeviceWebSvcMonitor) {
+        this.ceolDeviceWebSvcMonitorRef = new WeakReference<CeolDeviceWebSvcMonitor>(ceolDeviceWebSvcMonitor);
     }
 
 
     @Override
-    protected Bitmap doInBackground(String... params) {
-        return downloadBitmap(params[0]);
+    protected Bitmap doInBackground(Void... params) {
+        return downloadBitmap();
     }
 
     @Override
@@ -35,10 +38,8 @@ public class ImageDownloaderTask2 extends AsyncTask<String, Void, Bitmap> {
         if (isCancelled()) {
             bitmap = null;
         } else {
-            ImageDownloaderResult imageDownloaderResult = imageDownloaderResultRef.get();
-            if ( imageDownloaderResult != null ) {
-                imageDownloaderResult.imageDownloaded(bitmap);
-            }
+            CeolDeviceWebSvcMonitor ceolDeviceWebSvcMonitor = ceolDeviceWebSvcMonitorRef.get();
+            ceolDeviceWebSvcMonitor.updateDeviceImage(bitmap);
         }
 
 /*
@@ -56,7 +57,7 @@ public class ImageDownloaderTask2 extends AsyncTask<String, Void, Bitmap> {
 */
     }
 
- /*   private Bitmap downloadBitmap_old() {
+    private Bitmap downloadBitmap() {
         WebSvcApiService webSvcApiService = ceolDeviceWebSvcMonitorRef.get().webSvcApiService;
 
         Bitmap bitmap = null;
@@ -81,12 +82,12 @@ public class ImageDownloaderTask2 extends AsyncTask<String, Void, Bitmap> {
         }
         return bitmap;
     }
-*/
-    static private Bitmap downloadBitmap(String urlString) {
+
+    private Bitmap downloadBitmap_alt() {
         Bitmap bitmap = null;
         InputStream inputStream = null;
         try {
-            URL url = new URL(urlString);
+            URL url = new URL("http://192.168.0.3//NetAudio/art.asp-jpg");
 
             URLConnection conn = url.openConnection();
             conn.connect();

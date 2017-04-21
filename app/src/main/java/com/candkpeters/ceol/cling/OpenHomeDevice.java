@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.candkpeters.ceol.device.ImageDownloaderResult;
-import com.candkpeters.ceol.device.ImageDownloaderTask2;
+import com.candkpeters.ceol.device.ImageDownloaderTask;
 import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.CeolDeviceOpenHome;
 
@@ -24,6 +24,7 @@ import org.fourthline.cling.model.state.StateVariableValue;
 import org.fourthline.cling.model.types.ServiceId;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 
+import java.net.URI;
 import java.util.Map;
 
 /**
@@ -47,7 +48,7 @@ public class OpenHomeDevice implements ImageDownloaderResult {
     private Service infoService;
     private Service playlistService;
     private Service volumeService;
-    private ImageDownloaderTask2 imageDownloaderTask;
+    private ImageDownloaderTask imageDownloaderTask;
 
     public OpenHomeDevice(Context context, CeolDevice ceolDevice) {
         this.context = context;
@@ -185,20 +186,23 @@ public class OpenHomeDevice implements ImageDownloaderResult {
                     Log.d(TAG, "EVENT: GOT trackCount=" + trackCountV);
                     ceolDeviceOpenHome.setTrackCount((long)(trackCountV.getValue()));
 
+                    StateVariableValue metadata = values.get("Metadata");
+                    Log.d(TAG, "EVENT: GOT metadata="+metadata);
+                    URI oldUri = ceolDevice.getAudioItem().getImageBitmapUri();
+                    ceolDeviceOpenHome.setMetadata((String)(metadata.getValue()));
+
                     StateVariableValue uri = values.get("Uri");
                     Log.d(TAG, "EVENT: GOT uri="+uri);
                     ceolDeviceOpenHome.setUri((String)(uri.getValue()));
 
-                    StateVariableValue metadata = values.get("Metadata");
-                    Log.d(TAG, "EVENT: GOT metadata="+metadata);
-                    ceolDeviceOpenHome.setMetadata((String)(metadata.getValue()));
-
-                    if ( ceolDevice.getAudioItem().getImageBitmapUri() != null) {
-                        imageDownloaderTask = new ImageDownloaderTask2(imageDownloaderResult);
-                        imageDownloaderTask.execute(ceolDevice.getAudioItem().getImageBitmapUri().toString());
+                    if ( oldUri == null || !oldUri.equals(ceolDevice.getAudioItem().getImageBitmapUri()) ) {
+                        Log.d(TAG, "eventReceived: oldUri=" + oldUri + " newUri=" + ceolDevice.getAudioItem().getImageBitmapUri());
+                        imageDownloaderTask = new ImageDownloaderTask(imageDownloaderResult);
+                        if ( ceolDevice.getAudioItem().getImageBitmapUri() != null ) {
+                            imageDownloaderTask.execute(ceolDevice.getAudioItem().getImageBitmapUri().toString());
+                        }
                     }
                     ceolDevice.notifyObservers();
-
                 }
 
             };

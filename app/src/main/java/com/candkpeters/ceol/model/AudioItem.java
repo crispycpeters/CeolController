@@ -29,7 +29,6 @@ public class AudioItem {
 
     public void clear() {
         setTrackInfo("","","","","");
-        imageBitmap = null;
         imageBitmapUri = null;
     }
 
@@ -87,7 +86,6 @@ public class AudioItem {
         return imageBitmapUri;
     }
     public void setImageBitmapUri(URI imageBitmap) {
-        this.imageBitmap = null;
         this.imageBitmapUri = imageBitmap;
     }
 }
