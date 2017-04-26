@@ -29,7 +29,7 @@ public class CeolDevice {
     private final AudioItem audioItem;
     public CeolDeviceNetServer CeolNetServer;
     public CeolDeviceTuner Tuner;
-    public CeolDeviceOpenHome OpenHome;
+    private CeolDeviceOpenHome openHome;
 
     private long appStartedMsecs;
     private static final int REPEATRATE_MSECS = 900;
@@ -39,7 +39,7 @@ public class CeolDevice {
         audioItem = new AudioItem();
         CeolNetServer = new CeolDeviceNetServer(audioItem);
         Tuner = new CeolDeviceTuner();
-        OpenHome = new CeolDeviceOpenHome(audioItem);
+        openHome = new CeolDeviceOpenHome(audioItem);
         appStartedMsecs = System.currentTimeMillis();
         this.observed = observed;
     }
@@ -95,7 +95,7 @@ public class CeolDevice {
             switch (source) {
                 case "Music Server":
                     siStatusNew = SIStatusType.NetServer;
-                    if ( OpenHome.isOperating() ) {
+                    if ( openHome.isOperating() ) {
                         siStatusNew = SIStatusType.OpenHome;
                     }
                     break;
@@ -307,9 +307,13 @@ public class CeolDevice {
         return isNetServer;
     }
 
-    public synchronized boolean isOpenHome() {
-        return OpenHome.isOperating();
+    public synchronized boolean isOpenHomeOperating() {
+        return openHome.isOperating();
 //        return false;
+    }
+
+    public CeolDeviceOpenHome getOpenHome() {
+        return openHome;
     }
 
     public AudioItem getAudioItem() {

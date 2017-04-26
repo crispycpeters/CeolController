@@ -131,7 +131,7 @@ public class CeolManager {
 
     public void sendOpenHomeCommand(String commandString) {
         if (context != null) {
-            clingManager.getOpenHomeDevice().performPlaylistCommand(commandString);
+            clingManager.getOpenHomeUpnpDevice().performPlaylistCommand(commandString);
         }
     }
 

@@ -37,6 +37,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -243,10 +244,25 @@ public class MainActivity extends AppCompatActivity
 
             updateNavigation( ceolDevice);
 
+            updateSeekbar( ceolDevice);
+
 
         } catch (Exception e) {
             Log.e(TAG, "onCeolStatusChanged: Exception " + e);
             e.printStackTrace();
+        }
+    }
+
+    private void updateSeekbar(CeolDevice ceolDevice) {
+        if ( ceolDevice.isOpenHomeOperating() ) {
+            int progressSize = (int)ceolDevice.getOpenHome().getDuration();
+            int progress = (int)ceolDevice.getOpenHome().getSeconds();
+
+            SeekBar seekBar = (SeekBar) findViewById(R.id.trackSeekBar);
+            if (seekBar != null) {
+                seekBar.setMax(progressSize);
+                seekBar.setProgress(progress);
+            }
         }
     }
 

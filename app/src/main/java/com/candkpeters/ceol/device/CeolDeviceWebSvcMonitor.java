@@ -327,11 +327,12 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
                             }
                         }
                         if ( ceolDevice.getPlayStatus() == PlayStatusType.Stopped) {
-                            audioItem.setTrackInfo("","","","", "");
+                            audioItem.setTrackInfo(0,"","","","", "");
                             audioItem.setImageBitmap(null);
                         } else {
                             if (webSvcHttpAppCommandResponse.type.equals("play")) {
                                 audioItem.setTrackInfo(
+                                        0,
                                         texts.get("track").text,
                                         texts.get("artist").text,
                                         texts.get("album").text,
@@ -385,7 +386,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
 
     @Override
     public void run() {
-        if (!ceolDevice.isOpenHome() || isTimeForBackground()) {
+        if (!ceolDevice.isOpenHomeOperating() || isTimeForBackground()) {
             getStatus_Async();
         } else {
             activeThreadUpdater.next();

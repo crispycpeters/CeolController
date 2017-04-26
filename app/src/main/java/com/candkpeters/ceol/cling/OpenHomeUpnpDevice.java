@@ -12,6 +12,7 @@ import com.candkpeters.ceol.model.CeolDeviceOpenHome;
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.controlpoint.ActionCallback;
 import org.fourthline.cling.controlpoint.SubscriptionCallback;
+import org.fourthline.cling.model.action.ActionArgumentValue;
 import org.fourthline.cling.model.action.ActionInvocation;
 import org.fourthline.cling.model.gena.CancelReason;
 import org.fourthline.cling.model.gena.GENASubscription;
@@ -25,14 +26,18 @@ import org.fourthline.cling.model.types.ServiceId;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 
 import java.net.URI;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by crisp on 14/04/2017.
  */
 
-public class OpenHomeDevice implements ImageDownloaderResult {
-    private static final String TAG = "OpenHomeDevice";
+public class OpenHomeUpnpDevice implements ImageDownloaderResult {
+    private static final String TAG = "OpenHomeUpnpDevice";
 
     private static final int DEFAULT_EVENT_RENEWAL_SECS = 600;
     private final Context context;
@@ -50,10 +55,10 @@ public class OpenHomeDevice implements ImageDownloaderResult {
     private Service volumeService;
     private ImageDownloaderTask imageDownloaderTask;
 
-    public OpenHomeDevice(Context context, CeolDevice ceolDevice) {
+    public OpenHomeUpnpDevice(Context context, CeolDevice ceolDevice) {
         this.context = context;
         this.ceolDevice = ceolDevice;
-        ceolDeviceOpenHome = ceolDevice.OpenHome;
+        ceolDeviceOpenHome = ceolDevice.getOpenHome();
     }
 
     public void removeDevice() {
@@ -62,7 +67,7 @@ public class OpenHomeDevice implements ImageDownloaderResult {
         ceolDeviceOpenHome.setDuration(0);
         ceolDeviceOpenHome.setTrackCount(0);
         ceolDeviceOpenHome.setSeconds(0);
-        ceolDeviceOpenHome.setUri("");
+        ceolDeviceOpenHome.setAudioUri("");
         ceolDeviceOpenHome.setMetadata("");
     }
 
@@ -101,7 +106,7 @@ public class OpenHomeDevice implements ImageDownloaderResult {
 
     public void performPlaylistCommand( String command) {
         if ( playlistService != null ) {
-            executeAction( upnpService, playlistService, command);
+            executeAction( playlistService, command);
         }
     }
 
@@ -158,6 +163,8 @@ public class OpenHomeDevice implements ImageDownloaderResult {
                         Log.d(TAG, "EVENT: GOT seconds=" + secondsV);
                         ceolDeviceOpenHome.setSeconds((long) (secondsV.getValue()));
 
+                        ceolDevice.notifyObservers();
+
                     } catch ( Exception e ) {
                         Log.e( TAG, "Bad values from event: " + e);
                     }
@@ -193,7 +200,7 @@ public class OpenHomeDevice implements ImageDownloaderResult {
 
                     StateVariableValue uri = values.get("Uri");
                     Log.d(TAG, "EVENT: GOT uri="+uri);
-                    ceolDeviceOpenHome.setUri((String)(uri.getValue()));
+                    ceolDeviceOpenHome.setAudioUri((String)(uri.getValue()));
 
                     if ( oldUri == null || !oldUri.equals(ceolDevice.getAudioItem().getImageBitmapUri()) ) {
                         Log.d(TAG, "eventReceived: oldUri=" + oldUri + " newUri=" + ceolDevice.getAudioItem().getImageBitmapUri());
@@ -224,11 +231,14 @@ public class OpenHomeDevice implements ImageDownloaderResult {
                     StateVariableValue transportState = values.get("TransportState");
                     Log.d(TAG, "EVENT: GOT transportState=" + transportState);
                     ceolDeviceOpenHome.setTransportState((String)(transportState.getValue()));
+
+                    StateVariableValue idArrayVal = values.get("IdArray");
+                    setupIds( idArrayVal );
 /*
 
                     StateVariableValue uri = values.get("Uri");
                     Log.d(TAG, "EVENT: GOT uri="+uri);
-                    ceolDeviceOpenHome.setUri((String)(uri.getValue()));
+                    ceolDeviceOpenHome.setAudioUri((String)(uri.getValue()));
 
                     StateVariableValue metadata = values.get("Metadata");
                     Log.d(TAG, "EVENT: GOT metadata="+metadata);
@@ -241,8 +251,33 @@ public class OpenHomeDevice implements ImageDownloaderResult {
         }
     }
 
+    private void setupIds(StateVariableValue idArrayVal) {
 
-    private void executeAction(AndroidUpnpService upnpService, final Service service, final String action) {
+        byte byteBuf[] = (byte [])idArrayVal.getValue();
+
+        IntBuffer intBuf = ByteBuffer.wrap(byteBuf).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
+        int[] array = new int[intBuf.remaining()];
+        intBuf.get(array);
+
+        requestMissingAudioData( ceolDeviceOpenHome.setPlaylist( array) );
+
+
+    }
+
+    private void requestMissingAudioData(List<Integer> missingIds) {
+        if ( missingIds.size() > 0 ) {
+            StringBuffer buf = new StringBuffer();
+
+            for (int id : missingIds) {
+                buf.append( id);
+                buf.append(" ");
+            }
+            executeActionReadList(buf.toString());
+        }
+    }
+
+
+    private void executeAction(final Service service, final String action) {
         ActionInvocation actionInvocation = new ActionInvocation(service.getAction(action));
 
         upnpService.getControlPoint().execute(new ActionCallback(actionInvocation) {
@@ -261,6 +296,40 @@ public class OpenHomeDevice implements ImageDownloaderResult {
                                                   }
                                               }
         );
+    }
+
+    private void executeActionReadList(String missingIdString) {
+        ActionInvocation actionInvocation = new ActionInvocation(playlistService.getAction("ReadList"));
+        actionInvocation.setInput("IdList",missingIdString);
+
+        upnpService.getControlPoint().execute(new ActionCallback(actionInvocation) {
+
+                                                  @Override
+                                                  public void success(ActionInvocation invocation) {
+                                                      Log.d(TAG,"Successfully called action: Readlist");
+
+                                                      parseReadList(invocation);
+                                                  }
+
+                                                  @Override
+                                                  public void failure(ActionInvocation invocation,
+                                                                      UpnpResponse operation,
+                                                                      String defaultMsg) {
+                                                      System.err.println(defaultMsg);
+                                                  }
+                                              }
+        );
+    }
+
+    private void parseReadList(ActionInvocation invocation) {
+        ActionArgumentValue values[] = invocation.getOutput();
+
+        if (values.length == 1) {
+            ceolDeviceOpenHome.parseReadList((String)(values[0].getValue()));
+        }
+        else {
+            Log.e(TAG, "parseReadList: Received no ReadList!");
+        }
     }
 
     @Override

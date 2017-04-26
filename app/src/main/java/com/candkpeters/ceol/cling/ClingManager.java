@@ -35,10 +35,10 @@ public class ClingManager {
     private final Context context;
     private Prefs prefs;
 
-    private OpenHomeDevice openHomeDevice;
+    private OpenHomeUpnpDevice openHomeUpnpDevice;
 
-    public OpenHomeDevice getOpenHomeDevice() {
-        return openHomeDevice;
+    public OpenHomeUpnpDevice getOpenHomeUpnpDevice() {
+        return openHomeUpnpDevice;
     }
 
     private Device cachedOpenHomeDevice;
@@ -48,7 +48,7 @@ public class ClingManager {
 
     public ClingManager(Context context, CeolDevice ceolDevice) {
         this.context = context;
-        openHomeDevice = new OpenHomeDevice(context, ceolDevice);
+        openHomeUpnpDevice = new OpenHomeUpnpDevice(context, ceolDevice);
         this.ceolDevice = ceolDevice;
     }
 
@@ -83,7 +83,7 @@ public class ClingManager {
 
     public void bindToCling() {
 
-        openHomeDevice.removeDevice();
+        openHomeUpnpDevice.removeDevice();
 // Fix the logging integration between java.util.logging and Android internal logging
         org.seamless.util.logging.LoggingUtil.resetRootHandler(
                 new FixedAndroidLogHandler()
@@ -103,7 +103,7 @@ public class ClingManager {
 
     public void unbindFromCling() {
         if (upnpService != null) {
-            openHomeDevice.removeDevice();
+            openHomeUpnpDevice.removeDevice();
             upnpService.getRegistry().removeListener(registryListener);
         }
         context.unbindService(serviceConnection);
@@ -163,7 +163,7 @@ public class ClingManager {
 
             if ( friendlyName.compareToIgnoreCase(prefOpenhomeNmae) == 0) {
                 Log.d(TAG, "deviceAdded: Aha - found: " + device.getDisplayString());
-                openHomeDevice.addDevice(upnpService, device);
+                openHomeUpnpDevice.addDevice(upnpService, device);
             }
 /*            runOnUiThread(new Runnable() {
                 public void run() {
@@ -185,9 +185,9 @@ public class ClingManager {
 
         public void deviceRemoved(final Device device) {
 
-            if ( device.equals(openHomeDevice.getDevice())) {
+            if ( device.equals(openHomeUpnpDevice.getDevice())) {
                 Log.d(TAG, "deviceRemoved: " + device);
-                openHomeDevice.removeDevice();
+                openHomeUpnpDevice.removeDevice();
             }
 /*
             runOnUiThread(new Runnable() {

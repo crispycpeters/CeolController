@@ -22,17 +22,30 @@ public class AudioItem {
     private String audioUrl;
     private URI imageBitmapUri;
     private Bitmap imageBitmap;
+    private int id;
 
     public AudioItem() {
         clear();
     }
 
-    public void clear() {
-        setTrackInfo("","","","","");
-        imageBitmapUri = null;
+    @Override
+    public String toString() {
+        return "AudioItem: id="+id +" Track="+track;
     }
 
-    public void setTrackInfo(String track, String artist, String album, String format, String bitrate) {
+    public AudioItem(int id) {
+        clear();
+        this.id = id;
+    }
+
+    public void clear() {
+        setTrackInfo(0, "","","","","");
+        imageBitmapUri = null;
+        audioUrl = null;
+    }
+
+    public void setTrackInfo(int id, String track, String artist, String album, String format, String bitrate) {
+        this.id = 0;
         this.track = track;
         this.artist = artist;
         this.album = album;
@@ -87,5 +100,39 @@ public class AudioItem {
     }
     public void setImageBitmapUri(URI imageBitmap) {
         this.imageBitmapUri = imageBitmap;
+    }
+
+    public String getAudioUrl() {
+        return audioUrl;
+    }
+
+    public void setAudioUrl(String audioUrl) {
+        this.audioUrl = audioUrl;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean isPoopulated() {
+        return track!=null && track.length()>0;
+    }
+
+    public void setAudioItem(AudioItem audioItem) {
+        id = audioItem.id;
+        track = audioItem.track;
+        artist = audioItem.artist;
+        album = audioItem.album;
+        bitrate = audioItem.bitrate;
+        format = audioItem.format;
+        if ( audioItem.imageBitmap != null ) {
+            imageBitmap = audioItem.imageBitmap;
+        }
+        imageBitmapUri = audioItem.imageBitmapUri;
+        audioUrl = audioItem.audioUrl;
     }
 }

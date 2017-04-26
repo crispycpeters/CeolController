@@ -20,56 +20,78 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="0dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:background="@drawable/shape_background"
         >
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+
+        <SeekBar
+            android:id="@+id/trackSeekBar"
+            style="@style/Widget.AppCompat.SeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            />
+            android:max="10"
+            android:progress="3" />
 
-        <ImageButton
-            android:id="@+id/skipBackwardsB"
-            android:src="@drawable/ic_av_skip_backward"
-            style="@style/DarkRectangleButton"
-            android:layout_width="@dimen/av_button_size_standard"
-            android:layout_height="@dimen/av_button_size_standard"
-            android:onClick="buttonClick"
-            />
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/glayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="0dp"
+            android:orientation="horizontal"
+            android:background="@drawable/shape_background"
+            >
 
-        <ImageButton
-            android:id="@+id/playpauseB"
-            android:src="@drawable/ic_av_play_pause"
-            style="@style/DarkRectangleButton"
-            android:layout_width="@dimen/av_button_size_standard"
-            android:layout_height="@dimen/av_button_size_standard"
-            android:onClick="buttonClick"
-            />
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                />
 
-        <ImageButton
-            android:id="@+id/stopB"
-            android:src="@drawable/ic_av_stop"
-            style="@style/DarkRectangleButton"
-            android:layout_width="@dimen/av_button_size_standard"
-            android:layout_height="@dimen/av_button_size_standard"
-            android:onClick="buttonClick"
-            />
+            <ImageButton
+                android:id="@+id/skipBackwardsB"
+                android:src="@drawable/ic_av_skip_backward"
+                style="@style/DarkRectangleButton"
+                android:layout_width="@dimen/av_button_size_standard"
+                android:layout_height="@dimen/av_button_size_standard"
+                android:onClick="buttonClick"
+                />
 
-        <ImageButton
-            android:id="@+id/skipForwardsB"
-            android:src="@drawable/ic_av_skip_forward"
-            style="@style/DarkRectangleButton"
-            android:layout_width="@dimen/av_button_size_standard"
-            android:layout_height="@dimen/av_button_size_standard"
-            android:onClick="buttonClick"
-            />
+            <ImageButton
+                android:id="@+id/playpauseB"
+                android:src="@drawable/ic_av_play_pause"
+                style="@style/DarkRectangleButton"
+                android:layout_width="@dimen/av_button_size_standard"
+                android:layout_height="@dimen/av_button_size_standard"
+                android:onClick="buttonClick"
+                />
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
+            <ImageButton
+                android:id="@+id/stopB"
+                android:src="@drawable/ic_av_stop"
+                style="@style/DarkRectangleButton"
+                android:layout_width="@dimen/av_button_size_standard"
+                android:layout_height="@dimen/av_button_size_standard"
+                android:onClick="buttonClick"
+                />
+
+            <ImageButton
+                android:id="@+id/skipForwardsB"
+                android:src="@drawable/ic_av_skip_forward"
+                style="@style/DarkRectangleButton"
+                android:layout_width="@dimen/av_button_size_standard"
+                android:layout_height="@dimen/av_button_size_standard"
+                android:onClick="buttonClick"
+                />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
+
 
     </LinearLayout>
 
