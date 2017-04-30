@@ -24,6 +24,8 @@ public class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
     }
 
 
+
+
     @Override
     protected Bitmap doInBackground(String... params) {
         return downloadBitmap(params[0]);
@@ -43,13 +45,13 @@ public class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
 
 /*
         if (imageViewReference != null) {
-            ImageView imageView = imageViewReference.get();
-            if (imageView != null) {
+            ImageView thumbnail = imageViewReference.get();
+            if (thumbnail != null) {
                 if (bitmap != null) {
-                    imageView.setImageBitmap(bitmap);
+                    thumbnail.setImageBitmap(bitmap);
                 } else {
-                    Drawable placeholder = imageView.getContext().getResources().getDrawable(R.drawable.placeholder);
-                    imageView.setImageDrawable(placeholder);
+                    Drawable placeholder = thumbnail.getContext().getResources().getDrawable(R.drawable.placeholder);
+                    thumbnail.setImageDrawable(placeholder);
                 }
             }
         }

@@ -16,6 +16,7 @@
 
     <string-array name="section_page_title">
         <item>Player</item>
+        <item>Playlist</item>
         <item>Navigator</item>
     </string-array>
 

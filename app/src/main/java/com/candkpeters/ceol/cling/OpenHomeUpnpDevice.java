@@ -65,7 +65,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
         device = null;
         timeService = infoService = playlistService = null;
         ceolDeviceOpenHome.setDuration(0);
-        ceolDeviceOpenHome.setTrackCount(0);
+        ceolDeviceOpenHome.setTotalTrackCount(0);
         ceolDeviceOpenHome.setSeconds(0);
         ceolDeviceOpenHome.setAudioUri("");
         ceolDeviceOpenHome.setMetadata("");
@@ -191,7 +191,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
 
                     UnsignedIntegerFourBytes trackCountV = (UnsignedIntegerFourBytes)(values.get("TrackCount").getValue());
                     Log.d(TAG, "EVENT: GOT trackCount=" + trackCountV);
-                    ceolDeviceOpenHome.setTrackCount((long)(trackCountV.getValue()));
+                    ceolDeviceOpenHome.setTotalTrackCount((long)(trackCountV.getValue()));
 
                     StateVariableValue metadata = values.get("Metadata");
                     Log.d(TAG, "EVENT: GOT metadata="+metadata);
@@ -234,6 +234,8 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
 
                     StateVariableValue idArrayVal = values.get("IdArray");
                     setupIds( idArrayVal );
+
+                    ceolDevice.notifyObservers();
 /*
 
                     StateVariableValue uri = values.get("Uri");
@@ -260,8 +262,6 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
         intBuf.get(array);
 
         requestMissingAudioData( ceolDeviceOpenHome.setPlaylist( array) );
-
-
     }
 
     private void requestMissingAudioData(List<Integer> missingIds) {

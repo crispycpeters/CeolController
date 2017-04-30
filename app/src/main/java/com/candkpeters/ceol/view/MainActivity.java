@@ -12,6 +12,8 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -73,6 +75,8 @@ public class MainActivity extends AppCompatActivity
     private static final float DIMMED = 0.8f;
     private static final float TRANSPARENT = 0;
     ProgressDialog waitingDialog;
+//    PlaylistRecyclerAdapter playlistRecyclerAdapter = new PlaylistRecyclerAdapter(getContext(), ((MainActivity)getActivity()).getCeolController());
+    private PlaylistRecyclerAdapter playlistRecyclerAdapter;
 
     private Prefs prefs = null;
 
@@ -84,9 +88,7 @@ public class MainActivity extends AppCompatActivity
      * may be best to switch to a
      * {@link FragmentStatePagerAdapter}.
      */
-
-
-    private static CeolController ceolController;
+    private CeolController ceolController;
 
     private Animation powerAnimation;
     private boolean isLargeDevice;
@@ -166,6 +168,9 @@ public class MainActivity extends AppCompatActivity
         powerAnimation.setInterpolator( new LinearInterpolator());
         powerAnimation.setRepeatCount(Animation.INFINITE);
         powerAnimation.setRepeatMode(Animation.REVERSE);
+
+        playlistRecyclerAdapter = new PlaylistRecyclerAdapter(this, getCeolController());
+
     }
 
     private void setupWaitingDialog() {
@@ -206,33 +211,35 @@ public class MainActivity extends AppCompatActivity
 
             View tunerPanel = findViewById(R.id.tunerPanel);
             View netPanel = findViewById(R.id.netPanel);
-            switch (ceolDevice.getSIStatus()) {
-                case CD:
-                case AnalogIn:
-                case NotConnected:
-                    tunerPanel.setVisibility(View.INVISIBLE);
-                    netPanel.setVisibility(View.INVISIBLE);
-                    break;
-                case Tuner:
-                    tunerPanel.setVisibility(View.VISIBLE);
-                    netPanel.setVisibility(View.GONE);
+            if ( tunerPanel != null && netPanel != null ) {
+                switch (ceolDevice.getSIStatus()) {
+                    case CD:
+                    case AnalogIn:
+                    case NotConnected:
+                        tunerPanel.setVisibility(View.INVISIBLE);
+                        netPanel.setVisibility(View.INVISIBLE);
+                        break;
+                    case Tuner:
+                        tunerPanel.setVisibility(View.VISIBLE);
+                        netPanel.setVisibility(View.GONE);
 
-                    setTextViewText(R.id.tunerName, ceolDevice.Tuner.getName());
-                    setTextViewText(R.id.tunerFrequency, ceolDevice.Tuner.getFrequency());
-                    setTextViewText(R.id.tunerUnits, ceolDevice.Tuner.getUnits());
-                    setTextViewText(R.id.tunerBand, ceolDevice.Tuner.getBand());
-                    break;
-                case DigitalIn1:
-                case DigitalIn2:
-                case IRadio:
-                case NetServer:
-                case Bluetooth:
-                case Ipod:
-                case Spotify:
-                default:
-                    tunerPanel.setVisibility(View.GONE);
-                    netPanel.setVisibility(View.VISIBLE);
-                    break;
+                        setTextViewText(R.id.tunerName, ceolDevice.Tuner.getName());
+                        setTextViewText(R.id.tunerFrequency, ceolDevice.Tuner.getFrequency());
+                        setTextViewText(R.id.tunerUnits, ceolDevice.Tuner.getUnits());
+                        setTextViewText(R.id.tunerBand, ceolDevice.Tuner.getBand());
+                        break;
+                    case DigitalIn1:
+                    case DigitalIn2:
+                    case IRadio:
+                    case NetServer:
+                    case Bluetooth:
+                    case Ipod:
+                    case Spotify:
+                    default:
+                        tunerPanel.setVisibility(View.GONE);
+                        netPanel.setVisibility(View.VISIBLE);
+                        break;
+                }
             }
             updateSIEntries(ceolDevice);
 
@@ -246,6 +253,7 @@ public class MainActivity extends AppCompatActivity
 
             updateSeekbar( ceolDevice);
 
+            playlistRecyclerAdapter.notifyDataSetChanged();
 
         } catch (Exception e) {
             Log.e(TAG, "onCeolStatusChanged: Exception " + e);
@@ -369,8 +377,8 @@ public class MainActivity extends AppCompatActivity
         updateNavigationRow( ceolDevice, R.id.textRow6, 6);
         updateNavigationRow( ceolDevice, R.id.textRow7, 7);
 
-        ListView entriesList = (ListView)findViewById(R.id.entriesList);
-        ListAdapter adapter = entriesList.getAdapter();
+//        ListView entriesList = (ListView)findViewById(R.id.entriesList);
+//        ListAdapter adapter = entriesList.getAdapter();
 
     }
 
@@ -646,6 +654,14 @@ public class MainActivity extends AppCompatActivity
         infoFragment.show(fm,"infoFragment");
     }
 
+    public CeolController getCeolController() {
+        return ceolController;
+    }
+
+    public PlaylistRecyclerAdapter getPlaylistRecyclerAdapter() {
+        return playlistRecyclerAdapter;
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -675,6 +691,9 @@ public class MainActivity extends AppCompatActivity
                     fragment = new CeolRemoteFragmentPlayerControl();
                     break;
                 case 2:
+                    fragment = new CeolRemoteFragmentPlaylistControl();
+                    break;
+                case 3:
                     fragment = new CeolRemoteFragmentNavigatorControl();
                     break;
             }
@@ -720,37 +739,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Section 2 - Ceol navigator control.
-     */
-    public static class CeolRemoteFragmentNavigatorControl extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "3";
-
-        public CeolRemoteFragmentNavigatorControl() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.tablayout_navigator, container, false);
-//            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
-
-            return rootView;
-        }
-    }
-
-    /**
-     * Section 3 - Ceol player control.
+     * Section 1 - Ceol player control.
      */
     public static class CeolRemoteFragmentPlayerControl extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final String ARG_SECTION_NUMBER = "3";
 
         public CeolRemoteFragmentPlayerControl() {
         }
@@ -760,6 +755,62 @@ public class MainActivity extends AppCompatActivity
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.tablayout_player, container, false);
 
+            return rootView;
+        }
+    }
+
+    /**
+     * Section 1 - Ceol playerlist control.
+     */
+    public static class CeolRemoteFragmentPlaylistControl extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+
+        public CeolRemoteFragmentPlaylistControl() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.tablayout_playlist, container, false);
+            startPlaylistRetrieval(rootView);
+            return rootView;
+        }
+
+        private void startPlaylistRetrieval(View rootView) {
+
+            RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.recycler_view);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//            PlaylistRecyclerAdapter playlistRecyclerAdapter = new PlaylistRecyclerAdapter(getContext(), ((MainActivity)getActivity()).getCeolController());
+            recyclerView.setAdapter( ((MainActivity)getActivity()).getPlaylistRecyclerAdapter() ) ;
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            Log.d(TAG, "onStart in playlist fragment: ");
+        }
+
+    }
+
+    /**
+     * Section 3 - Ceol navigator control.
+     */
+    public static class CeolRemoteFragmentNavigatorControl extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+
+        public CeolRemoteFragmentNavigatorControl() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.tablayout_navigator, container, false);
             return rootView;
         }
     }
@@ -785,7 +836,8 @@ public class MainActivity extends AppCompatActivity
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 2;
+            String[] section_title = getResources().getStringArray(R.array.section_page_title);
+            return section_title.length;
         }
 
         @Override
