@@ -71,7 +71,8 @@ public class CeolController implements View.OnClickListener {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             CeolServiceBinder binder = (CeolServiceBinder) service;
             ceolService = binder.getCeolService();
-            ceolManager = ceolService.getCeolManager();
+//            ceolManager = ceolService.getCeolManager();
+            // TODO --- !!! NO LONGER WILL WORK
             ceolDevice = ceolManager.getCeolDevice();
             ceolManager.register(onCeolStatusChangedListener);
             bound = true;

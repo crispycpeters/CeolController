@@ -7,7 +7,9 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.candkpeters.ceol.device.GathererBase;
 import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.view.Prefs;
 
 import org.fourthline.cling.android.AndroidUpnpService;
@@ -26,9 +28,8 @@ import java.util.logging.Logger;
  * Created by crisp on 10/04/2017.
  */
 
-public class ClingManager {
+public class ClingGatherer extends GathererBase {
     private static String TAG = "ClingManager";
-    private final CeolDevice ceolDevice;
     //    private BrowserUpnpService browserUpnpService;
     private AndroidUpnpService upnpService;
     private BrowseRegistryListener registryListener = new BrowseRegistryListener();
@@ -46,10 +47,9 @@ public class ClingManager {
     private void setupCachedPlayer() {
     }
 
-    public ClingManager(Context context, CeolDevice ceolDevice) {
+    public ClingGatherer(Context context, CeolModel ceolModel) {
         this.context = context;
-//        openHomeUpnpDevice = new OpenHomeUpnpDevice(context, ceolDevice);
-        this.ceolDevice = ceolDevice;
+        openHomeUpnpDevice = new OpenHomeUpnpDevice(context, ceolModel);
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -83,7 +83,7 @@ public class ClingManager {
 
     public void bindToCling() {
 
-        openHomeUpnpDevice.removeDevice();
+        unbindFromCling();
 // Fix the logging integration between java.util.logging and Android internal logging
         org.seamless.util.logging.LoggingUtil.resetRootHandler(
                 new FixedAndroidLogHandler()
@@ -107,6 +107,16 @@ public class ClingManager {
             upnpService.getRegistry().removeListener(registryListener);
         }
         context.unbindService(serviceConnection);
+    }
+
+    @Override
+    public void start(Prefs prefs) {
+        bindToCling();
+    }
+
+    @Override
+    public void stop() {
+        unbindFromCling();
     }
 
     protected class BrowseRegistryListener extends DefaultRegistryListener {

@@ -38,20 +38,20 @@ public class CeolDeviceNetServer {
 
     // Playing mode
 //    private String track;
-//    private String artist;
+//    private String artistView;
 //    private String album;
 //    private String format;
 //    private String bitrate;
 //
 //    private Bitmap imageBitmap;
 
-    public CeolDeviceNetServer(AudioItem audioItem) {
+    public CeolDeviceNetServer(AudioStreamItem audioItem) {
         clear();
     }
 
     public void clear() {
         entries.clear();
-//        setTrackInfo("","","","","");
+//        setStreamInfo("","","","","");
         scrid = "";
         scridValue = "";
     }
@@ -74,9 +74,9 @@ public class CeolDeviceNetServer {
         return entries.getSelectedEntry();
     }
 
-//    public void setTrackInfo(String track, String artist, String album, String format, String bitrate) {
+//    public void setStreamInfo(String track, String artistView, String album, String format, String bitrate) {
 //        this.track = track;
-//        this.artist = artist;
+//        this.artistView = artistView;
 //        this.album = album;
 //        this.format = format;
 //        this.bitrate = bitrate;
@@ -99,12 +99,12 @@ public class CeolDeviceNetServer {
         this.isBrowsing = isBrowsing;
     }
 
-//    public String getTrack() {
+//    public String getTitle() {
 //        return track;
 //    }
 
 //    public String getArtist() {
-//        return artist;
+//        return artistView;
 //    }
 
 //    public String getAlbum() {
@@ -116,7 +116,7 @@ public class CeolDeviceNetServer {
     }
 
 //    public String getTitle() {
-//        return title;
+//        return titleView;
 //    }
 
 //    public String getBitrate() {

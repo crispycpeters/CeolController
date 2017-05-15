@@ -106,6 +106,7 @@
     <orderEntry type="library" exported="" name="seamless-util-1.1.1" level="project" />
     <orderEntry type="library" exported="" name="seamless-http-1.1.1" level="project" />
     <orderEntry type="library" exported="" name="cling-core-2.1.0" level="project" />
+    <orderEntry type="library" exported="" name="picasso-2.5.2" level="project" />
     <orderEntry type="library" exported="" name="retrofit-simplexmlconverter-1.1" level="project" />
     <orderEntry type="library" exported="" name="jetty-io-8.1.18.v20150929" level="project" />
     <orderEntry type="library" exported="" name="jetty-server-8.1.18.v20150929" level="project" />

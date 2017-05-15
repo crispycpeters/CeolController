@@ -20,20 +20,20 @@ public class CommandBrowseToRoot extends Command {
 
     @Override
     protected boolean isSuccessful() {
-        Log.d(TAG, "isSuccessful: scrd end=" + ceolDevice.CeolNetServer.getScridValue().endsWith(".1") + " isbrowsing=" + ceolDevice.CeolNetServer.isBrowsing());
+        Log.d(TAG, "isSuccessful: scrd end=" + ceolModel.inputControl.navigatorControl.getScridValue().endsWith(".1") + " isbrowsing=" + ceolModel.inputControl.navigatorControl.isBrowsing());
         return (
-                ceolDevice.getSIStatus() == SIStatusType.NetServer &&
-                ceolDevice.CeolNetServer.getScridValue().endsWith(".1") &&
-                ceolDevice.CeolNetServer.isBrowsing() );
+                ceolModel.inputControl.getSIStatus() == SIStatusType.NetServer &&
+                        ceolModel.inputControl.navigatorControl.getScridValue().endsWith(".1") &&
+                        ceolModel.inputControl.navigatorControl.isBrowsing() );
     }
 
     private void checkStatus() {
         Log.d(TAG, "checkStatus: isdone=" + isDone());
-        if ( ceolDevice.getSIStatus() != SIStatusType.NetServer) {
+        if ( ceolModel.inputControl.getSIStatus() != SIStatusType.NetServer) {
             setIsDone(true);
         }
         if (!isSuccessful()) {
-            new CommandCursorLeft(ceolDevice.CeolNetServer.getScridValue()).execute(ceolManager, new OnCeolStatusChangedListener() {
+            new CommandCursorLeft(ceolModel.inputControl.navigatorControl.getScridValue()).execute(ceolManager, new OnCeolStatusChangedListener() {
                 @Override
                 public void onCeolStatusChanged() {
                     checkStatus();

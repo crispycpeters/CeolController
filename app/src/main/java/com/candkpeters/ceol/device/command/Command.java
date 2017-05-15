@@ -2,9 +2,16 @@ package com.candkpeters.ceol.device.command;
 
 import android.util.Log;
 
-import com.candkpeters.ceol.device.CeolManager;
+import com.candkpeters.ceol.device.CeolManager2;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
-import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.model.AudioControl;
+import com.candkpeters.ceol.model.CeolModel;
+import com.candkpeters.ceol.model.CeolNavigatorControl;
+import com.candkpeters.ceol.model.ConnectionControl;
+import com.candkpeters.ceol.model.InputControl;
+import com.candkpeters.ceol.model.OnControlChangedListener;
+import com.candkpeters.ceol.model.PowerControl;
+import com.candkpeters.ceol.model.TrackControl;
 
 /**
  * Created by crisp on 22/01/2016.
@@ -13,13 +20,14 @@ public abstract class Command {
 
     private static final String TAG = "Command";
     //private final CommandType type;
-    protected CeolManager ceolManager;
-    protected CeolDevice ceolDevice;
+    protected CeolManager2 ceolManager;
     protected int maxExecutionTimeMsecs = 30000;
-    private OnCeolStatusChangedListener onCeolStatusChangedListener;
+//    private OnCeolStatusChangedListener onCeolStatusChangedListener;
+    private OnControlChangedListener onControlChangedListener;
     private OnCeolStatusChangedListener onDoneCeolStatusChangedListener;
     private long commandStartTime;
     private boolean isDone = false;
+    protected CeolModel ceolModel;
 
     public Command() {
         //this.type = type;
@@ -50,7 +58,7 @@ public abstract class Command {
     }
 
     private void finishUp() {
-        ceolManager.unregister(onCeolStatusChangedListener);
+        ceolManager.unregister(onControlChangedListener);
         if ( onDoneCeolStatusChangedListener != null) {
             onDoneCeolStatusChangedListener.onCeolStatusChanged();
         }
@@ -61,10 +69,10 @@ public abstract class Command {
 
     protected abstract boolean isSuccessful( );
 
-    public boolean isSuccessful(CeolManager ceolManager) {
+    public boolean isSuccessful(CeolManager2 ceolManager) {
         setIsDone(false);
         this.ceolManager = ceolManager;
-        this.ceolDevice = ceolManager.getCeolDevice();
+        this.ceolModel = ceolManager.ceolModel;
         boolean result = isSuccessful();
         if (result) {
             setIsDone(true);
@@ -85,27 +93,52 @@ public abstract class Command {
 
     protected abstract void execute();
 
-    public void execute( CeolManager ceolManager) {
+    public void execute(CeolManager2 ceolManager) {
         execute(ceolManager,null);
     }
 
-    public void execute(CeolManager ceolManager, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
+    public void execute(CeolManager2 ceolManager, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
 
         setIsDone(false);
         this.onDoneCeolStatusChangedListener = onDoneCeolStatusChangedListener;
         commandStartTime = System.currentTimeMillis();
 
         this.ceolManager = ceolManager;
-        this.ceolDevice = ceolManager.getCeolDevice();
+        this.ceolModel = ceolManager.ceolModel;
 
         preExecute();
-        onCeolStatusChangedListener = new OnCeolStatusChangedListener() {
+        onControlChangedListener = new OnControlChangedListener() {
             @Override
-            public void onCeolStatusChanged() {
+            public void onCAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
+                checkOverallStatus();
+            }
+
+            @Override
+            public void onConnectionControlChanged(CeolModel ceolModel, ConnectionControl connectionControl) {
+                checkOverallStatus();
+            }
+
+            @Override
+            public void onCeolNavigatorControlChanged(CeolModel ceolModel, CeolNavigatorControl ceolNavigatorControl) {
+                checkOverallStatus();
+            }
+
+            @Override
+            public void onInputControlChanged(CeolModel ceolModel, InputControl inputControl) {
+                checkOverallStatus();
+            }
+
+            @Override
+            public void onPowerControlChanged(CeolModel ceolModel, PowerControl powerControl) {
+                checkOverallStatus();
+            }
+
+            @Override
+            public void onTrackControlChanged(CeolModel ceolModel, TrackControl trackControl) {
                 checkOverallStatus();
             }
         };
-        ceolManager.register(onCeolStatusChangedListener);
+        ceolManager.register(onControlChangedListener);
         execute();
     }
 

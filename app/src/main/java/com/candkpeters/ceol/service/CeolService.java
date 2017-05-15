@@ -8,8 +8,9 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.candkpeters.ceol.cling.ClingGatherer;
 import com.candkpeters.ceol.cling.ClingManager;
-import com.candkpeters.ceol.device.CeolManager;
+import com.candkpeters.ceol.device.CeolManager2;
 import com.candkpeters.ceol.widget.CeolWidgetController;
 import com.candkpeters.ceol.view.Prefs;
 
@@ -31,12 +32,12 @@ public class CeolService extends Service {
     final Context context = this;
 
     CeolWidgetController ceolWidgetController;
-    private CeolManager ceolManager;
-    private ClingManager clingManager;
-    private CeolServiceBinder ceolServiceBinder;
+//    private CeolManager ceolManager;
+    private CeolManager2 ceolManager2;
 
     public CeolService() {
-        ceolManager = new CeolManager(context);
+//        ceolManager = new CeolManager(context);
+        ceolManager2 = new CeolManager2(context);
         ceolWidgetController = new CeolWidgetController(this);
     }
 
@@ -45,12 +46,14 @@ public class CeolService extends Service {
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind: Entering");
         initializeService();
-        ceolServiceBinder = new CeolServiceBinder(this);
-        return ceolServiceBinder;
+        return new CeolServiceBinder(this);
     }
 
-    public CeolManager getCeolManager() {
-        return ceolManager;
+//    public CeolManager getCeolManager() {
+//        return ceolManager;
+//    }
+    public CeolManager2 getCeolManager() {
+        return ceolManager2;
     }
 
     /*
@@ -123,13 +126,14 @@ public class CeolService extends Service {
     @Override
     public void onDestroy() {
         //TODO - how to destroy service
-        clingManager.unbindFromCling();
+        ceolManager2.stop();
         ceolWidgetController.destroy();
     }
 
     private void initializeService() {
-        ceolManager.initialize();
-        ceolWidgetController.initialize(ceolManager);
+//        ceolManager.initialize();
+        ceolManager2.initialize();
+        ceolWidgetController.initialize(ceolManager2);
     }
 
 }

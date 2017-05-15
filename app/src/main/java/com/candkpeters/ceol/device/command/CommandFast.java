@@ -19,7 +19,7 @@ public class CommandFast extends CommandBaseDirection {
     @Override
     public void execute() {
         String commandString = null;
-        switch (ceolDevice.getSIStatus()) {
+        switch (ceolModel.inputControl.getSIStatus()) {
 
             case NotConnected:
                 break;

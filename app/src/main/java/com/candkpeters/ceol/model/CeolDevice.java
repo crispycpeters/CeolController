@@ -26,7 +26,7 @@ public class CeolDevice {
     private DeviceStatusType deviceStatus = DeviceStatusType.Connecting;
 
     // Sub-devices
-    private final AudioItem audioItem;
+    private final AudioStreamItem audioItem;
     public CeolDeviceNetServer CeolNetServer;
     public CeolDeviceTuner Tuner;
     private CeolDeviceOpenHome openHome;
@@ -36,7 +36,7 @@ public class CeolDevice {
     private static final int REPEATRATE_MSECS_SPOTIFY = 8000;
 
     public CeolDevice( Observed observed) {
-        audioItem = new AudioItem();
+        audioItem = new AudioStreamItem();
         CeolNetServer = new CeolDeviceNetServer(audioItem);
         Tuner = new CeolDeviceTuner();
         openHome = new CeolDeviceOpenHome(audioItem);
@@ -316,7 +316,7 @@ public class CeolDevice {
         return openHome;
     }
 
-    public AudioItem getAudioItem() {
+    public AudioStreamItem getAudioItem() {
         return audioItem;
     }
 }

@@ -20,7 +20,7 @@ public class CommandSkip extends CommandBaseDirection {
     public void execute() {
         String commandString = null;
 
-        switch (ceolDevice.getSIStatus()) {
+        switch (ceolModel.inputControl.getSIStatus()) {
 
             case NotConnected:
                 break;

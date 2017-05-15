@@ -6,11 +6,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.candkpeters.ceol.device.CeolManager;
+import com.candkpeters.ceol.device.CeolManager2;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.device.command.CommandBaseApp;
+import com.candkpeters.ceol.model.AudioControl;
 import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.model.CeolModel;
+import com.candkpeters.ceol.model.CeolNavigatorControl;
+import com.candkpeters.ceol.model.ConnectionControl;
+import com.candkpeters.ceol.model.InputControl;
+import com.candkpeters.ceol.model.OnControlChangedListener;
+import com.candkpeters.ceol.model.PowerControl;
+import com.candkpeters.ceol.model.TrackControl;
 import com.candkpeters.ceol.view.CeolIntentFactory;
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.ceol.view.MainActivity;
@@ -26,14 +34,48 @@ public class CeolWidgetController {
     };
 
     private Prefs prefs;
-    public CeolManager ceolManager = null;
+//    public CeolManager ceolManager = null;
+    public CeolManager2 ceolManager = null;
     CeolDevice ceolDevice = null;
-    OnCeolStatusChangedListener onCeolStatusChangedListener = new OnCeolStatusChangedListener() {
+    CeolModel ceolModel = null;
+
+//    OnCeolStatusChangedListener onCeolStatusChangedListener = new OnCeolStatusChangedListener() {
+//        @Override
+//        public void onCeolStatusChanged() {
+//            updateWidgets(null);
+//        }
+//    };
+    OnControlChangedListener onControlChangedListener = new OnControlChangedListener() {
         @Override
-        public void onCeolStatusChanged() {
+        public void onCAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
+            updateWidgets(null);
+        }
+
+        @Override
+        public void onConnectionControlChanged(CeolModel ceolModel, ConnectionControl connectionControl) {
+            updateWidgets(null);
+        }
+
+        @Override
+        public void onCeolNavigatorControlChanged(CeolModel ceolModel, CeolNavigatorControl ceolNavigatorControl) {
+        }
+
+        @Override
+        public void onInputControlChanged(CeolModel ceolModel, InputControl inputControl) {
+            updateWidgets(null);
+        }
+
+        @Override
+        public void onPowerControlChanged(CeolModel ceolModel, PowerControl powerControl) {
+            updateWidgets(null);
+        }
+
+        @Override
+        public void onTrackControlChanged(CeolModel ceolModel, TrackControl trackControl) {
             updateWidgets(null);
         }
     };
+
     private String updateString = "";
     final Context context;
     private int commandDepth = 0;
@@ -42,7 +84,7 @@ public class CeolWidgetController {
         context = ceolService;
     }
 
-    public void initialize( CeolManager ceolManager) {
+    public void initialize( CeolManager2 ceolManager) {
 /*
         this.prefs = new Prefs(context);
         String baseUrl = prefs.getBaseUrl();
@@ -51,17 +93,17 @@ public class CeolWidgetController {
         this.ceolManager = ceolManager;
 //        ceolManager = CeolManager.getInstance();
 //        ceolManager.initialize(context);//CeolDevice.getInstance(), baseUrl, prefs.getMacroNames(), prefs.getMacroValues());
-        ceolDevice = ceolManager.getCeolDevice();
+        ceolModel = ceolManager.ceolModel;
         ceolManager.start();
         startService();
     }
 
     private void startWidgetUpdates() {
-        ceolManager.register(onCeolStatusChangedListener);
+        ceolManager.register(onControlChangedListener);
     }
 
     private void stopWidgetUpdates() {
-        ceolManager.unregister(onCeolStatusChangedListener);
+        ceolManager.unregister(onControlChangedListener);
     }
 
     private boolean widgetsExist() {

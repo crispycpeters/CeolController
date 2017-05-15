@@ -37,14 +37,11 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.candkpeters.ceol.controller.CeolController;
-import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
+import com.candkpeters.ceol.controller.CeolController2;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.device.command.CommandBaseApp;
 import com.candkpeters.ceol.device.command.CommandControlStop;
@@ -62,10 +59,20 @@ import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
 import com.candkpeters.ceol.device.command.CommandSetSI;
 import com.candkpeters.ceol.device.command.CommandSkipBackward;
 import com.candkpeters.ceol.device.command.CommandSkipForward;
+import com.candkpeters.ceol.model.AudioControl;
+import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.model.CeolModel;
+import com.candkpeters.ceol.model.CeolNavigatorControl;
+import com.candkpeters.ceol.model.ConnectionControl;
+import com.candkpeters.ceol.model.ControlBase;
 import com.candkpeters.ceol.model.DeviceStatusType;
 import com.candkpeters.ceol.model.DirectionType;
+import com.candkpeters.ceol.model.InputControl;
+import com.candkpeters.ceol.model.OnControlChangedListener;
+import com.candkpeters.ceol.model.PowerControl;
 import com.candkpeters.ceol.model.SIStatusType;
+import com.candkpeters.ceol.model.TrackControl;
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.chris.ceol.R;
 
@@ -88,7 +95,8 @@ public class MainActivity extends AppCompatActivity
      * may be best to switch to a
      * {@link FragmentStatePagerAdapter}.
      */
-    private CeolController ceolController;
+//    private CeolController ceolController;
+    private CeolController2 ceolController2;
 
     private Animation powerAnimation;
     private boolean isLargeDevice;
@@ -146,6 +154,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Log.i(TAG, "Created");
+/*
         ceolController = new CeolController(this, new OnCeolStatusChangedListener() {
             @Override
             public void onCeolStatusChanged() {
@@ -157,11 +166,7 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-
-        setNavigationMenuStrings(navigationView);
-
-//        ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageTrack);
-//        if (imageV != null) imageV.setMinimumHeight();width(ceolDevice.getAudioItem().getImageBitmap());
+*/
 
         powerAnimation = new AlphaAnimation(1,0);
         powerAnimation.setDuration(1000);
@@ -169,8 +174,126 @@ public class MainActivity extends AppCompatActivity
         powerAnimation.setRepeatCount(Animation.INFINITE);
         powerAnimation.setRepeatMode(Animation.REVERSE);
 
-        playlistRecyclerAdapter = new PlaylistRecyclerAdapter(this, getCeolController());
+        ceolController2 = new CeolController2(this, new OnControlChangedListener() {
+            @Override
+            public void onCAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
+                Log.d(TAG, "onCAudioControlChanged: ");
+                setTextViewText(R.id.volume, audioControl.getMasterVolumeString());
+            }
 
+            @Override
+            public void onConnectionControlChanged(CeolModel ceolModel, ConnectionControl connectionControl) {
+                Log.d(TAG, "onConnectionControlChanged: " + connectionControl.isConnected());
+                showConnection( connectionControl.isConnected() ) ;
+            }
+
+            @Override
+            public void onCeolNavigatorControlChanged(CeolModel ceolModel,CeolNavigatorControl ceolNavigatorControl) {
+                Log.d(TAG, "onCeolNavigatorControlChanged: ");
+                updateNavigation( ceolNavigatorControl);
+            }
+
+            @Override
+            public void onInputControlChanged(CeolModel ceolModel,InputControl inputControl) {
+                Log.d(TAG, "onInputControlChanged: ");
+                updateSIEntries(inputControl);
+            }
+
+            @Override
+            public void onPowerControlChanged(CeolModel ceolModel,PowerControl powerControl) {
+                Log.d(TAG, "onPowerControlChanged: ");
+                updatePowerButton(powerControl);
+            }
+
+            @Override
+            public void onTrackControlChanged(CeolModel ceolModel, TrackControl trackControl) {
+                updateTrackViews();
+            }
+        }
+        );
+
+        setNavigationMenuStrings(navigationView);
+
+//        ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageTrack);
+//        if (imageV != null) imageV.setMinimumHeight();width(ceolDevice.getAudioItem().getImageBitmap());
+
+        //TODO
+//        playlistRecyclerAdapter = new PlaylistRecyclerAdapter(this, getCeolController());
+
+    }
+
+    protected void updateTrackViews() {
+        if ( ceolController2.isBound()) {
+            CeolModel ceolModel = ceolController2.getCeolModel();
+            TrackControl trackControl = ceolController2.getCeolModel().inputControl.trackControl;
+
+            AudioStreamItem audioStreamItem = trackControl.getAudioItem();
+            setTextViewText(R.id.textTrack, audioStreamItem.getTitle());
+            setTextViewText(R.id.textArtist, audioStreamItem.getArtist());
+            setTextViewText(R.id.textAlbum, audioStreamItem.getAlbum());
+            setTextViewText(R.id.playStatus, trackControl.getPlayStatus().toString());
+
+            ImageView imageV = (ImageView) findViewById(R.id.imageTrack);
+            if (imageV != null) imageV.setImageBitmap(audioStreamItem.getImageBitmap());
+            viewUpdateForAllNotifications();
+            String currString = Long.toString(System.currentTimeMillis() % 100);
+            setTextViewText(R.id.textUpdate, currString);
+
+            View tunerPanel = findViewById(R.id.tunerPanel);
+            View netPanel = findViewById(R.id.netPanel);
+            if (tunerPanel != null && netPanel != null) {
+                switch (ceolModel.inputControl.getSIStatus()) {
+                    case CD:
+                    case AnalogIn:
+                    case NotConnected:
+                        tunerPanel.setVisibility(View.INVISIBLE);
+                        netPanel.setVisibility(View.INVISIBLE);
+                        break;
+                    case Tuner:
+                        tunerPanel.setVisibility(View.VISIBLE);
+                        netPanel.setVisibility(View.GONE);
+
+                        AudioStreamItem audioTunerItem = trackControl.getAudioItem();
+                        setTextViewText(R.id.tunerName, audioTunerItem.getTitle());
+                        setTextViewText(R.id.tunerFrequency, audioTunerItem.getFrequency());
+                        setTextViewText(R.id.tunerUnits, audioTunerItem.getUnits());
+                        setTextViewText(R.id.tunerBand, audioTunerItem.getBand());
+                        break;
+                    case DigitalIn1:
+                    case DigitalIn2:
+                    case IRadio:
+                    case NetServer:
+                    case Bluetooth:
+                    case Ipod:
+                    case Spotify:
+                    default:
+                        tunerPanel.setVisibility(View.GONE);
+                        netPanel.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+        }
+    }
+
+    private void viewUpdateForAllNotifications() {
+        String currString = Long.toString(System.currentTimeMillis() % 100);
+        setTextViewText(R.id.textUpdate, currString);
+        hideWaitingDialog();
+
+    }
+
+    public void updateViewsOnDeviceChange(CeolModel ceolModel, ControlBase control) {
+        try {
+
+
+
+//            updateSeekbar( ceolDevice);
+            playlistRecyclerAdapter.notifyDataSetChanged();
+
+        } catch (Exception e) {
+            Log.e(TAG, "onCeolStatusChanged: Exception " + e);
+            e.printStackTrace();
+        }
     }
 
     private void setupWaitingDialog() {
@@ -188,12 +311,13 @@ public class MainActivity extends AppCompatActivity
         waitingDialog.hide();
     }
 
+
     public void updateViewsOnDeviceChange(CeolDevice ceolDevice) {
         try {
 
             hideWaitingDialog();
 
-            setTextViewText(R.id.textTrack, ceolDevice.getAudioItem().getTrack());
+            setTextViewText(R.id.textTrack, ceolDevice.getAudioItem().getTitle());
 
             setTextViewText(R.id.textArtist, ceolDevice.getAudioItem().getArtist());
 
@@ -279,13 +403,63 @@ public class MainActivity extends AppCompatActivity
         if (tunerName != null) tunerName.setText(name);
     }
 
+    private void updateSIEntries(InputControl inputControl) {
+        Button siB = (Button) findViewById(R.id.siB);
+        if (siB != null) {
+//            if ( ceolDevice.getDeviceStatus() != DeviceStatusType.On ) {
+//                siB.setText(SIStatusType.NotConnected.name);
+//            } else {
+                siB.setText(inputControl.getSIStatus().name);
+//            }
+        }
+
+        int id = 0;
+        switch ( inputControl.getSIStatus()) {
+
+            case NotConnected:
+                break;
+            case CD:
+                break;
+            case Tuner:
+                id = R.id.nav_tuner;
+                break;
+            case IRadio:
+                id = R.id.nav_iradio;
+                break;
+            case NetServer:
+                id = R.id.nav_server;
+                break;
+            case AnalogIn:
+                break;
+            case DigitalIn1:
+                break;
+            case DigitalIn2:
+                break;
+            case Bluetooth:
+                id = R.id.nav_bluetooth;
+                break;
+            case Ipod:
+                id = R.id.nav_usb;
+                break;
+            case Spotify:
+                break;
+        }
+        if ( id != 0 ) {
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            MenuItem item = navigationView.getMenu().findItem(id);
+            if (item != null) {
+                item.setChecked(true);
+            }
+        }
+    }
+
     private void updateSIEntries(CeolDevice ceolDevice) {
         Button siB = (Button) findViewById(R.id.siB);
         if (siB != null) {
 //            if ( ceolDevice.getDeviceStatus() != DeviceStatusType.On ) {
 //                siB.setText(SIStatusType.NotConnected.name);
 //            } else {
-                siB.setText(ceolDevice.getSIStatus().name);
+            siB.setText(ceolDevice.getSIStatus().name);
 //            }
         }
 
@@ -382,6 +556,22 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private void updateNavigation(CeolNavigatorControl navigatorControl) {
+
+        updateNavigationRow( navigatorControl, R.id.textRow0, 0);
+        updateNavigationRow( navigatorControl, R.id.textRow1, 1);
+        updateNavigationRow( navigatorControl, R.id.textRow2, 2);
+        updateNavigationRow( navigatorControl, R.id.textRow3, 3);
+        updateNavigationRow( navigatorControl, R.id.textRow4, 4);
+        updateNavigationRow( navigatorControl, R.id.textRow5, 5);
+        updateNavigationRow( navigatorControl, R.id.textRow6, 6);
+        updateNavigationRow( navigatorControl, R.id.textRow7, 7);
+
+//        ListView entriesList = (ListView)findViewById(R.id.entriesList);
+//        ListAdapter adapter = entriesList.getAdapter();
+
+    }
+
     private void updateNavigationRow(CeolDevice ceolDevice, int rowResId, int rowIndex) {
         TextView textV = (TextView)findViewById(rowResId);
         if ( textV != null) {
@@ -390,6 +580,23 @@ public class MainActivity extends AppCompatActivity
 //                String s = ceolDevice.AudioItem.getEntries().getBrowseLineText(rowIndex);
                 SpannableString s = new SpannableString(ceolDevice.CeolNetServer.getEntries().getBrowseLineText(rowIndex));
                 if ( ceolDevice.CeolNetServer.getEntries().getSelectedEntryIndex() == rowIndex) {
+                    s.setSpan(new StyleSpan(Typeface.BOLD_ITALIC),0, s.length(),0);
+                }
+                textV.setText(s);
+            } else {
+                textV.setText("");
+            }
+        }
+    }
+
+    private void updateNavigationRow(CeolNavigatorControl navigatorControl, int rowResId, int rowIndex) {
+        TextView textV = (TextView)findViewById(rowResId);
+        if ( textV != null) {
+//            if ( ceolDevice.getSIStatus() == SIStatusType.AudioItem  ) {
+            if ( navigatorControl.isBrowsing() ) {
+//                String s = ceolDevice.AudioItem.getEntries().getBrowseLineText(rowIndex);
+                SpannableString s = new SpannableString(navigatorControl.getEntries().getBrowseLineText(rowIndex));
+                if ( navigatorControl.getEntries().getSelectedEntryIndex() == rowIndex) {
                     s.setSpan(new StyleSpan(Typeface.BOLD_ITALIC),0, s.length(),0);
                 }
                 textV.setText(s);
@@ -434,6 +641,38 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void updatePowerButton(PowerControl powerControl) {
+        ImageButton powerB = (ImageButton)findViewById(R.id.powerB);
+
+        if (powerB != null) {
+
+            switch ( powerControl.getDeviceStatus()) {
+
+                case Connecting:
+                case Standby:
+                    if ( isPowerAnimating ) {
+                        powerB.clearAnimation();
+                        isPowerAnimating = false;
+                    }
+                    powerB.setImageResource(R.drawable.ic_av_power_back );
+                    break;
+                case Starting:
+                    if ( !isPowerAnimating ) {
+                        powerB.setImageResource(R.drawable.ic_av_power );
+                        powerB.startAnimation(powerAnimation);
+                        isPowerAnimating = true;
+                    }
+                    break;
+                case On:
+                    if ( isPowerAnimating ) {
+                        powerB.clearAnimation();
+                        isPowerAnimating = false;
+                    }
+                    powerB.setImageResource(R.drawable.ic_av_power );
+                    break;
+            }
+        }
+    }
 /*
     public void updateMacroButtons() {
         Prefs prefs = new Prefs(this);
@@ -461,7 +700,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        ceolController.activityOnStart();
+        Log.d(TAG, "Activity onStart: Entered");
+//        ceolController.activityOnStart();
+        ceolController2.activityOnStart();
         if ( action != null ) {
             if ( action.equals( CommandBaseApp.Action.SELECTSI.name())) {
                 openDrawer();
@@ -475,7 +716,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStop() {
         super.onStop();
-        ceolController.activityOnStop();
+//        ceolController.activityOnStop();
+        ceolController2.activityOnStop();
     }
 
     @Override
@@ -524,9 +766,11 @@ public class MainActivity extends AppCompatActivity
                 command = new CommandControlStop();
                 break;
             case R.id.volumedownB:
+                showVolumeChangeTemporarily(-1);
                 command = new CommandMasterVolumeDown();
                 break;
             case R.id.volumeupB:
+                showVolumeChangeTemporarily(1);
                 command = new CommandMasterVolumeUp();
                 break;
 
@@ -538,6 +782,12 @@ public class MainActivity extends AppCompatActivity
         return command;
     }
 
+    private void showVolumeChangeTemporarily(int delta) {
+        int newVolume = ceolController2.getCeolModel().audioControl.getMasterVolume() + delta;
+
+        setTextViewText(R.id.volume, Integer.toString(newVolume));
+    }
+
     private void showInfo() {
         showInfoDialog();
     }
@@ -546,7 +796,7 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "buttonClick: " + view.getTag());
         Command command = getCommandFromId(view.getId());
         if ( command != null) {
-            ceolController.performCommand(command);
+            ceolController2.performCommand(command);
         }
     }
 
@@ -642,7 +892,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if ( command != null) {
-            ceolController.performCommand(command);
+            ceolController2.performCommand(command);
         }
 
         return true;
@@ -654,8 +904,8 @@ public class MainActivity extends AppCompatActivity
         infoFragment.show(fm,"infoFragment");
     }
 
-    public CeolController getCeolController() {
-        return ceolController;
+    public CeolController2 getCeolController() {
+        return ceolController2;
     }
 
     public PlaylistRecyclerAdapter getPlaylistRecyclerAdapter() {
@@ -714,6 +964,14 @@ public class MainActivity extends AppCompatActivity
         View rootView = findViewById(R.id.dimV);
         if (rootView == null) return;
 
+        rootView.setVisibility(View.GONE);
+        if (!isConnected) {
+            Button siB = (Button) findViewById(R.id.siB);
+            if (siB != null) {
+                siB.setText(SIStatusType.NotConnected.name);
+            }
+        }
+/*
         boolean isFullyUnDimmed = ( rootView.getAlpha() == TRANSPARENT || rootView.getVisibility() != View.VISIBLE );
         boolean isFullyDimmed = ( rootView.getAlpha() == DIMMED && rootView.getVisibility() == View.VISIBLE);
 //        Log.d(TAG, "showConnection: alpha="+rootView.getAlpha()+" isFullyUnDimmed="+isFullyUnDimmed + " isFullyDimmed="+isFullyDimmed);
@@ -736,6 +994,7 @@ public class MainActivity extends AppCompatActivity
                 // Already not connected
             }
         }
+*/
     }
 
     /**
@@ -746,7 +1005,6 @@ public class MainActivity extends AppCompatActivity
          * The fragment argument representing the section number for this
          * fragment.
          */
-
         public CeolRemoteFragmentPlayerControl() {
         }
 
@@ -755,8 +1013,17 @@ public class MainActivity extends AppCompatActivity
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.tablayout_player, container, false);
 
+
             return rootView;
         }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            Log.d(TAG, "onStart in player fragment: ");
+            ((MainActivity)getActivity()).updateTrackViews();
+        }
+
     }
 
     /**
@@ -873,7 +1140,7 @@ public class MainActivity extends AppCompatActivity
 
     private void doVolumeControl( DirectionType direction) {
         Command command = new CommandMasterVolume(direction);
-        ceolController.performCommand(command);
+        ceolController2.performCommand(command);
         String text = String.format(getResources().getString(R.string.volume_toast),direction.toString());
         int duration = Toast.LENGTH_SHORT;
 

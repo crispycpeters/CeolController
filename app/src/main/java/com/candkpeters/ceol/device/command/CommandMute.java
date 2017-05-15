@@ -11,12 +11,10 @@ public class CommandMute extends CommandBaseBoolean {
 
     @Override
     protected boolean isSuccessful() {
-        if ( ceolDevice != null ) {
-            if ( getValue() && ceolDevice.isMuted() ) return true;
-            else return !getValue() && !ceolDevice.isMuted();
-        } else {
-            return false;
-        }
+//        if ( getValue() && ceolModel.audioControl.isMuted() ) return true;
+//        else return !getValue() && !ceolDevice.isMuted();
+        // TODO Implement MUTE?
+        return false;
     }
 
     @Override

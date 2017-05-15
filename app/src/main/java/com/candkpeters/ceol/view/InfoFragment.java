@@ -10,7 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.candkpeters.ceol.controller.CeolController;
+import com.candkpeters.ceol.controller.CeolController2;
+import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.model.CeolModel;
+import com.candkpeters.ceol.model.TrackControl;
 import com.candkpeters.chris.ceol.R;
 
 public class InfoFragment extends DialogFragment implements View.OnClickListener{
@@ -19,14 +23,25 @@ public class InfoFragment extends DialogFragment implements View.OnClickListener
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "3";
-    private CeolController ceolController;
+    private CeolController2 ceolController;
+    CeolModel ceolModel ;
+    TrackControl trackControl ;
 
     public InfoFragment() {
     }
 
     private void setTextViewText(View parentView, int tunerName2, String name) {
-        TextView tunerName = (TextView) parentView.findViewById(tunerName2);
-        if (tunerName != null) tunerName.setText(name);
+        TextView textView = (TextView) parentView.findViewById(tunerName2);
+        if (textView != null) textView.setText(name);
+    }
+
+    private String getTextViewText( int tunerName2) {
+        TextView textView = (TextView) getView().findViewById(tunerName2);
+        if (textView != null) {
+            return textView.getText().toString();
+        } else {
+            return "";
+        }
     }
 
     @Override
@@ -34,8 +49,11 @@ public class InfoFragment extends DialogFragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.info_fragment, container, false);
 //            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
-        ceolController = new CeolController(getContext(), null);
-        CeolDevice ceolDevice = ceolController.getCeolDevice();
+        ceolController = ((MainActivity)getActivity()).getCeolController();
+        //ceolController = new CeolController(getContext(), null);
+//        CeolDevice ceolDevice = ceolController.getCeolDevice();
+        ceolModel = ceolController.getCeolModel();
+        trackControl = ceolModel.inputControl.trackControl;
 
         setButtonListener(rootView, R.id.infoDone);
         setButtonListener(rootView, R.id.infoArtist);
@@ -43,16 +61,16 @@ public class InfoFragment extends DialogFragment implements View.OnClickListener
         setButtonListener(rootView, R.id.infoTrack);
         setButtonListener(rootView, R.id.infoLyrics);
 
-        setTextViewText(rootView, R.id.infoArtist, ceolDevice.getAudioItem().getArtist());
-        setTextViewText(rootView, R.id.infoAlbum, ceolDevice.getAudioItem().getAlbum());
-        setTextViewText(rootView, R.id.infoTrack, ceolDevice.getAudioItem().getTrack());
-        if ( !ceolDevice.getAudioItem().getBitrate().isEmpty() ) {
-            setTextViewText(rootView, R.id.infoFormat, ceolDevice.getAudioItem().getFormat() + "(" +
-                    ceolDevice.getAudioItem().getBitrate() + ")");
+        AudioStreamItem audioStreamItem = trackControl.getAudioItem();
+        setTextViewText(rootView, R.id.infoArtist, audioStreamItem.getArtist());
+        setTextViewText(rootView, R.id.infoAlbum, audioStreamItem.getAlbum());
+        setTextViewText(rootView, R.id.infoTrack, audioStreamItem.getTitle());
+        if (!audioStreamItem.getBitrate().isEmpty()) {
+            setTextViewText(rootView, R.id.infoFormat, audioStreamItem.getFormat() + "(" +
+                    audioStreamItem.getBitrate() + ")");
         } else {
-            setTextViewText(rootView, R.id.infoFormat, ceolDevice.getAudioItem().getFormat());
+            setTextViewText(rootView, R.id.infoFormat, audioStreamItem.getFormat());
         }
-
         return rootView;
     }
 
@@ -65,24 +83,21 @@ public class InfoFragment extends DialogFragment implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-        CeolDevice ceolDevice = ceolController.getCeolDevice();
         String query = null;
-
         switch (view.getId()) {
             case R.id.infoDone:
                 break;
             case R.id.infoArtist:
-                query = ceolDevice.getAudioItem().getArtist();
+                query = getTextViewText(R.id.infoArtist);
                 break;
             case R.id.infoAlbum:
-                query = ceolDevice.getAudioItem().getArtist() + " " + ceolDevice.getAudioItem().getAlbum();
+                query = getTextViewText(R.id.infoArtist) + " " + getTextViewText(R.id.infoAlbum);
                 break;
             case R.id.infoTrack:
-                query = ceolDevice.getAudioItem().getTrack();
+                query = getTextViewText(R.id.infoTrack);
                 break;
             case R.id.infoLyrics:
-                query = ceolDevice.getAudioItem().getArtist() + " " + ceolDevice.getAudioItem().getTrack()
-                        + " lyrics";
+                query = getTextViewText(R.id.infoArtist) + " " + getTextViewText(R.id.infoTrack) + " lyrics";
                 break;
         }
 

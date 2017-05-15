@@ -18,9 +18,9 @@ public class CommandSetPower extends CommandBaseBoolean {
     protected boolean isSuccessful() {
         boolean result = false;
 
-        if ( getValue() && ceolDevice.getDeviceStatus() == DeviceStatusType.On ) {
+        if ( getValue() && ceolModel.powerControl.getDeviceStatus() == DeviceStatusType.On ) {
             result = true;
-        } else if ( !getValue() && ceolDevice.getDeviceStatus()==DeviceStatusType.Standby ) {
+        } else if ( !getValue() && ceolModel.powerControl.getDeviceStatus()==DeviceStatusType.Standby ) {
             result = true;
         }
         return result;
@@ -28,7 +28,7 @@ public class CommandSetPower extends CommandBaseBoolean {
 
     @Override
     public void execute() {
-        DeviceStatusType status = ceolDevice.getDeviceStatus();
+        DeviceStatusType status = ceolModel.powerControl.getDeviceStatus();
         if ( status != DeviceStatusType.Starting) {
             ceolManager.sendCommand(getValue() ? "PWON" : "PWSTANDBY");
         }

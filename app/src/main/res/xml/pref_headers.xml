@@ -16,7 +16,7 @@
     <header
         android:fragment="com.candkpeters.ceol.view.SettingsActivity$DataSyncPreferenceFragment"
         android:icon="@drawable/ic_sync_black_24dp"
-        android:title="@string/pref_header_data_sync" />
+        android:titleView="@string/pref_header_data_sync" />
 -->
 
 </preference-headers>

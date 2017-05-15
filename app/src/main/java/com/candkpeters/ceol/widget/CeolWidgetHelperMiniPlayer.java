@@ -5,7 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.candkpeters.ceol.device.CeolManager;
+import com.candkpeters.ceol.device.CeolManager2;
 import com.candkpeters.ceol.device.command.CommandAppBasic;
 import com.candkpeters.ceol.device.command.CommandAppInfo;
 import com.candkpeters.ceol.device.command.CommandAppSelectSI;
@@ -16,7 +16,8 @@ import com.candkpeters.ceol.device.command.CommandMasterVolumeUp;
 import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
 import com.candkpeters.ceol.device.command.CommandSkipBackward;
 import com.candkpeters.ceol.device.command.CommandSkipForward;
-import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.model.AudioStreamItem;
+import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.chris.ceol.R;
 
 /**
@@ -54,26 +55,24 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
     String updateString = "";
 
     @Override
-    protected void updateViews(RemoteViews views, CeolManager ceolManager, Context context, String text) {
+    protected void updateViews(RemoteViews views, CeolManager2 ceolManager, Context context, String text) {
         long curr = System.currentTimeMillis();
-        CeolDevice ceolDevice = ceolManager.getCeolDevice();
+        CeolModel ceolModel= ceolManager.ceolModel;
 
         views.setTextViewText(R.id.textUpdate,  Long.toString(curr % 100));
 
-        views.setImageViewBitmap(R.id.imageTrack, ceolDevice.getAudioItem().getImageBitmap());
-        views.setTextViewText(R.id.textTrack, ceolDevice.getAudioItem().getTrack());
-        views.setTextViewText(R.id.textArtist, ceolDevice.getAudioItem().getArtist());
-        views.setTextViewText(R.id.textAlbum, ceolDevice.getAudioItem().getAlbum());
-        views.setTextViewText(R.id.playStatus, ceolDevice.getPlayStatus().toString());
-        views.setTextViewText(R.id.volume, ceolDevice.getMasterVolumeString());
-        views.setTextViewText(R.id.tunerBand, ceolDevice.Tuner.getBand());
-        views.setTextViewText(R.id.tunerName, ceolDevice.Tuner.getName());
-        views.setTextViewText(R.id.tunerFrequency, ceolDevice.Tuner.getFrequency());
-        views.setTextViewText(R.id.siB, ceolDevice.getSIStatus().name);
+        views.setTextViewText(R.id.playStatus, ceolModel.inputControl.trackControl.getPlayStatus().toString());
+        views.setTextViewText(R.id.volume, ceolModel.audioControl.getMasterVolumeString());
+        views.setTextViewText(R.id.siB, ceolModel.inputControl.getSIStatus().name);
 
-        switch ( ceolDevice.getSIStatus()) {
+        switch ( ceolModel.inputControl.getSIStatus()) {
 
             case Tuner:
+                AudioStreamItem audioTunerItem = ceolModel.inputControl.trackControl.getAudioItem();
+                views.setTextViewText(R.id.tunerBand, audioTunerItem.getBand());
+                views.setTextViewText(R.id.tunerName, audioTunerItem.getTitle());
+                views.setTextViewText(R.id.tunerFrequency, audioTunerItem.getFrequency());
+
                 views.setViewVisibility(R.id.netPanel, View.INVISIBLE);
                 views.setViewVisibility(R.id.tunerPanel, View.VISIBLE);
                 views.setViewVisibility(R.id.dimV, View.INVISIBLE);
@@ -97,13 +96,20 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
             case Bluetooth:
             case Ipod:
             case Spotify:
+                AudioStreamItem audioStreamItem= ceolModel.inputControl.trackControl.getAudioItem();
+
+                views.setImageViewBitmap(R.id.imageTrack, audioStreamItem.getImageBitmap());
+                views.setTextViewText(R.id.textTrack, audioStreamItem.getTitle());
+                views.setTextViewText(R.id.textArtist, audioStreamItem.getArtist());
+                views.setTextViewText(R.id.textAlbum, audioStreamItem.getAlbum());
+
                 views.setViewVisibility(R.id.netPanel, View.VISIBLE);
                 views.setViewVisibility(R.id.tunerPanel, View.INVISIBLE);
                 views.setViewVisibility(R.id.dimV, View.INVISIBLE);
                 break;
         }
 
-        switch ( ceolDevice.getDeviceStatus()) {
+        switch ( ceolModel.powerControl.getDeviceStatus()) {
 
             case Connecting:
                 views.setViewVisibility(R.id.waitingPB, View.GONE);

@@ -22,7 +22,7 @@ public class CommandControlToggle extends CommandControl {
     @Override
     public void execute() {
 
-        switch (ceolDevice.getSIStatus()) {
+        switch (ceolModel.inputControl.getSIStatus()) {
             case NotConnected:
                 break;
             case CD:
@@ -51,7 +51,7 @@ public class CommandControlToggle extends CommandControl {
 
     private PlayStatusType toggleCurrentStatus() {
         PlayStatusType currentPlayStatus;
-        switch (ceolDevice.getPlayStatus()) {
+        switch (ceolModel.inputControl.trackControl.getPlayStatus()) {
             case Playing:
                 currentPlayStatus = PlayStatusType.Paused;
                 break;

@@ -12,7 +12,7 @@ public class CeolBrowseEntry {
     public String Text = "";
 
     public CeolBrowseEntry( String text, boolean isDirectory, boolean isPlayable, boolean isServer, boolean isSelected) {
-        this.Text = text;
+        this.Text = text != null ? text : "";
         this.isDirectory = isDirectory;
         this.isPlayable = isPlayable;
         this.isServer = isServer;
@@ -43,4 +43,22 @@ public class CeolBrowseEntry {
     public String toString() {
         return "Entry(" + Text + "), s=" + isSelected + " d=" + isDirectory + " p=" + isPlayable + " S=" + isServer;
     }
+
+    @Override
+    public boolean equals(Object object) {
+
+        boolean isEqual = false;
+
+        if (object instanceof CeolBrowseEntry) {
+            CeolBrowseEntry ceolBrowseEntry = (CeolBrowseEntry) object;
+            if (Text.equals(ceolBrowseEntry.Text) &&
+                    isDirectory == ceolBrowseEntry.isDirectory &&
+                    isPlayable == ceolBrowseEntry.isPlayable &&
+                    isSelected == ceolBrowseEntry.isSelected &&
+                    isDirectory == ceolBrowseEntry.isDirectory)
+                isEqual = true;
+        }
+        return isEqual;
+    }
+
 }

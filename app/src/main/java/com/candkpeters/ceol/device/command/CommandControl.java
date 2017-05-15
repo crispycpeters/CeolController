@@ -21,11 +21,11 @@ public class CommandControl extends Command {
 
     @Override
     protected boolean isSuccessful() {
-        switch (ceolDevice.getSIStatus()) {
+        switch (ceolModel.inputControl.getSIStatus()) {
 
             case NetServer:
             case OpenHome:
-                return ceolDevice.getPlayStatus() == playStatusType;
+                return ceolModel.inputControl.trackControl.getPlayStatus() == playStatusType;
             case IRadio:
             case AnalogIn:
             case NotConnected:
@@ -40,7 +40,7 @@ public class CommandControl extends Command {
     public void execute() {
         String commandString = null;
 
-        switch (ceolDevice.getSIStatus()) {
+        switch (ceolModel.inputControl.getSIStatus()) {
 
             case NotConnected:
                 break;

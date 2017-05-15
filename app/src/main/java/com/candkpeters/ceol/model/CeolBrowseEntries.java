@@ -137,4 +137,41 @@ public class CeolBrowseEntries {
         this.title = title;
     }
 
+    @Override
+    public boolean equals(Object object) {
+
+        boolean isEqual = false;
+
+        if (object instanceof CeolBrowseEntries) {
+            CeolBrowseEntries ceolBrowseEntries = (CeolBrowseEntries) object;
+            if (title.equals(ceolBrowseEntries.title) &&
+                    scrid.equals(ceolBrowseEntries.scrid) &&
+                    scridValue.equals(ceolBrowseEntries.scridValue) &&
+                    listMax == ceolBrowseEntries.listMax &&
+                    listPosition == ceolBrowseEntries.listPosition &&
+                    chunkStartIdx == ceolBrowseEntries.chunkStartIdx &&
+                    selectedEntryIndex == ceolBrowseEntries.selectedEntryIndex &&
+                    entriesEqual(ceolBrowseEntries))
+                isEqual = true;
+        }
+        return isEqual;
+    }
+
+    private boolean entriesEqual(CeolBrowseEntries ceolBrowseEntries) {
+        for ( int i =0; i<MAX_LINES; i++) {
+            if ( (browseChunk[i] == null && ceolBrowseEntries.browseChunk[i] != null)) {
+                return false;
+            }
+            if ( (browseChunk[i] != null && ceolBrowseEntries.browseChunk[i] == null)) {
+                return false;
+            }
+            if ( browseChunk[i] == null && ceolBrowseEntries.browseChunk[i] == null ) {
+                return true;
+            }
+            if ( ! browseChunk[i].equals(ceolBrowseEntries.browseChunk[i]) ) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

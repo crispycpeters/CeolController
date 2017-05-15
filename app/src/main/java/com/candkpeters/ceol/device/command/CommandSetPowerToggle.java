@@ -21,9 +21,9 @@ public class CommandSetPowerToggle extends CommandSetPower {
 
     @Override
     public void execute() {
-        DeviceStatusType status = ceolDevice.getDeviceStatus();
+        DeviceStatusType status = ceolModel.powerControl.getDeviceStatus();
         if ( status != DeviceStatusType.Starting) {
-            if (ceolDevice.getDeviceStatus() == DeviceStatusType.On) {
+            if (ceolModel.powerControl.getDeviceStatus() == DeviceStatusType.On) {
                 ceolManager.sendCommand("PWSTANDBY");
             } else {
                 ceolManager.sendCommand("PWON");

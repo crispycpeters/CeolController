@@ -4,8 +4,8 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.Log;
 
+import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.DeviceStatusType;
-import com.candkpeters.ceol.model.AudioItem;
 import com.candkpeters.ceol.model.PlayStatusType;
 import com.candkpeters.ceol.view.UIThreadUpdater;
 import com.candkpeters.ceol.model.CeolDevice;
@@ -32,7 +32,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
 
     private static final String TAG = "CeolDeviceWebSvcMonitor";
 
-    private static final int REPEATRATE_MSECS = 900;
+    private static final int REPEATRATE_MSECS = 9000;
     private static final int BACKGROUNDRATE_MSECS = 1800000;
     private static final int REPEATONCE_MSECS = 600;
 //    private static final long BACKGROUNDTIMEOUT_MSECS = 10000;
@@ -111,10 +111,15 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
     }
 
     public void startActiveUpdates() {
-        if ( activeThreadUpdater == null ) {
-            activeThreadUpdater = new UIThreadUpdater(this, REPEATRATE_MSECS);
-        }
-        activeThreadUpdater.startUpdates();
+
+        //
+        // TODO
+        // TEMPORARY SWITCH OF OF MONITOR TO TEST GATHERER
+        //
+//        if ( activeThreadUpdater == null ) {
+//            activeThreadUpdater = new UIThreadUpdater(this, REPEATRATE_MSECS);
+//        }
+//        activeThreadUpdater.startUpdates();
     }
 
     private void initiateDelayedUpdate() {
@@ -184,7 +189,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
             if (webSvcHttpAppCommandResponse.texts == null) {
 //                    Log.d(TAG, "success: Hmm - texts is null");
             } else {
-                //Log.d(TAG, "success: title: " + webSvcHttpAppCommandResponse.texts.get("title"));
+                //Log.d(TAG, "success: titleView: " + webSvcHttpAppCommandResponse.texts.get("titleView"));
                 logdTime(TAG, "AppCommand success: ");
             }
             updateDeviceStatus(webSvcHttpAppCommandResponse);
@@ -278,7 +283,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
         synchronized (ceolDevice) {
             ceolDevice.setDeviceStatus(DeviceStatusType.Connecting);
             ceolDevice.setSIStatus(SIStatusType.NotConnected);
-//            ceolDevice.setSIStatus(SIStatusType.NotConnected);
+//            ceolDevice.updateSIStatus(SIStatusType.NotConnected);
         }
         ceolDevice.notifyObservers();
 //        onCeolStatusChangedListener.onCeolStatusChanged(ceolDevice);
@@ -293,12 +298,13 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
     private void updateDeviceStatus(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse) {
         SIStatusType oldSiStatus = ceolDevice.getSIStatus();
 
-        String oldTrack = ceolDevice.getAudioItem().getTrack();
+        String oldTrack = ceolDevice.getAudioItem().getTitle();
         if (oldTrack == null) {
             Log.d(TAG, "updateDeviceStatus: oldtrack is null");
         }
 
         try {
+
             synchronized (ceolDevice) {
                 ceolDevice.setSIStatus(webSvcHttpAppCommandResponse.source);
                 ceolDevice.setDeviceStatus(webSvcHttpAppCommandResponse.power);
@@ -307,14 +313,14 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
                 if ( ceolDevice.isNetServer() ) {
 
                     CeolDeviceNetServer ceolNetServer = ceolDevice.CeolNetServer;
-                    AudioItem audioItem = ceolDevice.getAudioItem();
+                    AudioStreamItem audioItem = ceolDevice.getAudioItem();
                     ceolDevice.setPlayStatus( webSvcHttpAppCommandResponse.playstatus);
 
                     Dictionary<WebSvcHttpResponseText> texts = webSvcHttpAppCommandResponse.texts;
                     if (texts != null) {
                         ceolNetServer.setIsBrowsing(true);
                         if (webSvcHttpAppCommandResponse.type.equals("browse")) {
-                            ceolNetServer.initialiseChunk(texts.get("title").text,
+                            ceolNetServer.initialiseChunk(texts.get("titleView").text,
                                     texts.get("scridValue").text,
                                     texts.get("scrid").text,
                                     webSvcHttpAppCommandResponse.listmax,
@@ -327,11 +333,11 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
                             }
                         }
                         if ( ceolDevice.getPlayStatus() == PlayStatusType.Stopped) {
-                            audioItem.setTrackInfo(0,"","","","", "");
+                            audioItem.setStreamInfo(0,"","","","", "");
                             audioItem.setImageBitmap(null);
                         } else {
                             if (webSvcHttpAppCommandResponse.type.equals("play")) {
-                                audioItem.setTrackInfo(
+                                audioItem.setStreamInfo(
                                         0,
                                         texts.get("track").text,
                                         texts.get("artist").text,
@@ -374,7 +380,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
         }
 
         if ( imageDownloaderTask == null ||
-                (!imageDownloaderTask.isRunning() && (oldTrack == null || !ceolDevice.getAudioItem().getTrack().equalsIgnoreCase(oldTrack)))) {
+                (!imageDownloaderTask.isRunning() && (oldTrack == null || !ceolDevice.getAudioItem().getTitle().equalsIgnoreCase(oldTrack)))) {
             getImage();
         }
 

@@ -6,10 +6,17 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.util.Log;
 
-import com.candkpeters.ceol.cling.ClingManager;
+import com.candkpeters.ceol.cling.ClingGatherer;
 import com.candkpeters.ceol.device.command.Command;
-import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.model.AudioControl;
 import com.candkpeters.ceol.model.CeolModel;
+import com.candkpeters.ceol.model.CeolNavigatorControl;
+import com.candkpeters.ceol.model.ConnectionControl;
+import com.candkpeters.ceol.model.ControlBase;
+import com.candkpeters.ceol.model.InputControl;
+import com.candkpeters.ceol.model.OnControlChangedListener;
+import com.candkpeters.ceol.model.PowerControl;
+import com.candkpeters.ceol.model.TrackControl;
 import com.candkpeters.ceol.view.Prefs;
 
 import java.util.ArrayList;
@@ -17,26 +24,33 @@ import java.util.ArrayList;
 /**
  * Created by crisp on 25/01/2016.
  */
-public class CeolManager {
+public class CeolManager2 {
 
     private static final String TAG = "CeolManager" ;
-    private final CeolDevice ceolDevice;
+    public final CeolModel ceolModel;
     private final Context context;
-    private final CeolDeviceObserver ceolDeviceObserver;
-    private final ClingManager clingManager;
-    private CeolDeviceWebSvcMonitor ceolDeviceMonitor;
+//    private final CeolDeviceObserver ceolDeviceObserver;
+//    private final ClingManager clingManager;
+//    private CeolDeviceWebSvcMonitor ceolDeviceMonitor;
     private CeolDeviceWebSvcCommand ceolDeviceWebSvcCommand;
+
+    private final CeolWebSvcGatherer ceolWebSvcGatherer;
+    private final ClingGatherer clingGatherer;
+
     private MacroInflater macroInflater;
 
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
 
     private String message;
 
-    public CeolManager(final Context context) {
+    public CeolManager2(final Context context) {
         this.context = context;
-        ceolDeviceObserver = new CeolDeviceObserver();
-        ceolDevice = new CeolDevice(ceolDeviceObserver);
-        clingManager = new ClingManager(context, ceolDevice);
+        ceolModel = new CeolModel();
+//        ceolDeviceObserver = new CeolDeviceObserver();
+//DELETE        ceolDevice = new CeolDevice(ceolDeviceObserver);
+//        clingManager = new ClingManager(context, ceolDevice);
+        ceolWebSvcGatherer = new CeolWebSvcGatherer(ceolModel);
+        clingGatherer = new ClingGatherer(context, ceolModel);
     }
 
     /*
@@ -54,16 +68,15 @@ public class CeolManager {
             prefs.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
         }
         updateConfig(context);
-        clingManager.bindToCling();
+//        clingManager.bindToCling();
     }
 
     private void updateConfig(Context context) {
         Prefs prefs = new Prefs(context);
-        if ( ceolDeviceMonitor == null) {
-            ceolDeviceMonitor = new CeolDeviceWebSvcMonitor(getCeolDevice(), prefs.getBaseUrl());
-        } else {
-            ceolDeviceMonitor.recreateService(prefs.getBaseUrl());
-        }
+        inputUpdated(ceolModel.inputControl);
+        ceolWebSvcGatherer.stop();
+        ceolWebSvcGatherer.start(prefs);
+
         if ( ceolDeviceWebSvcCommand == null ) {
             ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(prefs.getBaseUrl());
         } else {
@@ -82,57 +95,104 @@ public class CeolManager {
         return commands;
     }
 
-    public void register(OnCeolStatusChangedListener obj) {
-//        ceolDeviceMonitor.register(obj);
-        if ( ceolDeviceObserver.register(obj) == 1) {
-            ceolDeviceMonitor.startActiveUpdates();
-        }
+    public void register(OnControlChangedListener obj) {
+        ceolModel.register(obj);
         // TODO: Potentially unpause ClingManager events if paused
     }
 
-    public void unregister(OnCeolStatusChangedListener obj) {
-        if ( ceolDeviceObserver.unregister(obj) == 0 ) {
-            ceolDeviceMonitor.stopActiveUpdates();
-        };
+    public void unregister(OnControlChangedListener obj) {
+        ceolModel.unregister(obj);
         // TODO: Potentially pause ClingManager events if nothing is registered to listen
     }
 
-    public void notifyObservers() {
-//        ceolDeviceMonitor.notifyObservers();
-        ceolDeviceObserver.notifyObservers();
+    public void notifyObservers(ControlBase controlBase) {
+        ceolModel.notifyObservers(controlBase);
     }
 
     public void sendCommand(String commandString) {
         Log.d(TAG, "sendCommand: Sending: " + commandString);
         if ( commandString!= null && !commandString.isEmpty()) {
             ceolDeviceWebSvcCommand.SendCommand( commandString, null);   //TODO We need use callback
-            ceolDeviceMonitor.getStatusSoon();
+            ceolWebSvcGatherer.getStatusSoon();
         }
     }
 
     public void execute(Command command) {
         if ( command!= null ) {
 //            command.execute(this);
+            command.execute(this);
         }
     }
 
     public void execute(Command command, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
         if ( command!= null ) {
 //            command.execute(this, onDoneCeolStatusChangedListener);
+            command.execute(this, onDoneCeolStatusChangedListener);
         }
     }
 
-    public CeolDevice getCeolDevice() {
-        return ceolDevice;
-    }
 
     public void start() {
-//TODO - TEST MODE FOR CEOLMANAGER2        ceolDeviceMonitor.start();
+        ceolModel.register(new OnControlChangedListener() {
+            @Override
+            public void onCAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
+
+            }
+
+            @Override
+            public void onConnectionControlChanged(CeolModel ceolModel, ConnectionControl connectionControl) {
+                connectionUpdated( connectionControl);
+            }
+
+            @Override
+            public void onCeolNavigatorControlChanged(CeolModel ceolModel, CeolNavigatorControl ceolNavigatorControl) {
+
+            }
+
+            @Override
+            public void onInputControlChanged(CeolModel ceolModel, InputControl inputControl) {
+                inputUpdated( inputControl);
+            }
+
+            @Override
+            public void onPowerControlChanged(CeolModel ceolModel, PowerControl powerControl) {
+
+            }
+
+            @Override
+            public void onTrackControlChanged(CeolModel ceolModel, TrackControl trackControl) {
+
+            }
+
+        });
+    }
+
+    private void connectionUpdated(ConnectionControl connectionControl) {
+        //TODO - pause relevant gatherers if disconnected
+
+    }
+
+    private void inputUpdated(InputControl inputControl) {
+        switch (inputControl.getStreamingStatus()) {
+
+            case CEOL:
+            case SPOTIFY:
+                Prefs prefs = new Prefs(context);
+                ceolWebSvcGatherer.start(prefs);
+                break;
+            case DLNA:
+            case OPENHOME:
+                break;
+            case NONE:
+                break;
+        }
+        //TODO
+
     }
 
     public void sendOpenHomeCommand(String commandString) {
         if (context != null) {
-            clingManager.getOpenHomeUpnpDevice().performPlaylistCommand(commandString);
+            clingGatherer.getOpenHomeUpnpDevice().performPlaylistCommand(commandString);
         }
     }
 
@@ -150,7 +210,6 @@ public class CeolManager {
                     final String SERVICECMD = "com.android.music.musicservicecommand";
                     final String CMDNAME = "command";
                     final String CMDSTOP = "stop";
-
 
                     AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
@@ -178,5 +237,9 @@ public class CeolManager {
             Intent intent = new Intent("com.spotify.mobile.android.ui.widget." + commandString);
             context.sendBroadcast(intent);
         }
+    }
+
+    public void stop() {
+        clingGatherer.stop();
     }
 }

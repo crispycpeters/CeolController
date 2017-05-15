@@ -27,7 +27,7 @@ public class CommandSetSI extends Command {
 
     @Override
     protected boolean isSuccessful() {
-        return ceolDevice != null && ceolDevice.getSIStatus() == value;
+        return ceolModel.inputControl.getSIStatus() == value;
     }
 
     @Override

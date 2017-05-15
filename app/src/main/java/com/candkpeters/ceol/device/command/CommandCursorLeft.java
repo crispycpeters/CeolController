@@ -27,11 +27,11 @@ public class CommandCursorLeft extends CommandCursor {
         if ( currentLevel == null) {
             return true;
         } else {
-            Log.d(TAG, "isSuccessful: scrid="+ceolDevice.CeolNetServer.getScridValue() + " currentLevel="+currentLevel );
+            Log.d(TAG, "isSuccessful: scrid="+ceolModel.inputControl.navigatorControl.getScridValue() + " currentLevel="+currentLevel );
             boolean result = (
-                    ceolDevice.getSIStatus() == SIStatusType.NetServer &&
-                    !ceolDevice.CeolNetServer.getScridValue().equals(currentLevel) &&
-                    ceolDevice.CeolNetServer.isBrowsing() );
+                    ceolModel.inputControl.getSIStatus() == SIStatusType.NetServer &&
+                        !ceolModel.inputControl.navigatorControl.getScridValue().equals(currentLevel) &&
+                        ceolModel.inputControl.navigatorControl.isBrowsing() );
             return result;
         }
     }

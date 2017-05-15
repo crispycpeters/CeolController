@@ -12,10 +12,10 @@ import android.widget.TextView;
 
 import com.candkpeters.ceol.controller.CeolController;
 import com.candkpeters.ceol.device.ImageDownloaderResult;
-import com.candkpeters.ceol.device.ImageDownloaderTask;
-import com.candkpeters.ceol.model.AudioItem;
+import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolDeviceOpenHome;
 import com.candkpeters.chris.ceol.R;
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -48,7 +48,7 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
 //        if ( controller.isOpenHomeOperating()) {
         if ( controller != null && controller.getCeolDevice()!=null ) {
             Log.d(TAG, "onBindViewHolder: Requesting item " + i);
-            AudioItem audioItem = controller.getCeolDevice().getOpenHome().getPlaylistAudioItem(i);
+            AudioStreamItem audioItem = controller.getCeolDevice().getOpenHome().getPlaylistAudioItem(i);
 
             if (audioItem != null) {
                 audioItemViewHolder.setAudioItem(audioItem);
@@ -64,11 +64,11 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
             Picasso.with(mContext).load(feedItem.getThumbnail())
                     .error(R.drawable.placeholder)
                     .placeholder(R.drawable.placeholder)
-                    .into(customViewHolder.thumbnail);
+                    .into(customViewHolder.thumbnailView);
         }
 
-        //Setting text view title
-        customViewHolder.title.setText(Html.fromHtml(feedItem.getTitle()));
+        //Setting text view titleView
+        customViewHolder.titleView.setText(Html.fromHtml(feedItem.getTitle()));
 */
     }
 
@@ -98,47 +98,57 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
 
 
     class AudioItemViewHolder extends RecyclerView.ViewHolder implements  ImageDownloaderResult {
-        protected ImageView thumbnail;
-        protected TextView title;
-        protected TextView artist;
-        private AudioItem audioItem;
+        private ImageView thumbnailView;
+        private TextView titleView;
+        private TextView artistView;
+        private AudioStreamItem audioItem;
 
         protected AudioItemViewHolder(View view) {
             super(view);
             Log.d(TAG, "AudioItemViewHolder: Created");
-            this.thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
-            this.title = (TextView) view.findViewById(R.id.title);
-            this.artist = (TextView) view.findViewById(R.id.artist);
+            this.thumbnailView = (ImageView) view.findViewById(R.id.thumbnail);
+            this.titleView = (TextView) view.findViewById(R.id.title);
+            this.artistView = (TextView) view.findViewById(R.id.artist);
         }
 
-        public void setAudioItem(AudioItem audioItem) {
-            this.audioItem = audioItem;
-            Log.d(TAG, "setAudioItem: " + audioItem.toString());
-            title.setText(audioItem.getTrack());
-            artist.setText(audioItem.getArtist());
-            downloadImage( audioItem);
+        void setAudioItem(AudioStreamItem audioItem) {
+            if ( audioItem != null ) {
+                if ( this.audioItem == null || this.audioItem.getId() != audioItem.getId()) {
+                    Log.d(TAG, "setAudioItem: Set new item: " + audioItem.toString());
+                    this.audioItem = audioItem;
+                    titleView.setText(audioItem.getTitle());
+                    artistView.setText(audioItem.getArtist());
+                }
+                downloadImage( audioItem);
+            }
         }
-        private void downloadImage(AudioItem audioItem) {
+        private void downloadImage(AudioStreamItem audioItem) {
             if ( audioItem != null) {
 
+                Picasso.with(mContext)
+                        .load(String.valueOf(audioItem.getImageBitmapUri()))
+                        .into(thumbnailView);
+
+/*
                 Bitmap bitmap = audioItem.getImageBitmap();
                 if ( bitmap == null ) {
                     ImageDownloaderTask imageDownloaderTask;
 
-                    thumbnail.setImageBitmap(null);
+                    thumbnailView.setImageBitmap(null);
                     imageDownloaderTask = new ImageDownloaderTask(this);
                     if ( audioItem.getImageBitmapUri() != null ) {
                         imageDownloaderTask.execute(audioItem.getImageBitmapUri().toString());
                     }
                 } else {
-                    thumbnail.setImageBitmap(bitmap);
+                    thumbnailView.setImageBitmap(bitmap);
                 }
+*/
             }
         }
 
         @Override
         public void imageDownloaded(Bitmap bitmap) {
-            thumbnail.setImageBitmap(bitmap);
+            thumbnailView.setImageBitmap(bitmap);
             audioItem.setImageBitmap(bitmap);
         }
 

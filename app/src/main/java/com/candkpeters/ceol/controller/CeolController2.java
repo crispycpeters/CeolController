@@ -70,6 +70,10 @@ public class CeolController2 implements View.OnClickListener {
         }
     };
 
+    public boolean isBound() {
+        return bound;
+    }
+
     public CeolModel getCeolModel() {
         return ceolManager2.ceolModel;
     }

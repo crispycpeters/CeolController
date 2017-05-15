@@ -7,6 +7,7 @@ import com.candkpeters.ceol.model.CeolBrowseEntry;
 import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.model.PlayStatusType;
 import com.candkpeters.ceol.model.SIStatusType;
+import com.candkpeters.ceol.model.StreamingStatus;
 
 /**
  * Created by crisp on 25/01/2016.
@@ -48,13 +49,13 @@ public class CommandBrowseInto extends CommandBaseString {
 
     @Override
     public boolean isSuccessful() {
-        Log.d(TAG, "isSuccessful: isfound=" + isFound + " here=" + ceolDevice.getAudioItem().getTrack() + " value=" + getValue());
+        Log.d(TAG, "isSuccessful: isfound=" + isFound + " here=" + ceolModel.inputControl.trackControl.getAudioItem().getTitle() + " value=" + getValue());
 
-        if (getValue() != null && ceolDevice != null &&
-                ceolDevice.getSIStatus() == SIStatusType.NetServer ) {
-            if ( ceolDevice.getAudioItem().getTrack().equalsIgnoreCase(getValue())) {
+        if (getValue() != null &&
+                ceolModel.inputControl.getSIStatus() == SIStatusType.NetServer ) {
+            if ( ceolModel.inputControl.trackControl.getAudioItem().getTitle().equalsIgnoreCase(getValue())) {
                 if ( playFirstEntry ) {
-                    return (ceolDevice.getPlayStatus() == PlayStatusType.Playing);
+                    return (ceolModel.inputControl.trackControl.getPlayStatus() == PlayStatusType.Playing);
                 } else {
                     return true;
                 }
@@ -68,8 +69,8 @@ public class CommandBrowseInto extends CommandBaseString {
 
     @Override
     public void execute() {
-        if (getValue() != null && ceolDevice != null && ceolDevice.getSIStatus() == SIStatusType.NetServer &&
-                ceolDevice.CeolNetServer.getListMax() >0 ) {
+        if (getValue() != null && ceolModel.inputControl.getStreamingStatus() == StreamingStatus.CEOL &&
+                ceolModel.inputControl.navigatorControl.getListMax() >0 ) {
             resetPosition();
             checkForEntry();
         }
@@ -93,8 +94,9 @@ public class CommandBrowseInto extends CommandBaseString {
     }
 
     private void checkForRight() {
-        Log.d(TAG, "checkForRight: title=" +ceolDevice.getAudioItem().getTrack() + " startpos=" + startPosition + " targetPos=" + targetPosition + ", selpos=" + ceolDevice.CeolNetServer.getSelectedPosition());
-        if ( ceolDevice.getAudioItem().getTrack().equalsIgnoreCase(getValue())) {
+        Log.d(TAG, "checkForRight: titleView=" +ceolModel.inputControl.trackControl.getAudioItem().getTitle() + " startpos=" + startPosition +
+                " targetPos=" + targetPosition + ", selpos=" + ceolModel.inputControl.navigatorControl.getSelectedPosition());
+        if ( ceolModel.inputControl.trackControl.getAudioItem().getTitle().equalsIgnoreCase(getValue())) {
 
             if ( playFirstEntry ) {
                 Log.d(TAG, "checkForRight: Playing entry");
@@ -102,7 +104,7 @@ public class CommandBrowseInto extends CommandBaseString {
                 new CommandControl(PlayStatusType.Playing).execute(ceolManager, new OnCeolStatusChangedListener() {
                     @Override
                     public void onCeolStatusChanged() {
-                        if ( ceolDevice.getPlayStatus() == PlayStatusType.Playing) {
+                        if ( ceolModel.inputControl.trackControl.getPlayStatus() == PlayStatusType.Playing) {
                             finish(true);
                         }
                     }
@@ -116,10 +118,10 @@ public class CommandBrowseInto extends CommandBaseString {
     }
 
     private void checkForEntry() {
-        Log.d(TAG, "checkForEntry: startpos=" + startPosition + " targetPos=" + targetPosition + ", selpos=" + ceolDevice.CeolNetServer.getSelectedPosition());
-        if ( ceolDevice.CeolNetServer.getSelectedPosition() == targetPosition) {
+        Log.d(TAG, "checkForEntry: startpos=" + startPosition + " targetPos=" + targetPosition + ", selpos=" + ceolModel.inputControl.navigatorControl.getSelectedPosition());
+        if ( ceolModel.inputControl.navigatorControl.getSelectedPosition() == targetPosition) {
 
-            CeolBrowseEntry entry = ceolDevice.CeolNetServer.getSelectedEntry();
+            CeolBrowseEntry entry = ceolModel.inputControl.navigatorControl.getSelectedEntry();
             if (entry == null) {
                 Log.e(TAG, "checkForEntry: GetBrowseList: Problem - no selected entry");
                 finish(false);
@@ -155,10 +157,10 @@ public class CommandBrowseInto extends CommandBaseString {
     private boolean isBackToWhereWeStarted() {
         if ( startPosition == -1 ) {
             // First time
-            startPosition = ceolDevice.CeolNetServer.getSelectedPosition();
+            startPosition = ceolModel.inputControl.navigatorControl.getSelectedPosition();
             return false;
         } else {
-            return ( startPosition == ceolDevice.CeolNetServer.getSelectedPosition());
+            return ( startPosition == ceolModel.inputControl.navigatorControl.getSelectedPosition());
         }
     }
 
@@ -168,12 +170,12 @@ public class CommandBrowseInto extends CommandBaseString {
     }
 
     private void resetPosition() {
-        targetPosition = ceolDevice.CeolNetServer.getSelectedPosition();
+        targetPosition = ceolModel.inputControl.navigatorControl.getSelectedPosition();
         startPosition = -1;
     }
 
     private void advancePosition() {
-        targetPosition = (targetPosition)%ceolDevice.CeolNetServer.getListMax() + 1;
+        targetPosition = (targetPosition) % ceolModel.inputControl.navigatorControl.getListMax() + 1;
     }
 
 }
