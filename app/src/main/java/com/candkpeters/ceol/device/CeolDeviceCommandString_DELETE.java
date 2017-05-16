@@ -3,7 +3,7 @@ package com.candkpeters.ceol.device;
 /**
  * Created by crisp on 08/01/2016.
  */
-public class CeolDeviceCommandString {
+public class CeolDeviceCommandString_DELETE {
 
     public static String setPower( boolean onOff){
         return "PW" + (onOff?"ON":"OFF");
@@ -25,7 +25,7 @@ public class CeolDeviceCommandString {
         return "MVDOWN";
     }
 */
-/*    public static String setSkipBackwards(CeolDevice ceolDevice) {
+/*    public static String setSkipBackwards(CeolDevice_DELETE ceolDevice) {
         switch ( ceolDevice.getSIStatus()) {
             case CD:
             case IRadio:
@@ -37,7 +37,7 @@ public class CeolDeviceCommandString {
         }
     }
 */
-/*    public static String setSkipForwards(CeolDevice ceolDevice) {
+/*    public static String setSkipForwards(CeolDevice_DELETE ceolDevice) {
         switch ( ceolDevice.getSIStatus()) {
             case CD:
             case IRadio:

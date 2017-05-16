@@ -1,10 +1,5 @@
-package com.candkpeters.ceol.model;
+package com.candkpeters.ceol.model.control;
 
-
-import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by crisp on 03/05/2017.

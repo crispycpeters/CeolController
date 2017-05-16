@@ -1,15 +1,11 @@
 package com.candkpeters.ceol.model;
 
-import android.graphics.Bitmap;
-
-import java.net.URI;
-
 /**
  * Created by crisp on 06/01/2016.
  */
-public class AudioTunerItem extends AudioItem {
+public class AudioTunerItem_DELETE extends AudioItem_DELETE {
 
-    private static final String TAG = "AudioTunerItem";
+    private static final String TAG = "AudioTunerItem_DELETE";
 
     // Common
     private String band;
@@ -50,13 +46,13 @@ public class AudioTunerItem extends AudioItem {
     }
 
 
-    public AudioTunerItem() {
+    public AudioTunerItem_DELETE() {
         clear();
     }
 
     @Override
     public String toString() {
-        return "AudioTunerItem: title="+title +" frequency="+frequency;
+        return "AudioTunerItem_DELETE: title="+title +" frequency="+frequency;
     }
 
     public void clear() {
@@ -64,7 +60,7 @@ public class AudioTunerItem extends AudioItem {
         isAuto = false;
     }
 
-    public void setAudioItem(AudioTunerItem audioItem) {
+    public void setAudioItem(AudioTunerItem_DELETE audioItem) {
         title = audioItem.title;
         frequency = audioItem.frequency;
         band = audioItem.band;
@@ -75,8 +71,8 @@ public class AudioTunerItem extends AudioItem {
     public boolean equals( Object object) {
         boolean isEqual = false;
 
-        if (object instanceof AudioTunerItem) {
-            AudioTunerItem ai = (AudioTunerItem)object;
+        if (object instanceof AudioTunerItem_DELETE) {
+            AudioTunerItem_DELETE ai = (AudioTunerItem_DELETE)object;
             if (
                     title.equals(ai.title) &&
                     frequency.equals(ai.frequency) &&

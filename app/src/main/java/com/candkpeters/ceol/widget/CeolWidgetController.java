@@ -10,15 +10,14 @@ import com.candkpeters.ceol.device.CeolManager2;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.device.command.CommandBaseApp;
-import com.candkpeters.ceol.model.AudioControl;
-import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.CeolModel;
-import com.candkpeters.ceol.model.CeolNavigatorControl;
-import com.candkpeters.ceol.model.ConnectionControl;
-import com.candkpeters.ceol.model.InputControl;
+import com.candkpeters.ceol.model.control.CeolNavigatorControl;
+import com.candkpeters.ceol.model.control.ConnectionControl;
+import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.OnControlChangedListener;
-import com.candkpeters.ceol.model.PowerControl;
-import com.candkpeters.ceol.model.TrackControl;
+import com.candkpeters.ceol.model.control.PowerControl;
+import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.ceol.view.CeolIntentFactory;
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.ceol.view.MainActivity;
@@ -34,17 +33,9 @@ public class CeolWidgetController {
     };
 
     private Prefs prefs;
-//    public CeolManager ceolManager = null;
     public CeolManager2 ceolManager = null;
-    CeolDevice ceolDevice = null;
     CeolModel ceolModel = null;
 
-//    OnCeolStatusChangedListener onCeolStatusChangedListener = new OnCeolStatusChangedListener() {
-//        @Override
-//        public void onCeolStatusChanged() {
-//            updateWidgets(null);
-//        }
-//    };
     OnControlChangedListener onControlChangedListener = new OnControlChangedListener() {
         @Override
         public void onCAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
@@ -85,14 +76,8 @@ public class CeolWidgetController {
     }
 
     public void initialize( CeolManager2 ceolManager) {
-/*
-        this.prefs = new Prefs(context);
-        String baseUrl = prefs.getBaseUrl();
-*/
 
         this.ceolManager = ceolManager;
-//        ceolManager = CeolManager.getInstance();
-//        ceolManager.initialize(context);//CeolDevice.getInstance(), baseUrl, prefs.getMacroNames(), prefs.getMacroValues());
         ceolModel = ceolManager.ceolModel;
         ceolManager.start();
         startService();

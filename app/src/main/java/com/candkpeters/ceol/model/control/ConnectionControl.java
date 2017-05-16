@@ -1,4 +1,4 @@
-package com.candkpeters.ceol.model;
+package com.candkpeters.ceol.model.control;
 
 /**p
  * Created by crisp on 03/05/2017.

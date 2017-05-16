@@ -8,15 +8,15 @@ import android.util.Log;
 
 import com.candkpeters.ceol.cling.ClingGatherer;
 import com.candkpeters.ceol.device.command.Command;
-import com.candkpeters.ceol.model.AudioControl;
+import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.CeolModel;
-import com.candkpeters.ceol.model.CeolNavigatorControl;
-import com.candkpeters.ceol.model.ConnectionControl;
-import com.candkpeters.ceol.model.ControlBase;
-import com.candkpeters.ceol.model.InputControl;
+import com.candkpeters.ceol.model.control.CeolNavigatorControl;
+import com.candkpeters.ceol.model.control.ConnectionControl;
+import com.candkpeters.ceol.model.control.ControlBase;
+import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.OnControlChangedListener;
-import com.candkpeters.ceol.model.PowerControl;
-import com.candkpeters.ceol.model.TrackControl;
+import com.candkpeters.ceol.model.control.PowerControl;
+import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.ceol.view.Prefs;
 
 import java.util.ArrayList;
@@ -26,12 +26,11 @@ import java.util.ArrayList;
  */
 public class CeolManager2 {
 
-    private static final String TAG = "CeolManager" ;
+    private static final String TAG = "CeolManager2" ;
     public final CeolModel ceolModel;
     private final Context context;
-//    private final CeolDeviceObserver ceolDeviceObserver;
+//    private final CeolDeviceObserver_DELETE ceolDeviceObserver;
 //    private final ClingManager clingManager;
-//    private CeolDeviceWebSvcMonitor ceolDeviceMonitor;
     private CeolDeviceWebSvcCommand ceolDeviceWebSvcCommand;
 
     private final CeolWebSvcGatherer ceolWebSvcGatherer;
@@ -46,8 +45,8 @@ public class CeolManager2 {
     public CeolManager2(final Context context) {
         this.context = context;
         ceolModel = new CeolModel();
-//        ceolDeviceObserver = new CeolDeviceObserver();
-//DELETE        ceolDevice = new CeolDevice(ceolDeviceObserver);
+//        ceolDeviceObserver = new CeolDeviceObserver_DELETE();
+//DELETE        ceolDevice = new CeolDevice_DELETE(ceolDeviceObserver);
 //        clingManager = new ClingManager(context, ceolDevice);
         ceolWebSvcGatherer = new CeolWebSvcGatherer(ceolModel);
         clingGatherer = new ClingGatherer(context, ceolModel);

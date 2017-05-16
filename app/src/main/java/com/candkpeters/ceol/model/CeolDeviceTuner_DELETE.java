@@ -3,16 +3,16 @@ package com.candkpeters.ceol.model;
 /**
  * Created by crisp on 06/01/2016.
  */
-public class CeolDeviceTuner {
+public class CeolDeviceTuner_DELETE {
 
-    private static final String TAG = "CeolDeviceTuner";
+    private static final String TAG = "CeolDeviceTuner_DELETE";
 
     private String Band = "";
     private String Frequency = "";
     private String Name = "";
     private boolean IsAuto = false;
 
-    public CeolDeviceTuner() {
+    public CeolDeviceTuner_DELETE() {
     }
 
     public String getBand() {

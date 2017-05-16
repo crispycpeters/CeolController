@@ -8,8 +8,7 @@ import android.util.Log;
 
 import com.candkpeters.ceol.cling.ClingManager;
 import com.candkpeters.ceol.device.command.Command;
-import com.candkpeters.ceol.model.CeolDevice;
-import com.candkpeters.ceol.model.CeolModel;
+import com.candkpeters.ceol.model.CeolDevice_DELETE;
 import com.candkpeters.ceol.view.Prefs;
 
 import java.util.ArrayList;
@@ -17,14 +16,14 @@ import java.util.ArrayList;
 /**
  * Created by crisp on 25/01/2016.
  */
-public class CeolManager {
+public class CeolManager_DELETE {
 
-    private static final String TAG = "CeolManager" ;
-    private final CeolDevice ceolDevice;
+    private static final String TAG = "CeolManager_DELETE" ;
+    private final CeolDevice_DELETE ceolDevice;
     private final Context context;
-    private final CeolDeviceObserver ceolDeviceObserver;
+    private final CeolDeviceObserver_DELETE ceolDeviceObserver;
     private final ClingManager clingManager;
-    private CeolDeviceWebSvcMonitor ceolDeviceMonitor;
+    private CeolDeviceWebSvcMonitor_DELETE ceolDeviceMonitor;
     private CeolDeviceWebSvcCommand ceolDeviceWebSvcCommand;
     private MacroInflater macroInflater;
 
@@ -32,10 +31,10 @@ public class CeolManager {
 
     private String message;
 
-    public CeolManager(final Context context) {
+    public CeolManager_DELETE(final Context context) {
         this.context = context;
-        ceolDeviceObserver = new CeolDeviceObserver();
-        ceolDevice = new CeolDevice(ceolDeviceObserver);
+        ceolDeviceObserver = new CeolDeviceObserver_DELETE();
+        ceolDevice = new CeolDevice_DELETE(ceolDeviceObserver);
         clingManager = new ClingManager(context, ceolDevice);
     }
 
@@ -60,7 +59,7 @@ public class CeolManager {
     private void updateConfig(Context context) {
         Prefs prefs = new Prefs(context);
         if ( ceolDeviceMonitor == null) {
-            ceolDeviceMonitor = new CeolDeviceWebSvcMonitor(getCeolDevice(), prefs.getBaseUrl());
+            ceolDeviceMonitor = new CeolDeviceWebSvcMonitor_DELETE(getCeolDevice(), prefs.getBaseUrl());
         } else {
             ceolDeviceMonitor.recreateService(prefs.getBaseUrl());
         }
@@ -122,7 +121,7 @@ public class CeolManager {
         }
     }
 
-    public CeolDevice getCeolDevice() {
+    public CeolDevice_DELETE getCeolDevice() {
         return ceolDevice;
     }
 

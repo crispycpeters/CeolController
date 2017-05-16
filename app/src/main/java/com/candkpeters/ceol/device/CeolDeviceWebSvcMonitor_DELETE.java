@@ -5,13 +5,13 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.candkpeters.ceol.model.AudioStreamItem;
+import com.candkpeters.ceol.model.CeolDeviceNetServer_DELETE;
+import com.candkpeters.ceol.model.CeolDevice_DELETE;
 import com.candkpeters.ceol.model.DeviceStatusType;
 import com.candkpeters.ceol.model.PlayStatusType;
 import com.candkpeters.ceol.view.UIThreadUpdater;
-import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.SIStatusType;
-import com.candkpeters.ceol.model.CeolDeviceNetServer;
-import com.candkpeters.ceol.model.CeolDeviceTuner;
+import com.candkpeters.ceol.model.CeolDeviceTuner_DELETE;
 
 import org.simpleframework.xml.util.Dictionary;
 
@@ -28,9 +28,9 @@ import retrofit.mime.TypedString;
 /**
  * Created by crisp on 08/01/2016.
  */
-public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/*, Observed */{
+public class CeolDeviceWebSvcMonitor_DELETE implements Runnable, ImageDownloaderResult/*, Observed */{
 
-    private static final String TAG = "CeolDeviceWebSvcMonitor";
+    private static final String TAG = "CeolDeviceWebSvcMonitor_DELETE";
 
     private static final int REPEATRATE_MSECS = 9000;
     private static final int BACKGROUNDRATE_MSECS = 1800000;
@@ -43,7 +43,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
     private UIThreadUpdater activeThreadUpdater;
     private UIThreadUpdater backgroundThreadUpdater;
     private int repeatrate;
-    final public CeolDevice ceolDevice;
+    final public CeolDevice_DELETE ceolDevice;
     private URL imageUrl;
 
     // Observer
@@ -78,23 +78,23 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
             " <cmd id=\"4\">GetSourceStatus</cmd>\n" +
             "</tx>\n";
     TypedString statusQuery_Tuner = new TypedString(statusQueryString_Tuner);
-//    ImageDownloaderTask_Old imageDownloaderTask;
+//    ImageDownloaderTask_DELETE imageDownloaderTask;
     ImageDownloaderTask imageDownloaderTask;
     private static final String IMAGEURLSPEC = "/NetAudio/art.asp-jpg";
     private long lastSuccessMsecs;
 
-    public CeolDeviceWebSvcMonitor(CeolDevice ceolDevice,String baseUrl) {
+    public CeolDeviceWebSvcMonitor_DELETE(CeolDevice_DELETE ceolDevice, String baseUrl) {
         this.ceolDevice = ceolDevice;
 /*
         this.observers=new ArrayList<OnCeolStatusChangedListener>();
 */
-//        imageDownloaderTask = new ImageDownloaderTask_Old(this);
+//        imageDownloaderTask = new ImageDownloaderTask_DELETE(this);
 //        imageDownloaderTask = new ImageDownloaderTask(this);
         recreateService(baseUrl);
         try {
             imageUrl = new URL(new URL(baseUrl), IMAGEURLSPEC);
         } catch ( MalformedURLException e) {
-            Log.e(TAG, "CeolDeviceWebSvcMonitor: Bad URL: " + baseUrl+ " + " + IMAGEURLSPEC,e );
+            Log.e(TAG, "CeolDeviceWebSvcMonitor_DELETE: Bad URL: " + baseUrl+ " + " + IMAGEURLSPEC,e );
         }
 //        resetBackgroundCountdown();
 //        this.backgroundTimeoutMsecs = backgroundTimeoutMsecs;
@@ -239,7 +239,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
 
     public void getImage() {
         imageDownloaderTask = new ImageDownloaderTask(this);
-//        imageDownloaderTask = new ImageDownloaderTask_Old(this);
+//        imageDownloaderTask = new ImageDownloaderTask_DELETE(this);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -266,7 +266,6 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
                 return statusQuery_Tuner;
             //TODO case AnalogIn:
             //case IRadio:
-            //case AudioItem:
             default:
                 return statusQuery_NetServer;
         }
@@ -312,7 +311,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
 
                 if ( ceolDevice.isNetServer() ) {
 
-                    CeolDeviceNetServer ceolNetServer = ceolDevice.CeolNetServer;
+                    CeolDeviceNetServer_DELETE ceolNetServer = ceolDevice.CeolNetServer;
                     AudioStreamItem audioItem = ceolDevice.getAudioItem();
                     ceolDevice.setPlayStatus( webSvcHttpAppCommandResponse.playstatus);
 
@@ -325,7 +324,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
                                     texts.get("scrid").text,
                                     webSvcHttpAppCommandResponse.listmax,
                                     webSvcHttpAppCommandResponse.listposition);
-                            for (int i = 0; i < CeolDeviceNetServer.MAX_LINES; i++) {
+                            for (int i = 0; i < CeolDeviceNetServer_DELETE.MAX_LINES; i++) {
                                 WebSvcHttpResponseText responseText = texts.get("line" + i);
                                 if (responseText != null) {
                                     ceolNetServer.setChunkLine(i, responseText.text, responseText.flag);
@@ -361,7 +360,7 @@ public class CeolDeviceWebSvcMonitor implements Runnable, ImageDownloaderResult/
                             // TODO
                             break;
                         case Tuner:
-                            CeolDeviceTuner tuner = ceolDevice.Tuner;
+                            CeolDeviceTuner_DELETE tuner = ceolDevice.Tuner;
                             ceolDevice.setPlayStatus(PlayStatusType.Stopped);
                             tuner.setBand(webSvcHttpAppCommandResponse.band);
                             tuner.setFrequency(webSvcHttpAppCommandResponse.frequency);

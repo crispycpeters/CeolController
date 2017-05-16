@@ -1,7 +1,5 @@
 package com.candkpeters.ceol.device;
 
-import com.candkpeters.ceol.model.CeolDevice;
-
 /**
  * Created by crisp on 20/02/2016.
  */

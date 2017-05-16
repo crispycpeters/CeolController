@@ -3,7 +3,6 @@ package com.candkpeters.ceol.device.command;
 import android.util.Log;
 
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
-import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.SIStatusType;
 
 /**

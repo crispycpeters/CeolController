@@ -1,4 +1,7 @@
-package com.candkpeters.ceol.model;
+package com.candkpeters.ceol.model.control;
+
+import com.candkpeters.ceol.model.SIStatusType;
+import com.candkpeters.ceol.model.StreamingStatus;
 
 /**
  * Created by crisp on 03/05/2017.
@@ -71,22 +74,28 @@ public class InputControl extends ControlBase {
                 if ( navigatorControl == null || !(navigatorControl instanceof CeolNavigatorControl)) {
                     updateNavigatorControl(new CeolNavigatorControl());
                 }
-                if ( playlistControl != null && (playlistControl instanceof PlaylistControlBase)) {
+                if ( playlistControl != null ) {
                     updateNavigatorControl(null);
                 }
                 break;
             case DLNA:
                 break;
             case OPENHOME:
-                break;
-            case SPOTIFY:
-                // TODO Needs refactoring when we have other types of navigation and playlist
-                if ( navigatorControl != null && (navigatorControl instanceof CeolNavigatorControl)) {
+                if ( navigatorControl != null ) {
                     updatePlaylistControl(null);
                 }
-                if ( playlistControl == null || !(playlistControl instanceof PlaylistControlBase)) {
-                    updatePlaylistControl(new PlaylistControlBase());
+                if ( playlistControl == null || !(playlistControl instanceof OpenhomePlaylistControl)) {
+                    updatePlaylistControl(new OpenhomePlaylistControl());
                 }
+                break;
+            case SPOTIFY:
+                if ( navigatorControl != null ) {
+                    updatePlaylistControl(null);
+                }
+                if ( playlistControl != null ) {
+                    updateNavigatorControl(null);
+                }
+                // TODO Needs refactoring when we have other types of navigation and playlist
                 break;
             case NONE:
                 break;

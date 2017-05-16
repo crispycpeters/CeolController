@@ -15,15 +15,15 @@ import retrofit.client.Response;
 /**
  * Created by crisp on 25/03/2016.
  */
-public class ImageDownloaderTask_Old extends AsyncTask<Void, Void, Bitmap> {
+public class ImageDownloaderTask_DELETE extends AsyncTask<Void, Void, Bitmap> {
     private static final String TAG = "ImageDownloader";
-    private final WeakReference<CeolDeviceWebSvcMonitor> ceolDeviceWebSvcMonitorRef;
+    private final WeakReference<CeolDeviceWebSvcMonitor_DELETE> ceolDeviceWebSvcMonitorRef;
 
     private Bitmap bitmap;
 
 
-    public ImageDownloaderTask_Old(CeolDeviceWebSvcMonitor ceolDeviceWebSvcMonitor) {
-        this.ceolDeviceWebSvcMonitorRef = new WeakReference<CeolDeviceWebSvcMonitor>(ceolDeviceWebSvcMonitor);
+    public ImageDownloaderTask_DELETE(CeolDeviceWebSvcMonitor_DELETE ceolDeviceWebSvcMonitor) {
+        this.ceolDeviceWebSvcMonitorRef = new WeakReference<CeolDeviceWebSvcMonitor_DELETE>(ceolDeviceWebSvcMonitor);
     }
 
 
@@ -38,7 +38,7 @@ public class ImageDownloaderTask_Old extends AsyncTask<Void, Void, Bitmap> {
         if (isCancelled()) {
             bitmap = null;
         } else {
-            CeolDeviceWebSvcMonitor ceolDeviceWebSvcMonitor = ceolDeviceWebSvcMonitorRef.get();
+            CeolDeviceWebSvcMonitor_DELETE ceolDeviceWebSvcMonitor = ceolDeviceWebSvcMonitorRef.get();
             ceolDeviceWebSvcMonitor.updateDeviceImage(bitmap);
         }
 

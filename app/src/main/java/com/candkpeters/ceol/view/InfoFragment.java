@@ -9,12 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.candkpeters.ceol.controller.CeolController;
 import com.candkpeters.ceol.controller.CeolController2;
 import com.candkpeters.ceol.model.AudioStreamItem;
-import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.CeolModel;
-import com.candkpeters.ceol.model.TrackControl;
+import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.chris.ceol.R;
 
 public class InfoFragment extends DialogFragment implements View.OnClickListener{
@@ -48,10 +46,7 @@ public class InfoFragment extends DialogFragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.info_fragment, container, false);
-//            View rootView = inflater.inflate(R.layout.appwidget_layout_navigator, container, false);
         ceolController = ((MainActivity)getActivity()).getCeolController();
-        //ceolController = new CeolController(getContext(), null);
-//        CeolDevice ceolDevice = ceolController.getCeolDevice();
         ceolModel = ceolController.getCeolModel();
         trackControl = ceolModel.inputControl.trackControl;
 

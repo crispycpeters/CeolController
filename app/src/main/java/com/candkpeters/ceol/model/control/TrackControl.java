@@ -1,6 +1,7 @@
-package com.candkpeters.ceol.model;
+package com.candkpeters.ceol.model.control;
 
-import android.util.Log;
+import com.candkpeters.ceol.model.AudioStreamItem;
+import com.candkpeters.ceol.model.PlayStatusType;
 
 /**
  * Created by crisp on 03/05/2017.
@@ -87,36 +88,5 @@ public class TrackControl extends ControlBase {
     public AudioStreamItem getAudioItem() {
         return audioItem;
     }
-
-/*
-    public AudioStreamItem getAudioStreamItem() {
-        if ( isStreamAudioItem()) {
-            return (AudioStreamItem)audioItem;
-        } else {
-            return null;
-        }
-    }
-*/
-
-/*
-    public AudioTunerItem getAudioTunerItem() {
-        if ( isTunerAudioItem()) {
-            return (AudioTunerItem) audioItem;
-        } else {
-            return null;
-        }
-    }
-*/
-
-/*
-    public boolean isStreamAudioItem() {
-        return ( audioItem != null && audioItem instanceof AudioStreamItem);
-    }
-
-    public boolean isTunerAudioItem() {
-        return ( audioItem != null && audioItem instanceof AudioTunerItem);
-    }
-*/
-
 
 }

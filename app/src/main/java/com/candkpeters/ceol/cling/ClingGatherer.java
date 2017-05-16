@@ -8,7 +8,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.candkpeters.ceol.device.GathererBase;
-import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.view.Prefs;
 

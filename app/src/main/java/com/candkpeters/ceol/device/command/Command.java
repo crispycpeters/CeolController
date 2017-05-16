@@ -4,14 +4,14 @@ import android.util.Log;
 
 import com.candkpeters.ceol.device.CeolManager2;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
-import com.candkpeters.ceol.model.AudioControl;
+import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.CeolModel;
-import com.candkpeters.ceol.model.CeolNavigatorControl;
-import com.candkpeters.ceol.model.ConnectionControl;
-import com.candkpeters.ceol.model.InputControl;
+import com.candkpeters.ceol.model.control.CeolNavigatorControl;
+import com.candkpeters.ceol.model.control.ConnectionControl;
+import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.OnControlChangedListener;
-import com.candkpeters.ceol.model.PowerControl;
-import com.candkpeters.ceol.model.TrackControl;
+import com.candkpeters.ceol.model.control.PowerControl;
+import com.candkpeters.ceol.model.control.TrackControl;
 
 /**
  * Created by crisp on 22/01/2016.
@@ -32,6 +32,7 @@ public abstract class Command {
     public Command() {
         //this.type = type;
     }
+
 
     private void checkOverallStatus() {
         if (isSuccessful()) {

@@ -1,22 +1,20 @@
 package com.candkpeters.ceol.device;
 
-import com.candkpeters.ceol.model.CeolDevice;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by crisp on 08/01/2016.
  */
-public class CeolDeviceObserver implements Observed {
+public class CeolDeviceObserver_DELETE implements Observed {
 
-    private static final String TAG = "CeolDeviceObserver";
+    private static final String TAG = "CeolDeviceObserver_DELETE";
 
     // Observer
     private final Object MUTEX = new Object();
     private final List<OnCeolStatusChangedListener> observers;
 
-    public CeolDeviceObserver() {
+    public CeolDeviceObserver_DELETE() {
         this.observers=new ArrayList<OnCeolStatusChangedListener>();
     }
 

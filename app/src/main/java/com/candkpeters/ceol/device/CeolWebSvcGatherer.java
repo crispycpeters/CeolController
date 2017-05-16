@@ -5,9 +5,8 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.candkpeters.ceol.model.AudioStreamItem;
-import com.candkpeters.ceol.model.CeolDeviceNetServer;
 import com.candkpeters.ceol.model.CeolModel;
-import com.candkpeters.ceol.model.CeolNavigatorControl;
+import com.candkpeters.ceol.model.control.CeolNavigatorControl;
 import com.candkpeters.ceol.model.PlayStatusType;
 import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.model.StreamingStatus;
@@ -174,7 +173,7 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
         try {
             imageUrl = new URL(new URL(baseUrl), IMAGEURLSPEC);
         } catch ( MalformedURLException e) {
-            Log.e(TAG, "CeolDeviceWebSvcMonitor: Bad URL: " + baseUrl+ " + " + IMAGEURLSPEC,e );
+            Log.e(TAG, "recreateService: Bad URL: " + baseUrl+ " + " + IMAGEURLSPEC,e );
         }
     }
 
@@ -265,12 +264,10 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
 
     private void getImage() {
         imageDownloaderTask = new ImageDownloaderTask(this);
-//        imageDownloaderTask = new ImageDownloaderTask_Old(this);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 try {
-//                    imageDownloaderTask.execute();
                     imageDownloaderTask.execute(imageUrl.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -292,7 +289,6 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
                 return statusQuery_Tuner;
             //TODO case AnalogIn:
             //case IRadio:
-            //case AudioItem:
             default:
                 return statusQuery_NetServer;
         }
@@ -304,7 +300,7 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
         if (audioStreamItem == null) {
             Log.w(TAG, "updateDeviceImage: Cannot update bitmap as the audio item is not an AudioStreamItem. Have we changed SI input?" );
         } else {
-            Log.d(TAG, "updateDeviceImage: Updating image in AudioItem: " + audioStreamItem.toString() );
+            Log.d(TAG, "updateDeviceImage: Updating image in AudioStreamItem: " + audioStreamItem.toString() );
             audioStreamItem.setImageBitmap(bitmap);
             trackControlChanged = true;
             notifyObservers();
@@ -376,7 +372,7 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
                                 texts.get("scrid").text,
                                 webSvcHttpAppCommandResponse.listmax,
                                 webSvcHttpAppCommandResponse.listposition);
-                        for (int i = 0; i < CeolDeviceNetServer.MAX_LINES; i++) {
+                        for (int i = 0; i < CeolNavigatorControl.MAX_LINES; i++) {
                             WebSvcHttpResponseText responseText = texts.get("line" + i);
                             if (responseText != null) {
                                 newCeolNavigatorControl.setChunkLine(i, responseText.text, responseText.flag);

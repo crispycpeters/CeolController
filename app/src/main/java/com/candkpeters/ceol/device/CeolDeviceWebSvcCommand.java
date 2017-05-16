@@ -2,8 +2,6 @@ package com.candkpeters.ceol.device;
 
 import android.util.Log;
 
-import com.candkpeters.ceol.model.CeolDevice;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -13,10 +11,9 @@ import retrofit.client.Response;
  */
 public class CeolDeviceWebSvcCommand {
 
-    private static final String TAG = "CeolDeviceWebSvcMonitor";
+    private static final String TAG = "CeolDeviceWebSvcCommand";
 
     private WebSvcApiService webSvcApiService = null;
-    private CeolDevice ceolDevice;
 
     OnCeolCommandListener onCeolCommandListener;
 

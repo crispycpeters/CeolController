@@ -35,7 +35,7 @@ public class AudioStreamItem {
 
     @Override
     public String toString() {
-        return "AudioItem: id="+id +" title="+title;
+        return "AudioStreamItem: id="+id +" title="+title;
     }
 
     public AudioStreamItem(int id) {

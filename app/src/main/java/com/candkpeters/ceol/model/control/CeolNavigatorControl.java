@@ -1,6 +1,7 @@
-package com.candkpeters.ceol.model;
+package com.candkpeters.ceol.model.control;
 
-import com.candkpeters.ceol.device.Observed;
+import com.candkpeters.ceol.model.CeolBrowseEntries;
+import com.candkpeters.ceol.model.CeolBrowseEntry;
 
 /**
  * Created by crisp on 03/05/2017.

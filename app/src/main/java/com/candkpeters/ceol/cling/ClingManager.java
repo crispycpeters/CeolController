@@ -7,7 +7,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.model.CeolDevice_DELETE;
 import com.candkpeters.ceol.view.Prefs;
 
 import org.fourthline.cling.android.AndroidUpnpService;
@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 
 public class ClingManager {
     private static String TAG = "ClingManager";
-    private final CeolDevice ceolDevice;
+    private final CeolDevice_DELETE ceolDevice;
     //    private BrowserUpnpService browserUpnpService;
     private AndroidUpnpService upnpService;
     private BrowseRegistryListener registryListener = new BrowseRegistryListener();
@@ -46,7 +46,7 @@ public class ClingManager {
     private void setupCachedPlayer() {
     }
 
-    public ClingManager(Context context, CeolDevice ceolDevice) {
+    public ClingManager(Context context, CeolDevice_DELETE ceolDevice) {
         this.context = context;
 //        openHomeUpnpDevice = new OpenHomeUpnpDevice(context, ceolDevice);
         this.ceolDevice = ceolDevice;

@@ -2,6 +2,14 @@ package com.candkpeters.ceol.model;
 
 import android.util.Log;
 
+import com.candkpeters.ceol.model.control.AudioControl;
+import com.candkpeters.ceol.model.control.CeolNavigatorControl;
+import com.candkpeters.ceol.model.control.ConnectionControl;
+import com.candkpeters.ceol.model.control.ControlBase;
+import com.candkpeters.ceol.model.control.InputControl;
+import com.candkpeters.ceol.model.control.PowerControl;
+import com.candkpeters.ceol.model.control.TrackControl;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,12 +47,19 @@ public class CeolModel implements ControlObserved {
 
     public void notifyConnectionStatus(boolean connection) {
         boolean hasChangedConnection = false;
+        boolean newIsConnected = false;
         synchronized (MUTEX) {
             hasChangedConnection = connectionControl.updateConnected(connection);
+            newIsConnected = connectionControl.isConnected();
         }
         if ( hasChangedConnection ) {
-            Log.d(TAG, "notifyConnectionStatus: Connection status has changed: " + connectionControl.isConnected());
-            notifyObservers(connectionControl);
+            if ( newIsConnected) {
+                Log.d(TAG, "notifyConnectionStatus: We are connected. Refresh all observers." );
+                refreshAllObservers();
+            } else {
+                Log.w(TAG, "notifyConnectionStatus: We are no longer connected." );
+                notifyObservers(connectionControl);
+            }
         }
 
     }
@@ -103,6 +118,15 @@ public class CeolModel implements ControlObserved {
         } else if ( control instanceof CeolNavigatorControl) {
             obj.onCeolNavigatorControlChanged(this, (CeolNavigatorControl) control );
         }
+    }
+
+    public void refreshAllObservers() {
+        notifyObservers(connectionControl);
+        notifyObservers(powerControl);
+        notifyObservers(audioControl);
+        notifyObservers(inputControl);
+        notifyObservers(inputControl.trackControl);
+        notifyObservers(inputControl.navigatorControl);
     }
 
     public void refreshObserver( OnControlChangedListener obj) {

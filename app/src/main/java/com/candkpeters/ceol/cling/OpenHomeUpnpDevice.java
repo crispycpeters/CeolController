@@ -6,11 +6,11 @@ import android.util.Log;
 
 import com.candkpeters.ceol.device.ImageDownloaderResult;
 import com.candkpeters.ceol.device.ImageDownloaderTask;
-import com.candkpeters.ceol.model.AudioControl;
+import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolModel;
-import com.candkpeters.ceol.model.OpenhomePlaylistControl;
-import com.candkpeters.ceol.model.TrackControl;
+import com.candkpeters.ceol.model.control.OpenhomePlaylistControl;
+import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.ceol.model.TrackList;
 import com.candkpeters.ceol.model.TrackListEntry;
 

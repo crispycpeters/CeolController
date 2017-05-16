@@ -8,8 +8,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 
-import com.candkpeters.ceol.device.CeolManager;
-import com.candkpeters.ceol.device.CeolDeviceWebSvcMonitor;
+import com.candkpeters.ceol.device.CeolDeviceWebSvcMonitor_DELETE;
+import com.candkpeters.ceol.device.CeolManager_DELETE;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.device.command.CommandControlStop;
@@ -21,7 +21,7 @@ import com.candkpeters.ceol.device.command.CommandMasterVolumeUp;
 import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
 import com.candkpeters.ceol.device.command.CommandSkipBackward;
 import com.candkpeters.ceol.device.command.CommandSkipForward;
-import com.candkpeters.ceol.model.CeolDevice;
+import com.candkpeters.ceol.model.CeolDevice_DELETE;
 import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.ceol.service.CeolServiceBinder;
@@ -36,31 +36,25 @@ import com.candkpeters.chris.ceol.R;
 /**
  * Created by crisp on 07/01/2016.
  */
-public class CeolController implements View.OnClickListener {
-    private static final String TAG = "CeolController";
+public class CeolController_DELETE implements View.OnClickListener {
+    private static final String TAG = "CeolController_DELETE";
 
-    CeolDeviceWebSvcMonitor ceolWebService = null;
+    CeolDeviceWebSvcMonitor_DELETE ceolWebService = null;
 //    Prefs prefs;
     Context context;
     CeolService ceolService;
-    CeolDevice ceolDevice;
-    CeolManager ceolManager;
+    CeolDevice_DELETE ceolDevice;
+    CeolManager_DELETE ceolManager;
     boolean bound = false;
 
     OnCeolStatusChangedListener onCeolStatusChangedListener;
 
-    public CeolController( Context context, final OnCeolStatusChangedListener onCeolStatusChangedListener ) {
-//        this.prefs = new Prefs(context);
-//        String baseurl = prefs.getBaseUrl();
+    public CeolController_DELETE(Context context, final OnCeolStatusChangedListener onCeolStatusChangedListener ) {
 
         if ( onCeolStatusChangedListener != null) {
             this.onCeolStatusChangedListener = onCeolStatusChangedListener;
         }
         this.context = context;
-        //ceolManager = CeolManager.getInstance();
-//        this.ceolManager = ceolManager;
-//        ceolDevice = ceolManager.getCeolDevice();
-        //ceolManager.initialize(context);//ceolDevice, baseurl, prefs.getMacroNames(), prefs.getMacroValues());
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -84,7 +78,7 @@ public class CeolController implements View.OnClickListener {
         }
     };
 
-    public CeolDevice getCeolDevice() {
+    public CeolDevice_DELETE getCeolDevice() {
         return ceolDevice;
     }
 

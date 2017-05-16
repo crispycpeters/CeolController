@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 /**
  * Created by crisp on 06/01/2016.
  */
-public class CeolDeviceNetServer {
+public class CeolDeviceNetServer_DELETE {
 
-    private static final String TAG = "CeolDeviceNetServer";
+    private static final String TAG = "CeolDeviceNetServer_DELETE";
 
     public int getListMax() {
         return entries.getListMax();
@@ -45,7 +45,7 @@ public class CeolDeviceNetServer {
 //
 //    private Bitmap imageBitmap;
 
-    public CeolDeviceNetServer(AudioStreamItem audioItem) {
+    public CeolDeviceNetServer_DELETE(AudioStreamItem audioItem) {
         clear();
     }
 

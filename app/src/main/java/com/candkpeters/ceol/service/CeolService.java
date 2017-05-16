@@ -32,11 +32,9 @@ public class CeolService extends Service {
     final Context context = this;
 
     CeolWidgetController ceolWidgetController;
-//    private CeolManager ceolManager;
     private CeolManager2 ceolManager2;
 
     public CeolService() {
-//        ceolManager = new CeolManager(context);
         ceolManager2 = new CeolManager2(context);
         ceolWidgetController = new CeolWidgetController(this);
     }
@@ -49,9 +47,6 @@ public class CeolService extends Service {
         return new CeolServiceBinder(this);
     }
 
-//    public CeolManager getCeolManager() {
-//        return ceolManager;
-//    }
     public CeolManager2 getCeolManager() {
         return ceolManager2;
     }

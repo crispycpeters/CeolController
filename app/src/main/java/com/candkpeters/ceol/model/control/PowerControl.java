@@ -1,6 +1,6 @@
-package com.candkpeters.ceol.model;
+package com.candkpeters.ceol.model.control;
 
-import android.util.Log;
+import com.candkpeters.ceol.model.DeviceStatusType;
 
 import static com.candkpeters.ceol.model.DeviceStatusType.Standby;
 import static com.candkpeters.ceol.model.DeviceStatusType.Starting;

@@ -37,7 +37,6 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,20 +58,18 @@ import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
 import com.candkpeters.ceol.device.command.CommandSetSI;
 import com.candkpeters.ceol.device.command.CommandSkipBackward;
 import com.candkpeters.ceol.device.command.CommandSkipForward;
-import com.candkpeters.ceol.model.AudioControl;
+import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.AudioStreamItem;
-import com.candkpeters.ceol.model.CeolDevice;
 import com.candkpeters.ceol.model.CeolModel;
-import com.candkpeters.ceol.model.CeolNavigatorControl;
-import com.candkpeters.ceol.model.ConnectionControl;
-import com.candkpeters.ceol.model.ControlBase;
-import com.candkpeters.ceol.model.DeviceStatusType;
+import com.candkpeters.ceol.model.control.CeolNavigatorControl;
+import com.candkpeters.ceol.model.control.ConnectionControl;
+import com.candkpeters.ceol.model.control.ControlBase;
 import com.candkpeters.ceol.model.DirectionType;
-import com.candkpeters.ceol.model.InputControl;
+import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.OnControlChangedListener;
-import com.candkpeters.ceol.model.PowerControl;
+import com.candkpeters.ceol.model.control.PowerControl;
 import com.candkpeters.ceol.model.SIStatusType;
-import com.candkpeters.ceol.model.TrackControl;
+import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.chris.ceol.R;
 
@@ -95,7 +92,6 @@ public class MainActivity extends AppCompatActivity
      * may be best to switch to a
      * {@link FragmentStatePagerAdapter}.
      */
-//    private CeolController ceolController;
     private CeolController2 ceolController2;
 
     private Animation powerAnimation;
@@ -153,21 +149,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Log.i(TAG, "Created");
-/*
-        ceolController = new CeolController(this, new OnCeolStatusChangedListener() {
-            @Override
-            public void onCeolStatusChanged() {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        updateViewsOnDeviceChange(ceolController.getCeolDevice());
-                    }
-                });
-
-            }
-        });
-*/
-
         powerAnimation = new AlphaAnimation(1,0);
         powerAnimation.setDuration(1000);
         powerAnimation.setInterpolator( new LinearInterpolator());
@@ -214,12 +195,9 @@ public class MainActivity extends AppCompatActivity
 
         setNavigationMenuStrings(navigationView);
 
-//        ImageView imageV = (ImageView) viewPager.findViewById(R.id.imageTrack);
-//        if (imageV != null) imageV.setMinimumHeight();width(ceolDevice.getAudioItem().getImageBitmap());
+        playlistRecyclerAdapter = new PlaylistRecyclerAdapter(this, getCeolController());
 
-        //TODO
-//        playlistRecyclerAdapter = new PlaylistRecyclerAdapter(this, getCeolController());
-
+        Log.i(TAG, "onCreate: Done");
     }
 
     protected void updateTrackViews() {
@@ -311,81 +289,9 @@ public class MainActivity extends AppCompatActivity
         waitingDialog.hide();
     }
 
-
-    public void updateViewsOnDeviceChange(CeolDevice ceolDevice) {
-        try {
-
-            hideWaitingDialog();
-
-            setTextViewText(R.id.textTrack, ceolDevice.getAudioItem().getTitle());
-
-            setTextViewText(R.id.textArtist, ceolDevice.getAudioItem().getArtist());
-
-            setTextViewText(R.id.textAlbum, ceolDevice.getAudioItem().getAlbum());
-
-            setTextViewText(R.id.playStatus, ceolDevice.getPlayStatus().toString());
-
-            String currString = Long.toString(System.currentTimeMillis() % 100);
-            setTextViewText(R.id.textUpdate, currString);
-
-            setTextViewText(R.id.volume, ceolDevice.getMasterVolumeString());
-
-            ImageView imageV = (ImageView)findViewById(R.id.imageTrack);
-            if (imageV != null) imageV.setImageBitmap(ceolDevice.getAudioItem().getImageBitmap());
-
-            View tunerPanel = findViewById(R.id.tunerPanel);
-            View netPanel = findViewById(R.id.netPanel);
-            if ( tunerPanel != null && netPanel != null ) {
-                switch (ceolDevice.getSIStatus()) {
-                    case CD:
-                    case AnalogIn:
-                    case NotConnected:
-                        tunerPanel.setVisibility(View.INVISIBLE);
-                        netPanel.setVisibility(View.INVISIBLE);
-                        break;
-                    case Tuner:
-                        tunerPanel.setVisibility(View.VISIBLE);
-                        netPanel.setVisibility(View.GONE);
-
-                        setTextViewText(R.id.tunerName, ceolDevice.Tuner.getName());
-                        setTextViewText(R.id.tunerFrequency, ceolDevice.Tuner.getFrequency());
-                        setTextViewText(R.id.tunerUnits, ceolDevice.Tuner.getUnits());
-                        setTextViewText(R.id.tunerBand, ceolDevice.Tuner.getBand());
-                        break;
-                    case DigitalIn1:
-                    case DigitalIn2:
-                    case IRadio:
-                    case NetServer:
-                    case Bluetooth:
-                    case Ipod:
-                    case Spotify:
-                    default:
-                        tunerPanel.setVisibility(View.GONE);
-                        netPanel.setVisibility(View.VISIBLE);
-                        break;
-                }
-            }
-            updateSIEntries(ceolDevice);
-
-//            updateMacroButtons();
-
-            updatePowerButton(ceolDevice);
-
-            showConnection( ceolDevice.getDeviceStatus() != DeviceStatusType.Connecting ) ;
-
-            updateNavigation( ceolDevice);
-
-            updateSeekbar( ceolDevice);
-
-            playlistRecyclerAdapter.notifyDataSetChanged();
-
-        } catch (Exception e) {
-            Log.e(TAG, "onCeolStatusChanged: Exception " + e);
-            e.printStackTrace();
-        }
-    }
-
-    private void updateSeekbar(CeolDevice ceolDevice) {
+    private void updateSeekbar(CeolModel ceolModel) {
+        // TODO
+/*
         if ( ceolDevice.isOpenHomeOperating() ) {
             int progressSize = (int)ceolDevice.getOpenHome().getDuration();
             int progress = (int)ceolDevice.getOpenHome().getSeconds();
@@ -396,6 +302,7 @@ public class MainActivity extends AppCompatActivity
                 seekBar.setProgress(progress);
             }
         }
+*/
     }
 
     private void setTextViewText(int tunerName2, String name) {
@@ -415,56 +322,6 @@ public class MainActivity extends AppCompatActivity
 
         int id = 0;
         switch ( inputControl.getSIStatus()) {
-
-            case NotConnected:
-                break;
-            case CD:
-                break;
-            case Tuner:
-                id = R.id.nav_tuner;
-                break;
-            case IRadio:
-                id = R.id.nav_iradio;
-                break;
-            case NetServer:
-                id = R.id.nav_server;
-                break;
-            case AnalogIn:
-                break;
-            case DigitalIn1:
-                break;
-            case DigitalIn2:
-                break;
-            case Bluetooth:
-                id = R.id.nav_bluetooth;
-                break;
-            case Ipod:
-                id = R.id.nav_usb;
-                break;
-            case Spotify:
-                break;
-        }
-        if ( id != 0 ) {
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            MenuItem item = navigationView.getMenu().findItem(id);
-            if (item != null) {
-                item.setChecked(true);
-            }
-        }
-    }
-
-    private void updateSIEntries(CeolDevice ceolDevice) {
-        Button siB = (Button) findViewById(R.id.siB);
-        if (siB != null) {
-//            if ( ceolDevice.getDeviceStatus() != DeviceStatusType.On ) {
-//                siB.setText(SIStatusType.NotConnected.name);
-//            } else {
-            siB.setText(ceolDevice.getSIStatus().name);
-//            }
-        }
-
-        int id = 0;
-        switch ( ceolDevice.getSIStatus()) {
 
             case NotConnected:
                 break;
@@ -540,22 +397,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void updateNavigation(CeolDevice ceolDevice) {
-
-        updateNavigationRow( ceolDevice, R.id.textRow0, 0);
-        updateNavigationRow( ceolDevice, R.id.textRow1, 1);
-        updateNavigationRow( ceolDevice, R.id.textRow2, 2);
-        updateNavigationRow( ceolDevice, R.id.textRow3, 3);
-        updateNavigationRow( ceolDevice, R.id.textRow4, 4);
-        updateNavigationRow( ceolDevice, R.id.textRow5, 5);
-        updateNavigationRow( ceolDevice, R.id.textRow6, 6);
-        updateNavigationRow( ceolDevice, R.id.textRow7, 7);
-
-//        ListView entriesList = (ListView)findViewById(R.id.entriesList);
-//        ListAdapter adapter = entriesList.getAdapter();
-
-    }
-
     private void updateNavigation(CeolNavigatorControl navigatorControl) {
 
         updateNavigationRow( navigatorControl, R.id.textRow0, 0);
@@ -572,29 +413,10 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void updateNavigationRow(CeolDevice ceolDevice, int rowResId, int rowIndex) {
-        TextView textV = (TextView)findViewById(rowResId);
-        if ( textV != null) {
-//            if ( ceolDevice.getSIStatus() == SIStatusType.AudioItem  ) {
-            if ( ceolDevice.getSIStatus() == SIStatusType.NetServer && ceolDevice.CeolNetServer.isBrowsing() ) {
-//                String s = ceolDevice.AudioItem.getEntries().getBrowseLineText(rowIndex);
-                SpannableString s = new SpannableString(ceolDevice.CeolNetServer.getEntries().getBrowseLineText(rowIndex));
-                if ( ceolDevice.CeolNetServer.getEntries().getSelectedEntryIndex() == rowIndex) {
-                    s.setSpan(new StyleSpan(Typeface.BOLD_ITALIC),0, s.length(),0);
-                }
-                textV.setText(s);
-            } else {
-                textV.setText("");
-            }
-        }
-    }
-
     private void updateNavigationRow(CeolNavigatorControl navigatorControl, int rowResId, int rowIndex) {
         TextView textV = (TextView)findViewById(rowResId);
         if ( textV != null) {
-//            if ( ceolDevice.getSIStatus() == SIStatusType.AudioItem  ) {
             if ( navigatorControl.isBrowsing() ) {
-//                String s = ceolDevice.AudioItem.getEntries().getBrowseLineText(rowIndex);
                 SpannableString s = new SpannableString(navigatorControl.getEntries().getBrowseLineText(rowIndex));
                 if ( navigatorControl.getEntries().getSelectedEntryIndex() == rowIndex) {
                     s.setSpan(new StyleSpan(Typeface.BOLD_ITALIC),0, s.length(),0);
@@ -607,39 +429,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private boolean isPowerAnimating = false;
-
-    private void updatePowerButton(CeolDevice ceolDevice) {
-        ImageButton powerB = (ImageButton)findViewById(R.id.powerB);
-
-        if (powerB != null) {
-
-            switch ( ceolDevice.getDeviceStatus()) {
-
-                case Connecting:
-                case Standby:
-                    if ( isPowerAnimating ) {
-                        powerB.clearAnimation();
-                        isPowerAnimating = false;
-                    }
-                    powerB.setImageResource(R.drawable.ic_av_power_back );
-                    break;
-                case Starting:
-                    if ( !isPowerAnimating ) {
-                        powerB.setImageResource(R.drawable.ic_av_power );
-                        powerB.startAnimation(powerAnimation);
-                        isPowerAnimating = true;
-                    }
-                    break;
-                case On:
-                    if ( isPowerAnimating ) {
-                        powerB.clearAnimation();
-                        isPowerAnimating = false;
-                    }
-                    powerB.setImageResource(R.drawable.ic_av_power );
-                    break;
-            }
-        }
-    }
 
     private void updatePowerButton(PowerControl powerControl) {
         ImageButton powerB = (ImageButton)findViewById(R.id.powerB);
@@ -964,11 +753,13 @@ public class MainActivity extends AppCompatActivity
         View rootView = findViewById(R.id.dimV);
         if (rootView == null) return;
 
+        Button siB = (Button) findViewById(R.id.siB);
         rootView.setVisibility(View.GONE);
-        if (!isConnected) {
-            Button siB = (Button) findViewById(R.id.siB);
-            if (siB != null) {
-                siB.setText(SIStatusType.NotConnected.name);
+        if (siB != null) {
+            if (!isConnected) {
+                    siB.setText(SIStatusType.NotConnected.name);
+            } else {
+                siB.setText(ceolController2.getCeolModel().inputControl.getSIStatus().name);
             }
         }
 /*

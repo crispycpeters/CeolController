@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.candkpeters.ceol.controller.CeolController;
+import com.candkpeters.ceol.controller.CeolController2;
 import com.candkpeters.ceol.device.ImageDownloaderResult;
 import com.candkpeters.ceol.model.AudioStreamItem;
-import com.candkpeters.ceol.model.CeolDeviceOpenHome;
+import com.candkpeters.ceol.model.control.PlaylistControlBase;
 import com.candkpeters.chris.ceol.R;
 import com.squareup.picasso.Picasso;
 
@@ -24,12 +24,11 @@ import com.squareup.picasso.Picasso;
 
 public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecyclerAdapter.AudioItemViewHolder> {
     protected static String TAG = "PlaylistRecyclerAdapter";
-    private final CeolController controller;
+    private final CeolController2 controller;
     //    private List<FeedItem> feedItemList;
     private final Context mContext;
-//    private final CeolDeviceOpenHome openHoemDevice;
 
-    public PlaylistRecyclerAdapter(Context context, CeolController controller) {
+    public PlaylistRecyclerAdapter(Context context, CeolController2 controller) {
 //        this.feedItemList = feedItemList;
         this.controller = controller;
 //        this.openHoemDevice = contro.getOpenHome();
@@ -46,14 +45,15 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
     @Override
     public void onBindViewHolder(AudioItemViewHolder audioItemViewHolder, int i) {
 //        if ( controller.isOpenHomeOperating()) {
-        if ( controller != null && controller.getCeolDevice()!=null ) {
+        if ( controller != null && controller.isBound() ) {
             Log.d(TAG, "onBindViewHolder: Requesting item " + i);
-            AudioStreamItem audioItem = controller.getCeolDevice().getOpenHome().getPlaylistAudioItem(i);
-
-            if (audioItem != null) {
-                audioItemViewHolder.setAudioItem(audioItem);
+            PlaylistControlBase playlistControl = getPlaylistControl();
+            if ( playlistControl != null) {
+                AudioStreamItem audioItem = playlistControl.getPlaylistAudioItem(i);
+                if (audioItem != null) {
+                    audioItemViewHolder.setAudioItem(audioItem);
+                }
             }
-
 //        }
         }
 /*
@@ -73,9 +73,9 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
     }
 
 
-    private CeolDeviceOpenHome getOpenHome() {
-        if ( controller != null && controller.getCeolDevice()!=null ) {
-            return controller.getCeolDevice().getOpenHome();
+    private PlaylistControlBase getPlaylistControl() {
+        if ( controller != null && controller.isBound() ) {
+            return controller.getCeolModel().inputControl.playlistControl;
         } else {
             return null;
         }
@@ -83,17 +83,13 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
 
     @Override
     public int getItemCount() {
-//        if ( controller.isOpenHomeOperating()) {
-        CeolDeviceOpenHome openHome = getOpenHome();
-        if ( openHome != null ) {
-            int len = openHome.getPlaylistLen();
-//            Log.d(TAG, "getItemCount: " + len);
+        PlaylistControlBase playlistControl = getPlaylistControl();
+        if ( getPlaylistControl() != null ) {
+            int len = playlistControl.getPlaylistLen();
             return len;
         } else {
             return 0;
         }
-//        } else
-//            return 0;
     }
 
 

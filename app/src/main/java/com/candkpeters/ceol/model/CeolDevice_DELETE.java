@@ -7,9 +7,9 @@ import com.candkpeters.ceol.device.Observed;
 /**
  * Created by crisp on 06/01/2016.
  */
-public class CeolDevice {
+public class CeolDevice_DELETE {
 
-    private static final String TAG = "CeolDevice";
+    private static final String TAG = "CeolDevice_DELETE";
     private static final long DEFAULT_WAKEUP_PERIOD_MSECS = 3000;  // Give machine a chance to wake up before sending commands
     private static final long DEFAULT_NETSERVERON_PERIOD_MSECS = 6000; // Give audioItem a chance to settle down be believing its settings
 
@@ -27,19 +27,19 @@ public class CeolDevice {
 
     // Sub-devices
     private final AudioStreamItem audioItem;
-    public CeolDeviceNetServer CeolNetServer;
-    public CeolDeviceTuner Tuner;
-    private CeolDeviceOpenHome openHome;
+    public CeolDeviceNetServer_DELETE CeolNetServer;
+    public CeolDeviceTuner_DELETE Tuner;
+    private CeolDeviceOpenHome_DELETE openHome;
 
     private long appStartedMsecs;
     private static final int REPEATRATE_MSECS = 900;
     private static final int REPEATRATE_MSECS_SPOTIFY = 8000;
 
-    public CeolDevice( Observed observed) {
+    public CeolDevice_DELETE(Observed observed) {
         audioItem = new AudioStreamItem();
-        CeolNetServer = new CeolDeviceNetServer(audioItem);
-        Tuner = new CeolDeviceTuner();
-        openHome = new CeolDeviceOpenHome(audioItem);
+        CeolNetServer = new CeolDeviceNetServer_DELETE(audioItem);
+        Tuner = new CeolDeviceTuner_DELETE();
+        openHome = new CeolDeviceOpenHome_DELETE(audioItem);
         appStartedMsecs = System.currentTimeMillis();
         this.observed = observed;
     }
@@ -312,7 +312,7 @@ public class CeolDevice {
 //        return false;
     }
 
-    public CeolDeviceOpenHome getOpenHome() {
+    public CeolDeviceOpenHome_DELETE getOpenHome() {
         return openHome;
     }
 

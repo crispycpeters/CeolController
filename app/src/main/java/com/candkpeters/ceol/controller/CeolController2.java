@@ -8,7 +8,6 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 
-import com.candkpeters.ceol.device.CeolDeviceWebSvcMonitor;
 import com.candkpeters.ceol.device.CeolManager2;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.device.command.CommandControlStop;
@@ -34,7 +33,6 @@ import com.candkpeters.chris.ceol.R;
 public class CeolController2 implements View.OnClickListener {
     private static final String TAG = "CeolController2";
 
-    CeolDeviceWebSvcMonitor ceolWebService = null;
 //    Prefs prefs;
     Context context;
     CeolService ceolService;
