@@ -28,7 +28,7 @@ public class CommandControl extends Command {
                 return ceolModel.inputControl.trackControl.getPlayStatus() == playStatusType;
             case IRadio:
             case AnalogIn:
-            case NotConnected:
+            case Unknown:
             case CD:
             case Tuner:
             default:
@@ -40,18 +40,9 @@ public class CommandControl extends Command {
     public void execute() {
         String commandString = null;
 
-        switch (ceolModel.inputControl.getSIStatus()) {
+        switch (ceolModel.inputControl.getStreamingStatus()) {
 
-            case NotConnected:
-                break;
-            case CD:
-                // TODO
-                break;
-            case Tuner:
-                break;
-            case IRadio:
-                break;
-            case NetServer:
+            case CEOL:
                 switch (playStatusType) {
                     case Unknown:
                         break;
@@ -67,23 +58,9 @@ public class CommandControl extends Command {
                 }
                 ceolManager.sendCommand(commandString);
                 break;
-            case AnalogIn:
+            case DLNA:
                 break;
-            case Spotify:
-                switch (playStatusType) {
-                    case Unknown:
-                        break;
-                    case Playing:
-                        commandString = "PLAY";
-                        break;
-                    case Paused:
-                    case Stopped:
-                        commandString = "PAUSE";
-                        break;
-                }
-                ceolManager.sendSpotifyCommand(commandString);
-                break;
-            case OpenHome:
+            case OPENHOME:
                 switch (playStatusType) {
                     case Unknown:
                         break;
@@ -98,6 +75,22 @@ public class CommandControl extends Command {
                         break;
                 }
                 ceolManager.sendOpenHomeCommand(commandString);
+                break;
+            case NONE:
+                break;
+            case SPOTIFY:
+                switch (playStatusType) {
+                    case Unknown:
+                        break;
+                    case Playing:
+                        commandString = "PLAY";
+                        break;
+                    case Paused:
+                    case Stopped:
+                        commandString = "PAUSE";
+                        break;
+                }
+                ceolManager.sendSpotifyCommand(commandString);
                 break;
         }
     }

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.candkpeters.ceol.service.CeolService;
 
@@ -12,6 +14,7 @@ import com.candkpeters.ceol.service.CeolService;
  * Created by crisp on 17/03/2016.
  */
 public class CeolServiceReceiver extends BroadcastReceiver {
+    private static final String TAG = "CeolServiceReceiver";
 
     private boolean screenOff;
 
@@ -32,22 +35,18 @@ public class CeolServiceReceiver extends BroadcastReceiver {
                 i.setAction(CeolService.BOOT_COMPLETED);
                 break;
             case ConnectivityManager.CONNECTIVITY_ACTION:
-/*
-                final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                final android.net.NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-                if ( wifi.isConnected()) {
-                    i.setAction(CeolService.SCREEN_ON);
+
+                if ( CeolService.isOnWifi(context) ) {
+                    i.setAction(CeolService.WIFI_ON);
                 } else {
-                    i.setAction(CeolService.SCREEN_OFF);
+                    i.setAction(CeolService.WIFI_OFF);
                 }
-*/
                 break;
             default:
                 break;
         }
         context.startService(i);
     }
-
 
     public IntentFilter createIntentFilter() {
         // register receiver that handles screen on and screen off logic

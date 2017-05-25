@@ -1,6 +1,7 @@
 package com.candkpeters.ceol.model.control;
 
 import com.candkpeters.ceol.model.AudioStreamItem;
+import com.candkpeters.ceol.model.ObservedControlType;
 import com.candkpeters.ceol.model.PlayStatusType;
 
 /**
@@ -16,6 +17,7 @@ public class TrackControl extends ControlBase {
     private int progress = 0;
 
     public TrackControl() {
+        super(ObservedControlType.Track);
         audioItem = new AudioStreamItem();
     }
 
@@ -89,4 +91,7 @@ public class TrackControl extends ControlBase {
         return audioItem;
     }
 
+    public int getProgress() {
+        return progress;
+    }
 }

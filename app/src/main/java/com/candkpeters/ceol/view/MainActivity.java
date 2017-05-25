@@ -37,6 +37,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +59,8 @@ import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
 import com.candkpeters.ceol.device.command.CommandSetSI;
 import com.candkpeters.ceol.device.command.CommandSkipBackward;
 import com.candkpeters.ceol.device.command.CommandSkipForward;
+import com.candkpeters.ceol.model.ObservedControlType;
+import com.candkpeters.ceol.model.StreamingStatus;
 import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolModel;
@@ -67,6 +70,7 @@ import com.candkpeters.ceol.model.control.ControlBase;
 import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.OnControlChangedListener;
+import com.candkpeters.ceol.model.control.PlaylistControlBase;
 import com.candkpeters.ceol.model.control.PowerControl;
 import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.model.control.TrackControl;
@@ -155,40 +159,111 @@ public class MainActivity extends AppCompatActivity
         powerAnimation.setRepeatCount(Animation.INFINITE);
         powerAnimation.setRepeatMode(Animation.REVERSE);
 
+
         ceolController2 = new CeolController2(this, new OnControlChangedListener() {
+/*
             @Override
-            public void onCAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
-                Log.d(TAG, "onCAudioControlChanged: ");
-                setTextViewText(R.id.volume, audioControl.getMasterVolumeString());
+            public void onAudioControlChanged(CeolModel ceolModel, final AudioControl audioControl) {
+                Log.d(TAG, "onAudioControlChanged: ");
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        setTextViewText(R.id.volume, audioControl.getMasterVolumeString());
+                    }
+                });
             }
 
             @Override
-            public void onConnectionControlChanged(CeolModel ceolModel, ConnectionControl connectionControl) {
+            public void onConnectionControlChanged(CeolModel ceolModel, final ConnectionControl connectionControl) {
                 Log.d(TAG, "onConnectionControlChanged: " + connectionControl.isConnected());
-                showConnection( connectionControl.isConnected() ) ;
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        showConnection( connectionControl.isConnected() ) ;
+                    }
+                });
             }
 
             @Override
-            public void onCeolNavigatorControlChanged(CeolModel ceolModel,CeolNavigatorControl ceolNavigatorControl) {
+            public void onCeolNavigatorControlChanged(CeolModel ceolModel,final CeolNavigatorControl ceolNavigatorControl) {
                 Log.d(TAG, "onCeolNavigatorControlChanged: ");
-                updateNavigation( ceolNavigatorControl);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        updateNavigation( ceolNavigatorControl);
+                    }
+                });
             }
 
             @Override
-            public void onInputControlChanged(CeolModel ceolModel,InputControl inputControl) {
+            public void onInputControlChanged(CeolModel ceolModel,final InputControl inputControl) {
                 Log.d(TAG, "onInputControlChanged: ");
-                updateSIEntries(inputControl);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        updateSIEntries(inputControl);
+                    }
+                });
             }
 
             @Override
-            public void onPowerControlChanged(CeolModel ceolModel,PowerControl powerControl) {
+            public void onPowerControlChanged(CeolModel ceolModel,final PowerControl powerControl) {
                 Log.d(TAG, "onPowerControlChanged: ");
-                updatePowerButton(powerControl);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        updatePowerButton(powerControl);
+                    }
+                });
             }
 
             @Override
-            public void onTrackControlChanged(CeolModel ceolModel, TrackControl trackControl) {
-                updateTrackViews();
+            public void onTrackControlChanged(CeolModel ceolModel, final TrackControl trackControl) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        updateTrackViews();
+                    }
+                });
+            }
+
+            @Override
+            public void onPlaylistControlChanged(CeolModel ceolModel, PlaylistControlBase playlistControlBase) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        playlistRecyclerAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+*/
+
+            @Override
+            public void onControlChanged(CeolModel ceolModel, final ObservedControlType observedControlType, final ControlBase controlBase) {
+                runOnUiThread(new Runnable() {
+                                  public void run() {
+                                      switch (observedControlType) {
+
+                                          case None:
+                                              break;
+                                          case Connection:
+                                              showConnection( ((ConnectionControl)controlBase).isConnected() ) ;
+                                              break;
+                                          case Power:
+                                              updatePowerButton((PowerControl)controlBase);
+                                              break;
+                                          case Audio:
+                                              setTextViewText(R.id.volume, ((AudioControl)controlBase).getMasterVolumeString());
+                                              break;
+                                          case Input:
+                                              updateSIEntries((InputControl)controlBase);
+                                              break;
+                                          case Track:
+                                              updateTrackViews();
+                                              break;
+                                          case Navigator:
+                                              updateNavigation( (CeolNavigatorControl)controlBase);
+                                              break;
+                                          case Playlist:
+                                              playlistRecyclerAdapter.notifyDataSetChanged();
+                                              break;
+                                      }
+                                  }
+                });
+
             }
         }
         );
@@ -223,10 +298,10 @@ public class MainActivity extends AppCompatActivity
                 switch (ceolModel.inputControl.getSIStatus()) {
                     case CD:
                     case AnalogIn:
-                    case NotConnected:
-                        tunerPanel.setVisibility(View.INVISIBLE);
-                        netPanel.setVisibility(View.INVISIBLE);
-                        break;
+//                    case Unknown:
+//                        tunerPanel.setVisibility(View.INVISIBLE);
+//                        netPanel.setVisibility(View.INVISIBLE);
+//                        break;
                     case Tuner:
                         tunerPanel.setVisibility(View.VISIBLE);
                         netPanel.setVisibility(View.GONE);
@@ -250,6 +325,8 @@ public class MainActivity extends AppCompatActivity
                         break;
                 }
             }
+
+            updateSeekbar(ceolModel);
         }
     }
 
@@ -290,11 +367,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void updateSeekbar(CeolModel ceolModel) {
-        // TODO
-/*
-        if ( ceolDevice.isOpenHomeOperating() ) {
-            int progressSize = (int)ceolDevice.getOpenHome().getDuration();
-            int progress = (int)ceolDevice.getOpenHome().getSeconds();
+
+        if ( ceolModel.inputControl.getStreamingStatus() == StreamingStatus.OPENHOME ) {
+            int progressSize = (int)ceolModel.inputControl.trackControl.getAudioItem().getDuration();
+            int progress = (int)ceolModel.inputControl.trackControl.getProgress();
 
             SeekBar seekBar = (SeekBar) findViewById(R.id.trackSeekBar);
             if (seekBar != null) {
@@ -302,7 +378,6 @@ public class MainActivity extends AppCompatActivity
                 seekBar.setProgress(progress);
             }
         }
-*/
     }
 
     private void setTextViewText(int tunerName2, String name) {
@@ -313,18 +388,18 @@ public class MainActivity extends AppCompatActivity
     private void updateSIEntries(InputControl inputControl) {
         Button siB = (Button) findViewById(R.id.siB);
         if (siB != null) {
-//            if ( ceolDevice.getDeviceStatus() != DeviceStatusType.On ) {
-//                siB.setText(SIStatusType.NotConnected.name);
-//            } else {
+            if ( getCeolController().isConnected() ) {
                 siB.setText(inputControl.getSIStatus().name);
+            }
+//            if ( ceolDevice.getDeviceStatus() != DeviceStatusType.On ) {
+//                siB.setText(SIStatusType.Unknown.name);
+//            } else {
 //            }
         }
 
         int id = 0;
         switch ( inputControl.getSIStatus()) {
 
-            case NotConnected:
-                break;
             case CD:
                 break;
             case Tuner:
@@ -555,11 +630,11 @@ public class MainActivity extends AppCompatActivity
                 command = new CommandControlStop();
                 break;
             case R.id.volumedownB:
-                showVolumeChangeTemporarily(-1);
+//                showVolumeChangeTemporarily(-1);
                 command = new CommandMasterVolumeDown();
                 break;
             case R.id.volumeupB:
-                showVolumeChangeTemporarily(1);
+//                showVolumeChangeTemporarily(1);
                 command = new CommandMasterVolumeUp();
                 break;
 
@@ -628,7 +703,7 @@ public class MainActivity extends AppCompatActivity
         int macroId = -1;
         Command command = null;
 
-        SIStatusType siStatusType = SIStatusType.NotConnected;
+        SIStatusType siStatusType = SIStatusType.Unknown;
         switch (id) {
             case R.id.nav_tuner:
                 siStatusType = SIStatusType.Tuner;
@@ -667,14 +742,14 @@ public class MainActivity extends AppCompatActivity
                 macroId = 3;
                 break;
             default:
-                siStatusType = SIStatusType.NotConnected;
+                siStatusType = SIStatusType.Unknown;
                 break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-        if (siStatusType != SIStatusType.NotConnected) {
+        if (siStatusType != SIStatusType.Unknown) {
             command = new CommandSetSI(siStatusType);
         } else if ( macroId != -1 ) {
             command = new CommandMacro( macroId);
@@ -757,7 +832,7 @@ public class MainActivity extends AppCompatActivity
         rootView.setVisibility(View.GONE);
         if (siB != null) {
             if (!isConnected) {
-                    siB.setText(SIStatusType.NotConnected.name);
+                siB.setText(getString(R.string.not_connected_short));
             } else {
                 siB.setText(ceolController2.getCeolModel().inputControl.getSIStatus().name);
             }

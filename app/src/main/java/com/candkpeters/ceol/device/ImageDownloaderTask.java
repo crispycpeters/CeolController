@@ -99,7 +99,7 @@ public class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
             e.printStackTrace();
         }
         if ( bitmap != null ) {
-            Log.d(TAG, "downloadBitmap: Size:" + bitmap.getWidth() + "x" + bitmap.getHeight());
+//            Log.d(TAG, "downloadBitmap: Size:" + bitmap.getWidth() + "x" + bitmap.getHeight());
         } else {
             Log.d(TAG, "downloadBitmap: Null !");
         }

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.candkpeters.ceol.device.GathererBase;
 import com.candkpeters.ceol.model.CeolModel;
+import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.view.Prefs;
 
 import org.fourthline.cling.android.AndroidUpnpService;
@@ -28,14 +29,16 @@ import java.util.logging.Logger;
  */
 
 public class ClingGatherer extends GathererBase {
-    private static String TAG = "ClingManager";
+    private static String TAG = "ClingGatherer";
     //    private BrowserUpnpService browserUpnpService;
     private AndroidUpnpService upnpService;
     private BrowseRegistryListener registryListener = new BrowseRegistryListener();
     private final Context context;
     private Prefs prefs;
+    private boolean isClingServiceBound;
 
-    private OpenHomeUpnpDevice openHomeUpnpDevice;
+    final private OpenHomeUpnpDevice openHomeUpnpDevice;
+    private final CeolModel ceolModel;
 
     public OpenHomeUpnpDevice getOpenHomeUpnpDevice() {
         return openHomeUpnpDevice;
@@ -49,10 +52,12 @@ public class ClingGatherer extends GathererBase {
     public ClingGatherer(Context context, CeolModel ceolModel) {
         this.context = context;
         openHomeUpnpDevice = new OpenHomeUpnpDevice(context, ceolModel);
+        this.ceolModel = ceolModel;
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
+            isClingServiceBound = true;
             upnpService = (AndroidUpnpService) service;
 
             // Clear the list
@@ -77,12 +82,13 @@ public class ClingGatherer extends GathererBase {
 
         public void onServiceDisconnected(ComponentName className) {
             upnpService = null;
+            isClingServiceBound = false;
         }
     };
 
     public void bindToCling() {
 
-        unbindFromCling();
+//        unbindFromCling();
 // Fix the logging integration between java.util.logging and Android internal logging
         org.seamless.util.logging.LoggingUtil.resetRootHandler(
                 new FixedAndroidLogHandler()
@@ -105,7 +111,9 @@ public class ClingGatherer extends GathererBase {
             openHomeUpnpDevice.removeDevice();
             upnpService.getRegistry().removeListener(registryListener);
         }
-        context.unbindService(serviceConnection);
+        if ( isClingServiceBound) {
+            context.unbindService(serviceConnection);
+        }
     }
 
     @Override
@@ -165,9 +173,9 @@ public class ClingGatherer extends GathererBase {
         }
 
         public void deviceAdded(final Device device) {
-            Log.d(TAG, "Got device: " + device.toString());
+//            Log.d(TAG, "Got device: " + device.toString());
             String friendlyName = device.getDetails().getFriendlyName();
-            Log.d(TAG, "FriendlyName = " + friendlyName);
+//            Log.d(TAG, "FriendlyName = " + friendlyName);
             String prefOpenhomeNmae = prefs.getOpenhomeName();
 
             if ( friendlyName.compareToIgnoreCase(prefOpenhomeNmae) == 0) {
@@ -197,16 +205,12 @@ public class ClingGatherer extends GathererBase {
             if ( device.equals(openHomeUpnpDevice.getDevice())) {
                 Log.d(TAG, "deviceRemoved: " + device);
                 openHomeUpnpDevice.removeDevice();
+
+                // Need to switch back to ceol
+                ceolModel.inputControl.updateSIStatus(SIStatusType.Unknown);
+                ceolModel.notifyObservers(ceolModel.inputControl);
             }
-/*
-            runOnUiThread(new Runnable() {
-                public void run() {
 
-                    listAdapter.remove(new DeviceDisplay(device));
-
-                }
-            });
-*/
         }
     }
 

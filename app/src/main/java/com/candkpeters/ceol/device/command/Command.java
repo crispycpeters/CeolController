@@ -4,12 +4,15 @@ import android.util.Log;
 
 import com.candkpeters.ceol.device.CeolManager2;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
+import com.candkpeters.ceol.model.ObservedControlType;
 import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.control.CeolNavigatorControl;
 import com.candkpeters.ceol.model.control.ConnectionControl;
+import com.candkpeters.ceol.model.control.ControlBase;
 import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.OnControlChangedListener;
+import com.candkpeters.ceol.model.control.PlaylistControlBase;
 import com.candkpeters.ceol.model.control.PowerControl;
 import com.candkpeters.ceol.model.control.TrackControl;
 
@@ -109,8 +112,9 @@ public abstract class Command {
 
         preExecute();
         onControlChangedListener = new OnControlChangedListener() {
+/*
             @Override
-            public void onCAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
+            public void onAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
                 checkOverallStatus();
             }
 
@@ -136,6 +140,17 @@ public abstract class Command {
 
             @Override
             public void onTrackControlChanged(CeolModel ceolModel, TrackControl trackControl) {
+                checkOverallStatus();
+            }
+
+            @Override
+            public void onPlaylistControlChanged(CeolModel ceolModel, PlaylistControlBase playlistControlBase) {
+
+            }
+*/
+
+            @Override
+            public void onControlChanged(CeolModel ceolModel, ObservedControlType observedControlType, ControlBase controlBase) {
                 checkOverallStatus();
             }
         };

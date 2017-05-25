@@ -23,7 +23,7 @@ public class CommandControlToggle extends CommandControl {
     public void execute() {
 
         switch (ceolModel.inputControl.getSIStatus()) {
-            case NotConnected:
+            case Unknown:
                 break;
             case CD:
                 // TODO

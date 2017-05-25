@@ -87,7 +87,7 @@ public class OpenhomePlaylistControl extends PlaylistControlBase {
                 AudioStreamItem audioItem = findAudioItemById(id);
                 if ( audioItem==null || !audioItem.isPoopulated() ) {
                     // We need the audio information for this ID
-                    Log.d(TAG, "setPlaylist: Need info for: " + id);
+//                    Log.d(TAG, "setPlaylist: Need info for: " + id);
                     missingIdsList.push(id);
                 }
             }

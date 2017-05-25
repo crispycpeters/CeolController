@@ -1,5 +1,7 @@
 package com.candkpeters.ceol.model.control;
 
+import com.candkpeters.ceol.model.ObservedControlType;
+
 /**p
  * Created by crisp on 03/05/2017.
  */
@@ -8,6 +10,10 @@ public class ConnectionControl extends ControlBase {
 
     private static final String TAG = "ConnectionControl";
     protected boolean isConnected = false;
+
+    public ConnectionControl() {
+        super(ObservedControlType.Connection);
+    }
 
     @Override
     public boolean copyFrom(ControlBase newControl) {

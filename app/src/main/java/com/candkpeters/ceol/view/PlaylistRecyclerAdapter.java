@@ -46,7 +46,7 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
     public void onBindViewHolder(AudioItemViewHolder audioItemViewHolder, int i) {
 //        if ( controller.isOpenHomeOperating()) {
         if ( controller != null && controller.isBound() ) {
-            Log.d(TAG, "onBindViewHolder: Requesting item " + i);
+//            Log.d(TAG, "onBindViewHolder: Requesting item " + i);
             PlaylistControlBase playlistControl = getPlaylistControl();
             if ( playlistControl != null) {
                 AudioStreamItem audioItem = playlistControl.getPlaylistAudioItem(i);
@@ -101,7 +101,7 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
 
         protected AudioItemViewHolder(View view) {
             super(view);
-            Log.d(TAG, "AudioItemViewHolder: Created");
+//            Log.d(TAG, "AudioItemViewHolder: Created");
             this.thumbnailView = (ImageView) view.findViewById(R.id.thumbnail);
             this.titleView = (TextView) view.findViewById(R.id.title);
             this.artistView = (TextView) view.findViewById(R.id.artist);
@@ -110,7 +110,7 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
         void setAudioItem(AudioStreamItem audioItem) {
             if ( audioItem != null ) {
                 if ( this.audioItem == null || this.audioItem.getId() != audioItem.getId()) {
-                    Log.d(TAG, "setAudioItem: Set new item: " + audioItem.toString());
+//                    Log.d(TAG, "setAudioItem: Set new item: " + audioItem.toString());
                     this.audioItem = audioItem;
                     titleView.setText(audioItem.getTitle());
                     artistView.setText(audioItem.getArtist());

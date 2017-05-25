@@ -22,7 +22,7 @@ public class CommandSkip extends CommandBaseDirection {
 
         switch (ceolModel.inputControl.getSIStatus()) {
 
-            case NotConnected:
+            case Unknown:
                 break;
             case CD:
                 // TODO

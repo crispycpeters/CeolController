@@ -87,6 +87,7 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     private boolean trackControlChanged = false;
     private boolean audioControlChanged = false;
     private boolean ceolNavigatorControlChanged = false;
+    private boolean isActive = false;
 
     CeolWebSvcGatherer(CeolModel ceolModel) {
         this.ceolModel = ceolModel;
@@ -197,6 +198,7 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     }
 
     private void stopActiveUpdates() {
+        isActive = false;
         if (activeThreadUpdater != null) {
             activeThreadUpdater.stopUpdates();
         }
@@ -204,12 +206,16 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
 
     @Override
     public void start(Prefs prefs) {
+        Log.d(TAG, "start: Starting gatherer");
+        isActive = true;
         recreateService(prefs.getBaseUrl());
         startActiveUpdates();
     }
 
     @Override
     public void stop() {
+        Log.d(TAG, "stop: Stopping gatherer");
+        isActive = false;
         stopActiveUpdates();
     }
 
@@ -224,17 +230,21 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
             public void success(WebSvcHttpStatusLiteResponse webSvcHttpStatusLiteResponse, Response response) {
                 //Log.d(TAG, "success: Got successful response: " + response.getBody());
                 //Log.d(TAG, "success: power: " + webSvcHttpAppCommandResponse.power);
-                logdTime(TAG, "CEOL StatusLite success: ");
-                ceolModel.notifyConnectionStatus(true);
-                updateDeviceStatusLite(webSvcHttpStatusLiteResponse);
-                getStatus2_Async();
+//                logdTime(TAG, "CEOL StatusLite success: ");
+                if ( isActive) {
+                    ceolModel.notifyConnectionStatus(true);
+                    updateDeviceStatusLite(webSvcHttpStatusLiteResponse);
+                    getStatus2_Async();
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
                 logdTime(TAG, "CEOL StatusLite failed: " + error);
                 updateDeviceErrorStatus();
-                initiateDelayedUpdate();
+                if ( isActive) {
+                    initiateDelayedUpdate();
+                }
             }
         });
     }
@@ -246,17 +256,21 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
             public void success(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse, Response response) {
                 //Log.d(TAG, "success: Got successful response: " + response.getBody());
                 //Log.d(TAG, "success: power: " + webSvcHttpAppCommandResponse.power);
-                logdTime(TAG, "CEOL AppCommand success: ");
-                ceolModel.notifyConnectionStatus(true);
-                updateDeviceStatus(webSvcHttpAppCommandResponse);
-                initiateDelayedUpdate();
+//                logdTime(TAG, "CEOL AppCommand success: ");
+                if ( isActive) {
+                    ceolModel.notifyConnectionStatus(true);
+                    updateDeviceStatus(webSvcHttpAppCommandResponse);
+                    initiateDelayedUpdate();
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
                 logdTime(TAG, "CEOL AppCommand error: " + error);
                 updateDeviceErrorStatus();
-                initiateDelayedUpdate();
+                if ( isActive) {
+                    initiateDelayedUpdate();
+                }
             }
         });
     }
@@ -310,8 +324,8 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     private void updateDeviceErrorStatus() {
 //        synchronized (ceolDevice) {
 //            ceolDevice.setDeviceStatus(DeviceStatusType.Connecting);
-//            ceolDevice.updateSIStatus(SIStatusType.NotConnected);
-//            ceolDevice.updateSIStatus(SIStatusType.NotConnected);
+//            ceolDevice.updateSIStatus(SIStatusType.Unknown);
+//            ceolDevice.updateSIStatus(SIStatusType.Unknown);
 //        }
 //        ceolDevice.notifyObservers();
 //        onCeolStatusChangedListener.onCeolStatusChanged(ceolDevice);
@@ -321,7 +335,8 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     private void updateDeviceStatusLite(WebSvcHttpStatusLiteResponse webSvcHttpStatusLiteResponse) {
         checkPowerControlChanged(ceolModel.powerControl.updateDeviceStatus(webSvcHttpStatusLiteResponse.power));
         checkInputControlChanged(ceolModel.inputControl.updateSIStatus(webSvcHttpStatusLiteResponse.inputFunc));
-//        ceolDevice.setIsMuted(webSvcHttpStatusLiteResponse.mute.equals("on"));
+//        ceolDevi  ce.setIsMuted(webSvcHttpStatusLiteResponse.mute.equals("on"));
+        notifyObservers();
     }
 
     private void setPlayStatus(String playStatusString) {
@@ -345,9 +360,11 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     private void updateDeviceStatus(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse) {
 
         String oldTrack = ceolModel.inputControl.trackControl.getAudioItem().getTitle();
+/*
         if (oldTrack == null || oldTrack.length()==0) {
             Log.d(TAG, "updateDeviceStatus: oldtrack is null or blank");
         }
+*/
 
         try {
 
@@ -411,7 +428,7 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
             } else {
                 switch (ceolModel.inputControl.getSIStatus()) {
 
-                    case NotConnected:
+                    case Unknown:
                         break;
                     case CD:
                         // TODO

@@ -63,11 +63,13 @@ public class CeolManager_DELETE {
         } else {
             ceolDeviceMonitor.recreateService(prefs.getBaseUrl());
         }
+/*
         if ( ceolDeviceWebSvcCommand == null ) {
             ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(prefs.getBaseUrl());
         } else {
             ceolDeviceWebSvcCommand.recreateService(prefs.getBaseUrl());
         }
+*/
         macroInflater = new MacroInflater(prefs.getMacroNames(), prefs.getMacroValues());
     }
 
@@ -104,7 +106,7 @@ public class CeolManager_DELETE {
     public void sendCommand(String commandString) {
         Log.d(TAG, "sendCommand: Sending: " + commandString);
         if ( commandString!= null && !commandString.isEmpty()) {
-            ceolDeviceWebSvcCommand.SendCommand( commandString, null);   //TODO We need use callback
+            ceolDeviceWebSvcCommand.sendCeolCommand( commandString, null);   //TODO We need use callback
             ceolDeviceMonitor.getStatusSoon();
         }
     }
@@ -148,7 +150,7 @@ public class CeolManager_DELETE {
                     final String CMDNEXT = "next";
                     final String SERVICECMD = "com.android.music.musicservicecommand";
                     final String CMDNAME = "command";
-                    final String CMDSTOP = "stop";
+                    final String CMDSTOP = "destroy";
 
 
                     AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);

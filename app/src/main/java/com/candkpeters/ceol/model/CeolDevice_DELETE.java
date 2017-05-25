@@ -19,7 +19,7 @@ public class CeolDevice_DELETE {
     private boolean isNetServer;
 
     // Common
-    private SIStatusType siStatus = SIStatusType.NotConnected;
+    private SIStatusType siStatus = SIStatusType.Unknown;
     private int masterVolume = 0;
     private boolean isMuted = false;
     private PlayStatusType playStatus = PlayStatusType.Unknown;
@@ -197,7 +197,7 @@ public class CeolDevice_DELETE {
 
 /*
         if ( newSiStatus == SIStatusType.audioItem &&
-                (siStatus != SIStatusType.NotConnected && siStatus != SIStatusType.audioItem) ) {
+                (siStatus != SIStatusType.Unknown && siStatus != SIStatusType.audioItem) ) {
             // We are trying to switch to audioItem
             if (netServerOnTimeMsecs == 0) {
                 // Start timer but don't change setting
@@ -222,7 +222,7 @@ public class CeolDevice_DELETE {
             case Tuner:
                 isNetServer = false;
                 break;
-            case NotConnected:
+            case Unknown:
             case DigitalIn1:
             case DigitalIn2:
             case Bluetooth:

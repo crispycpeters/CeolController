@@ -1,6 +1,8 @@
 package com.candkpeters.ceol.model.control;
 
 
+import com.candkpeters.ceol.model.ObservedControlType;
+
 /**
  * Created by crisp on 03/05/2017.
  */
@@ -8,10 +10,15 @@ package com.candkpeters.ceol.model.control;
 public abstract class ControlBase  {
     private static final String TAG = "ControlBase";
 
-    protected ControlBase() {
+    private ObservedControlType observedControlType = ObservedControlType.None;
 
+    protected ControlBase( ObservedControlType observedControlType) {
+        this.observedControlType = observedControlType;
     }
 
+    public ObservedControlType getObservedControlType() {
+        return observedControlType;
+    }
 
     protected abstract boolean copyFrom(ControlBase newControl);
 }

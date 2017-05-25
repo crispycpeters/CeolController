@@ -6,6 +6,9 @@ import android.util.Log;
 
 import com.candkpeters.ceol.device.ImageDownloaderResult;
 import com.candkpeters.ceol.device.ImageDownloaderTask;
+import com.candkpeters.ceol.model.PlayStatusType;
+import com.candkpeters.ceol.model.SIStatusType;
+import com.candkpeters.ceol.model.StreamingStatus;
 import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolModel;
@@ -29,6 +32,7 @@ import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.state.StateVariableValue;
 import org.fourthline.cling.model.types.ServiceId;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
+import org.fourthline.cling.support.avtransport.callback.Play;
 import org.fourthline.cling.support.contentdirectory.DIDLParser;
 import org.fourthline.cling.support.model.DIDLContent;
 import org.fourthline.cling.support.model.DIDLObject;
@@ -69,7 +73,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
     private Service volumeService;
     private ImageDownloaderTask imageDownloaderTask;
     private DIDLContent didlContent;
-
+    private long totalTrackCount;
 
 
     public OpenHomeUpnpDevice(Context context, CeolModel ceolModel) {
@@ -85,6 +89,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
     public void removeDevice() {
         device = null;
         timeService = infoService = playlistService = null;
+        totalTrackCount = 0;
 //        ceolDeviceOpenHome.setDuration(0);
 //        ceolDeviceOpenHome.setTotalTrackCount(0);
 //        ceolDeviceOpenHome.setSeconds(0);
@@ -100,9 +105,9 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
         this.upnpService = upnpService;
         this.device = device;
         DeviceDetails dd = device.getDetails();
-        Log.d(TAG, "Details: " + dd.toString());
+//        Log.d(TAG, "Details: " + dd.toString());
         DeviceIdentity di = device.getIdentity();
-        Log.d(TAG, "Identity: " + di.toString());
+//        Log.d(TAG, "Identity: " + di.toString());
 
         infoService = findService(infoServiceId);
         playlistService = findService(playlistServiceId);
@@ -118,7 +123,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
     private Service findService( ServiceId serviceId) {
         Service service;
         if ((service = device.findService(serviceId)) != null) {
-            Log.d(TAG, "Service discovered: " + service);
+//            Log.d(TAG, "Service discovered: " + service);
         } else {
             Log.e(TAG, "No service for " + serviceId);
         }
@@ -144,13 +149,15 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
                     Log.d(TAG,"Volume Event: " + sub.getCurrentSequence().getValue());
 
                     try {
-                        Map<String, StateVariableValue> values = sub.getCurrentValues();
+                        if ( isOperating()) {
+                            Map<String, StateVariableValue> values = sub.getCurrentValues();
 
-                        UnsignedIntegerFourBytes volumeV = (UnsignedIntegerFourBytes)(values.get("Volume").getValue());
-                        Log.d(TAG, "EVENT: GOT volume=" + volumeV);
-                        audioControl.updateMasterVolumePerCent((long) (volumeV.getValue()));
+                            UnsignedIntegerFourBytes volumeV = (UnsignedIntegerFourBytes) (values.get("Volume").getValue());
+                            Log.d(TAG, "EVENT: GOT volume=" + volumeV);
+                            audioControl.updateMasterVolumePerCent((long) (volumeV.getValue()));
 
-                        ceolModel.notifyObservers(audioControl);
+                            ceolModel.notifyObservers(audioControl);
+                        }
                     } catch ( Exception e ) {
                         Log.e( TAG, "Bad values from event: " + e);
                     }
@@ -206,40 +213,52 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
                 @Override
                 public void eventReceived(GENASubscription sub) {
 
-                    Log.d(TAG,"Info Event: " + sub.getCurrentSequence().getValue());
+                    Log.d(TAG, "Info Event: " + sub.getCurrentSequence().getValue());
 
                     Map<String, StateVariableValue> values = sub.getCurrentValues();
 
-                    UnsignedIntegerFourBytes trackCountV = (UnsignedIntegerFourBytes)(values.get("TrackCount").getValue());
+                    UnsignedIntegerFourBytes trackCountV = (UnsignedIntegerFourBytes) (values.get("TrackCount").getValue());
                     Log.d(TAG, "EVENT: GOT trackCount=" + trackCountV);
-//                    ceolDeviceOpenHome.setTotalTrackCount((long)(trackCountV.getValue()));
+                    long trackCount = (long) (trackCountV.getValue());
+                    setTotalTrackCount(trackCount);
 
-                    StateVariableValue metadata = values.get("Metadata");
-                    Log.d(TAG, "EVENT: GOT metadata="+metadata);
+                    notifyInputControlIsOpenhome();
+
+                    if ( isOperating() ) {
+                        StateVariableValue metadata = values.get("Metadata");
+                        Log.d(TAG, "EVENT: GOT metadata=" + metadata);
 //                    ceolDeviceOpenHome.setMetadata((String)(metadata.getValue()));
-                    AudioStreamItem audioStreamItem = parseDIDL((String)(metadata.getValue()));
+                        AudioStreamItem audioStreamItem = parseDIDL((String) (metadata.getValue()));
 
-                    StateVariableValue uri = values.get("Uri");
-                    Log.d(TAG, "EVENT: GOT uri="+uri);
-                    audioStreamItem.setAudioUrl((String)(uri.getValue()));
+                        StateVariableValue uri = values.get("Uri");
+                        Log.d(TAG, "EVENT: GOT uri=" + uri);
+                        audioStreamItem.setAudioUrl((String) (uri.getValue()));
 
 //                    trackControl.getAudioStreamItem().setAudioUrl((String)(uri.getValue()));
 
 //                    URI oldImageUri = trackControl.getAudioStreamItem().getImageBitmapUri();
 
-                    if ( !audioStreamItem.equals(trackControl.getAudioItem())  ) {
-                        Log.d(TAG, "eventReceived: New stream is different: "+audioStreamItem);
-                        trackControl.updateAudioItem(audioStreamItem);
-                        imageDownloaderTask = new ImageDownloaderTask(imageDownloaderResult);
-                        if ( audioStreamItem.getImageBitmapUri() != null ) {
-                            imageDownloaderTask.execute(audioStreamItem.getImageBitmapUri().toString());
+                        if (!audioStreamItem.equals(trackControl.getAudioItem())) {
+                            Log.d(TAG, "eventReceived: New stream is different: " + audioStreamItem);
+                            trackControl.updateAudioItem(audioStreamItem);
+                            imageDownloaderTask = new ImageDownloaderTask(imageDownloaderResult);
+                            if (audioStreamItem.getImageBitmapUri() != null) {
+                                imageDownloaderTask.execute(audioStreamItem.getImageBitmapUri().toString());
+                            }
                         }
+                        ceolModel.notifyObservers(trackControl);
                     }
-                    ceolModel.notifyObservers(trackControl);
                 }
 
             };
             upnpService.getControlPoint().execute(callback);
+        }
+    }
+
+    private void notifyInputControlIsOpenhome() {
+        if ( isOperating() && ceolModel.inputControl.getStreamingStatus() != StreamingStatus.OPENHOME) {
+            ceolModel.inputControl.updateSIStatus(SIStatusType.OpenHome);
+            ceolModel.notifyObservers(ceolModel.inputControl);
         }
     }
 
@@ -256,13 +275,12 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
 
                     StateVariableValue transportState = values.get("TransportState");
                     Log.d(TAG, "EVENT: GOT transportState=" + transportState);
+                    setTransportState(transportState.getValue().toString());
 //                    ceolDeviceOpenHome.setTransportState((String)(transportState.getValue()));
 
                     StateVariableValue idArrayVal = values.get("IdArray");
 
-
                     setupIds( idArrayVal );
-
                     ceolModel.notifyObservers(ceolModel.inputControl.playlistControl);
 //                    ceolDevice.notifyObservers();
 /*
@@ -282,8 +300,28 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
         }
     }
 
+    public void setTransportState(String value) {
+        // Not sure this is needed
+        PlayStatusType playStatusType = PlayStatusType.Unknown;
+        switch (value) {
+            case "Playing":
+                playStatusType = PlayStatusType.Playing;
+                break;
+            case "Paused":
+                playStatusType = PlayStatusType.Paused;
+                break;
+            case "Buffering":
+                break;
+            case "Stopped":
+                playStatusType = PlayStatusType.Stopped;
+                break;
+        }
+        ceolModel.inputControl.trackControl.updatePlayStatus(playStatusType);
+    }
+
     private void setupIds(StateVariableValue idArrayVal) {
         OpenhomePlaylistControl openhomePlaylistControl = (OpenhomePlaylistControl)ceolModel.inputControl.playlistControl;
+//        OpenhomePlaylistControl openhomePlaylistControl = new OpenhomePlaylistControl();
 
         byte byteBuf[] = (byte [])idArrayVal.getValue();
         int[] array = null;
@@ -299,7 +337,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
 
     private void requestMissingAudioData(List<Integer> missingIds) {
         if ( missingIds.size() > 0 ) {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
 
             for (int id : missingIds) {
                 buf.append( id);
@@ -342,6 +380,8 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
                                                       Log.d(TAG,"Successfully called action: Readlist");
 
                                                       parseReadList(invocation);
+                                                      ceolModel.notifyObservers(ceolModel.inputControl.playlistControl);
+
                                                   }
 
                                                   @Override
@@ -393,7 +433,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
 
                 audioItem.setId(id);
                 audioItem.setAudioUrl(entry.uri);
-                Log.d(TAG, "addInfoToAudioList: Added audio item: " + audioItem.toString());
+//                Log.d(TAG, "addInfoToAudioList: Added audio item: " + audioItem.toString());
                 openhomePlaylistControl.putItem(id, audioItem);
             }
         }
@@ -407,7 +447,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
 
             try {
                 audioItem.clear();
-                Log.d(TAG, "parseDIDL: Parsing: "+ metadata);
+//                Log.d(TAG, "parseDIDL: Parsing: "+ metadata);
                 didlContent = didlParser.parse(metadata);
                 if ( didlContent.getItems().size() > 1 ) {
                     throw new Exception("Should only have one item");
@@ -435,7 +475,9 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
         //String source = "00:10:17.x";
         try {
             String[] tokens = durationString.split(":");
-            int secondsToSeconds = Integer.parseInt(tokens[2]) ;
+
+            float seconds = Float.parseFloat(tokens[2]);
+            int secondsToSeconds = Math.round(seconds);
             int minutesToSeconds = Integer.parseInt(tokens[1]) * 60;
             int hoursToSeconds = Integer.parseInt(tokens[0]) * 3600;
             return secondsToSeconds + minutesToSeconds + hoursToSeconds;
@@ -445,12 +487,29 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
         }
     }
 
+    public boolean isOperating( ) {
+        if (totalTrackCount > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 
     @Override
     public void imageDownloaded(Bitmap bitmap) {
         Log.d(TAG, "imageDownloaded: Downloaded!");
         trackControl.getAudioItem().setImageBitmap(bitmap);
         ceolModel.notifyObservers(trackControl);
+    }
+
+    public void setTotalTrackCount(long totalTrackCount) {
+        this.totalTrackCount = totalTrackCount;
+    }
+
+    public long getTotalTrackCount() {
+        return totalTrackCount;
     }
 
     public abstract class OpenHomeSubscriptionCallback extends SubscriptionCallback {
@@ -461,7 +520,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
 
         @Override
         public void established(GENASubscription sub) {
-            Log.d(TAG, "Established: " + sub.getSubscriptionId());
+//            Log.d(TAG, "Established: " + sub.getSubscriptionId());
         }
 
         @Override

@@ -1,5 +1,6 @@
 package com.candkpeters.ceol.model.control;
 
+import com.candkpeters.ceol.model.ObservedControlType;
 import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.model.StreamingStatus;
 
@@ -11,11 +12,15 @@ public class InputControl extends ControlBase {
 
     private static final String TAG = "AudioControl";
 
-    protected SIStatusType siStatus = SIStatusType.NotConnected;
+    protected SIStatusType siStatus = SIStatusType.Unknown;
     protected StreamingStatus streamingStatus = StreamingStatus.CEOL;
     final public TrackControl trackControl = new TrackControl();
-    public PlaylistControlBase playlistControl;
+    public PlaylistControlBase playlistControl = new OpenhomePlaylistControl();
     public CeolNavigatorControl navigatorControl;   // TODO - Will need to be refactored for other navigators
+
+    public InputControl() {
+        super(ObservedControlType.Input);
+    }
 
     public SIStatusType getSIStatus() {
         return siStatus;
@@ -28,6 +33,7 @@ public class InputControl extends ControlBase {
     public boolean updatePlaylistControl(PlaylistControlBase playlistControl) {
         boolean hasChanged = false;
 
+/*
         if (this.playlistControl != null) {
             if (playlistControl == null) {
                 hasChanged = true;
@@ -43,6 +49,11 @@ public class InputControl extends ControlBase {
                 hasChanged = true;
             }
         }
+*/
+        // TODO For the moment, assume it has changed and there is only one instance
+
+//        this.playlistControl = playlistControl;
+        hasChanged = true;
         return hasChanged;
     }
 
@@ -74,9 +85,9 @@ public class InputControl extends ControlBase {
                 if ( navigatorControl == null || !(navigatorControl instanceof CeolNavigatorControl)) {
                     updateNavigatorControl(new CeolNavigatorControl());
                 }
-                if ( playlistControl != null ) {
-                    updateNavigatorControl(null);
-                }
+//                if ( playlistControl != null ) {
+//                    updateNavigatorControl(null);
+//                }
                 break;
             case DLNA:
                 break;
@@ -84,17 +95,17 @@ public class InputControl extends ControlBase {
                 if ( navigatorControl != null ) {
                     updatePlaylistControl(null);
                 }
-                if ( playlistControl == null || !(playlistControl instanceof OpenhomePlaylistControl)) {
-                    updatePlaylistControl(new OpenhomePlaylistControl());
-                }
+//                if ( playlistControl == null ) {
+//                    updatePlaylistControl(openhomePlaylistControl);
+//                }
                 break;
             case SPOTIFY:
                 if ( navigatorControl != null ) {
                     updatePlaylistControl(null);
                 }
-                if ( playlistControl != null ) {
-                    updateNavigatorControl(null);
-                }
+//                if ( playlistControl != null ) {
+//                    updateNavigatorControl(null);
+//                }
                 // TODO Needs refactoring when we have other types of navigation and playlist
                 break;
             case NONE:
@@ -186,7 +197,7 @@ public class InputControl extends ControlBase {
                 case AnalogIn:
                 case CD:
                 case Tuner:
-                case NotConnected:
+                case Unknown:
                 case DigitalIn1:
                 case DigitalIn2:
                     streamingStatus = StreamingStatus.NONE;

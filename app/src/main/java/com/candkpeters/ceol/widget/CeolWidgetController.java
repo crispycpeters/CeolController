@@ -10,12 +10,15 @@ import com.candkpeters.ceol.device.CeolManager2;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.device.command.CommandBaseApp;
+import com.candkpeters.ceol.model.ObservedControlType;
 import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.control.CeolNavigatorControl;
 import com.candkpeters.ceol.model.control.ConnectionControl;
+import com.candkpeters.ceol.model.control.ControlBase;
 import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.OnControlChangedListener;
+import com.candkpeters.ceol.model.control.PlaylistControlBase;
 import com.candkpeters.ceol.model.control.PowerControl;
 import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.ceol.view.CeolIntentFactory;
@@ -37,8 +40,9 @@ public class CeolWidgetController {
     CeolModel ceolModel = null;
 
     OnControlChangedListener onControlChangedListener = new OnControlChangedListener() {
+/*
         @Override
-        public void onCAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
+        public void onAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
             updateWidgets(null);
         }
 
@@ -65,6 +69,31 @@ public class CeolWidgetController {
         public void onTrackControlChanged(CeolModel ceolModel, TrackControl trackControl) {
             updateWidgets(null);
         }
+
+        @Override
+        public void onPlaylistControlChanged(CeolModel ceolModel, PlaylistControlBase playlistControlBase) {
+
+        }
+*/
+
+        @Override
+        public void onControlChanged(CeolModel ceolModel, ObservedControlType observedControlType, ControlBase controlBase) {
+            switch ( observedControlType) {
+
+                case Connection:
+                case Power:
+                case Audio:
+                case Input:
+                case Track:
+                    updateWidgets(null);
+                    break;
+                case None:
+                case Navigator:
+                case Playlist:
+                    break;
+            }
+        }
+
     };
 
     private String updateString = "";
@@ -79,8 +108,7 @@ public class CeolWidgetController {
 
         this.ceolManager = ceolManager;
         ceolModel = ceolManager.ceolModel;
-        ceolManager.start();
-        startService();
+        startUpdates();
     }
 
     private void startWidgetUpdates() {
@@ -154,7 +182,7 @@ public class CeolWidgetController {
     private void commandDone(int widgetId, AppWidgetManager appWidgetMan) {
         commandDepth --;
         if ( !isWaiting()) {
-            Log.d(TAG, "commandStarting: Send stop waiting");
+            Log.d(TAG, "commandStarting: Send destroy waiting");
             for (CeolWidgetHelper ceolWidgetHelper : ceolWidgetHelpers) {
                 ceolWidgetHelper.setWaiting(false);
                 ceolWidgetHelper.updateWidgets(ceolManager, context, "Waiting");
@@ -181,12 +209,12 @@ public class CeolWidgetController {
     }
 
     public void executeBootCompleted() {
-        startService();
+        startUpdates();
     }
 
-    public void startService() {
+    public void startUpdates() {
         if (widgetsExist()) {
-            Log.d(TAG, "startService: Need to start service as widgets exist");
+            Log.d(TAG, "startUpdates: Need to start service as widgets exist");
             startWidgetUpdates();
         }
 /*

@@ -21,7 +21,7 @@ public class CommandFast extends CommandBaseDirection {
         String commandString = null;
         switch (ceolModel.inputControl.getSIStatus()) {
 
-            case NotConnected:
+            case Unknown:
                 break;
             case CD:
                 // TODO

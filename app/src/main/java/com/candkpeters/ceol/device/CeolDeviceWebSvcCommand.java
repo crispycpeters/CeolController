@@ -1,6 +1,10 @@
 package com.candkpeters.ceol.device;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.candkpeters.ceol.model.CeolModel;
+import com.candkpeters.ceol.view.Prefs;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -12,6 +16,7 @@ import retrofit.client.Response;
 public class CeolDeviceWebSvcCommand {
 
     private static final String TAG = "CeolDeviceWebSvcCommand";
+    private final CeolModel ceolModel;
 
     private WebSvcApiService webSvcApiService = null;
 
@@ -22,20 +27,20 @@ public class CeolDeviceWebSvcCommand {
         void failure();
     }
 
-    public CeolDeviceWebSvcCommand(String baseUrl) {
-        recreateService(baseUrl);
+    public CeolDeviceWebSvcCommand(CeolModel ceolModel) {
+        this.ceolModel = ceolModel;
     }
 
-    public void recreateService(String baseUrl) {
+    private void recreateService(String baseUrl) {
         webSvcApiService = WebSvcGenerator.createService(baseUrl);
     }
 
-    public void SendCommand( String value, final OnCeolCommandListener onCeolCommandListener) {
+    public void sendCeolCommand(String value, final OnCeolCommandListener onCeolCommandListener) {
 
         webSvcApiService.appDirectCommandAsync("?" + value, new Callback<Void>() {
             @Override
             public void success(Void responseStr, Response response) {
-                Log.d(TAG, "success: SendCommand worked successful response: " + response.getBody());
+                Log.d(TAG, "success: sendCeolCommand worked successful response: " + response.getBody());
                 if (onCeolCommandListener != null) onCeolCommandListener.success();
             }
 
@@ -45,12 +50,18 @@ public class CeolDeviceWebSvcCommand {
                 if (response != null && response.getStatus() == 200) {
                     // It worked anyway - probably due to trying to parse zero-length response
                     if (onCeolCommandListener != null) onCeolCommandListener.success();
-                    return;
                 } else {
                     Log.e(TAG, "failure: error: " + error);
                     if (onCeolCommandListener!=null) onCeolCommandListener.failure();
                 }
             }
         });
+    }
+
+    public void start( Prefs prefs) {
+        recreateService(prefs.getBaseUrl());
+    }
+
+    public void stop() {
     }
 }

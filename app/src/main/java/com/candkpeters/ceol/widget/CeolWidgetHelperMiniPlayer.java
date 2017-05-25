@@ -63,7 +63,12 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
 
         views.setTextViewText(R.id.playStatus, ceolModel.inputControl.trackControl.getPlayStatus().toString());
         views.setTextViewText(R.id.volume, ceolModel.audioControl.getMasterVolumeString());
-        views.setTextViewText(R.id.siB, ceolModel.inputControl.getSIStatus().name);
+
+        if ( ceolModel.connectionControl.isConnected() ) {
+            views.setTextViewText(R.id.siB, ceolModel.inputControl.getSIStatus().name);
+        } else {
+            views.setTextViewText(R.id.siB, context.getString(R.string.not_connected_short));
+        }
 
         switch ( ceolModel.inputControl.getSIStatus()) {
 
@@ -77,11 +82,11 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
                 views.setViewVisibility(R.id.tunerPanel, View.VISIBLE);
                 views.setViewVisibility(R.id.dimV, View.INVISIBLE);
                 break;
-            case NotConnected:
-                views.setViewVisibility(R.id.netPanel, View.INVISIBLE);
-                views.setViewVisibility(R.id.tunerPanel, View.INVISIBLE);
-                views.setViewVisibility(R.id.dimV, View.VISIBLE);
-                break;
+//            case Unknown:
+//                views.setViewVisibility(R.id.netPanel, View.INVISIBLE);
+//                views.setViewVisibility(R.id.tunerPanel, View.INVISIBLE);
+//                views.setViewVisibility(R.id.dimV, View.VISIBLE);
+//                break;
             case CD:
             case AnalogIn:
                 views.setViewVisibility(R.id.netPanel, View.INVISIBLE);

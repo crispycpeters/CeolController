@@ -7,6 +7,7 @@ import com.candkpeters.ceol.model.control.CeolNavigatorControl;
 import com.candkpeters.ceol.model.control.ConnectionControl;
 import com.candkpeters.ceol.model.control.ControlBase;
 import com.candkpeters.ceol.model.control.InputControl;
+import com.candkpeters.ceol.model.control.PlaylistControlBase;
 import com.candkpeters.ceol.model.control.PowerControl;
 import com.candkpeters.ceol.model.control.TrackControl;
 
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class CeolModel implements ControlObserved {
     final private static String TAG = "CeolModel";
+
 //    final private static int NUM_CONTROLS = 6;
 //    final private static int CONNECTION_CONTROL = 0;
 //    final private static int POWER_CONTROL = 1;
@@ -32,9 +34,7 @@ public class CeolModel implements ControlObserved {
     final public ConnectionControl connectionControl = new ConnectionControl();
     final public PowerControl powerControl = new PowerControl();
     final public AudioControl audioControl = new AudioControl();
-
     final public InputControl inputControl = new InputControl();
-
 
     // ControlObserved
     private final Object MUTEX = new Object();
@@ -43,7 +43,6 @@ public class CeolModel implements ControlObserved {
     public CeolModel() {
         this.observers=new ArrayList<OnControlChangedListener>();
     }
-
 
     public void notifyConnectionStatus(boolean connection) {
         boolean hasChangedConnection = false;
@@ -61,7 +60,6 @@ public class CeolModel implements ControlObserved {
                 notifyObservers(connectionControl);
             }
         }
-
     }
 
     // ControlObserved
@@ -105,6 +103,7 @@ public class CeolModel implements ControlObserved {
     }
 
     private void notifyObserver(OnControlChangedListener obj, ControlBase control) {
+/*
         if ( control instanceof ConnectionControl) {
             obj.onConnectionControlChanged(this, (ConnectionControl)control );
         } else if ( control instanceof InputControl) {
@@ -112,11 +111,17 @@ public class CeolModel implements ControlObserved {
         } else if ( control instanceof TrackControl) {
             obj.onTrackControlChanged(this, (TrackControl) control );
         } else if ( control instanceof AudioControl) {
-            obj.onCAudioControlChanged(this, (AudioControl) control );
+            obj.onAudioControlChanged(this, (AudioControl) control );
         } else if ( control instanceof PowerControl) {
             obj.onPowerControlChanged(this, (PowerControl) control );
         } else if ( control instanceof CeolNavigatorControl) {
             obj.onCeolNavigatorControlChanged(this, (CeolNavigatorControl) control );
+        } else  if (control instanceof PlaylistControlBase) {
+                obj.onPlaylistControlChanged(this, (PlaylistControlBase)control);
+        }
+*/
+        if ( control != null) {
+            obj.onControlChanged(this, control.getObservedControlType(), control);
         }
     }
 
@@ -127,6 +132,7 @@ public class CeolModel implements ControlObserved {
         notifyObservers(inputControl);
         notifyObservers(inputControl.trackControl);
         notifyObservers(inputControl.navigatorControl);
+        notifyObservers(inputControl.playlistControl);
     }
 
     public void refreshObserver( OnControlChangedListener obj) {
@@ -136,7 +142,16 @@ public class CeolModel implements ControlObserved {
         notifyObserver(obj, inputControl);
         notifyObserver(obj, inputControl.trackControl);
         notifyObserver(obj, inputControl.navigatorControl);
+        notifyObserver(obj, inputControl.playlistControl);
     }
 
 
+    public int registerCount() {
+        List<OnControlChangedListener> observersLocal = null;
+        //synchronization is used to make sure any observer registered after message is received is not notified
+        synchronized (MUTEX) {
+            observersLocal = new ArrayList<>(this.observers);
+        }
+        return observersLocal.size();
+    }
 }

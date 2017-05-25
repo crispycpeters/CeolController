@@ -281,8 +281,8 @@ public class CeolDeviceWebSvcMonitor_DELETE implements Runnable, ImageDownloader
     private void updateDeviceErrorStatus() {
         synchronized (ceolDevice) {
             ceolDevice.setDeviceStatus(DeviceStatusType.Connecting);
-            ceolDevice.setSIStatus(SIStatusType.NotConnected);
-//            ceolDevice.updateSIStatus(SIStatusType.NotConnected);
+            ceolDevice.setSIStatus(SIStatusType.Unknown);
+//            ceolDevice.updateSIStatus(SIStatusType.Unknown);
         }
         ceolDevice.notifyObservers();
 //        onCeolStatusChangedListener.onCeolStatusChanged(ceolDevice);
@@ -354,7 +354,7 @@ public class CeolDeviceWebSvcMonitor_DELETE implements Runnable, ImageDownloader
                 } else {
                     switch (ceolDevice.getSIStatus()) {
 
-                        case NotConnected:
+                        case Unknown:
                             break;
                         case CD:
                             // TODO

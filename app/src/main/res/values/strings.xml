@@ -88,6 +88,7 @@
     <string name="power_toggle">Power Toggle</string>
     <string name="volume_down">Volume down</string>
     <string name="not_connected">CEOL Controller\nNot Connected</string>
+    <string name="not_connected_short">Not Connected</string>
     <string name="ceol_controller">CEOL Controller</string>
     <string name="si_analog">Analog In</string>
     <string name="si_cd">CD</string>

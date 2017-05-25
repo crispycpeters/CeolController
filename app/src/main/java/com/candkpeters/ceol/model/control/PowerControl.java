@@ -1,6 +1,7 @@
 package com.candkpeters.ceol.model.control;
 
 import com.candkpeters.ceol.model.DeviceStatusType;
+import com.candkpeters.ceol.model.ObservedControlType;
 
 import static com.candkpeters.ceol.model.DeviceStatusType.Standby;
 import static com.candkpeters.ceol.model.DeviceStatusType.Starting;
@@ -19,6 +20,7 @@ public class PowerControl extends ControlBase {
     protected long deviceOnTimeMsecs = -1;
 
     public PowerControl() {
+        super(ObservedControlType.Power);
     }
 
     public DeviceStatusType getDeviceStatus() {

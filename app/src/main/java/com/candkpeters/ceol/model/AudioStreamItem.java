@@ -47,6 +47,8 @@ public class AudioStreamItem {
         return title;
     }
     public boolean setTitle(String title) {
+        title = title == null ? "" : title;
+
         if ( !this.title.equals(title)) {
             this.title = title;
             return true;
@@ -195,6 +197,15 @@ public class AudioStreamItem {
         isAuto= audioItem.isAuto;
     }
 
+    private boolean safeEquals( String s1, String s2 ) {
+        if ( s1 == null ) {
+            return (s2 == null);
+        } else {
+            if ( s2 == null ) return false;
+            else return s1.equals(s2);
+        }
+    }
+
     @Override
     public boolean equals( Object object) {
 
@@ -202,11 +213,12 @@ public class AudioStreamItem {
 
         if (object instanceof AudioStreamItem) {
             AudioStreamItem ai = (AudioStreamItem)object;
-            if (((audioUrl == null && ai.audioUrl == null) || (audioUrl.equals(ai.audioUrl))) &&
+            if (    safeEquals(this.audioUrl, ai.audioUrl ) &&
                     title.equals(ai.title) &&
                     artist.equals(ai.artist) &&
                     album.equals(ai.album) &&
-                    bitrate.equals(ai.bitrate) &&
+// bitrate could vary
+//                    bitrate.equals(ai.bitrate) &&
                     format.equals(ai.format) &&
                     id == ai.id &&
                     duration == ai.duration  &&

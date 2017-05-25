@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.candkpeters.ceol.cling.ClingGatherer;
 import com.candkpeters.ceol.device.command.Command;
+import com.candkpeters.ceol.model.ObservedControlType;
 import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.control.CeolNavigatorControl;
@@ -15,6 +16,7 @@ import com.candkpeters.ceol.model.control.ConnectionControl;
 import com.candkpeters.ceol.model.control.ControlBase;
 import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.OnControlChangedListener;
+import com.candkpeters.ceol.model.control.PlaylistControlBase;
 import com.candkpeters.ceol.model.control.PowerControl;
 import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.ceol.view.Prefs;
@@ -50,6 +52,7 @@ public class CeolManager2 {
 //        clingManager = new ClingManager(context, ceolDevice);
         ceolWebSvcGatherer = new CeolWebSvcGatherer(ceolModel);
         clingGatherer = new ClingGatherer(context, ceolModel);
+        ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(ceolModel);
     }
 
     /*
@@ -61,26 +64,24 @@ public class CeolManager2 {
             onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                    updateConfig(context);
+                    restart(context);
                 }
             };
             prefs.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
         }
-        updateConfig(context);
-//        clingManager.bindToCling();
+        restart(context);
     }
 
-    private void updateConfig(Context context) {
+    private void restart(Context context) {
         Prefs prefs = new Prefs(context);
         inputUpdated(ceolModel.inputControl);
         ceolWebSvcGatherer.stop();
         ceolWebSvcGatherer.start(prefs);
+        clingGatherer.stop();
+        clingGatherer.start(prefs);
+        ceolDeviceWebSvcCommand.stop();
+        ceolDeviceWebSvcCommand.start(prefs);
 
-        if ( ceolDeviceWebSvcCommand == null ) {
-            ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(prefs.getBaseUrl());
-        } else {
-            ceolDeviceWebSvcCommand.recreateService(prefs.getBaseUrl());
-        }
         macroInflater = new MacroInflater(prefs.getMacroNames(), prefs.getMacroValues());
     }
 
@@ -96,11 +97,19 @@ public class CeolManager2 {
 
     public void register(OnControlChangedListener obj) {
         ceolModel.register(obj);
+        // Ensure all gatherers are running
+        inputUpdated(ceolModel.inputControl);
         // TODO: Potentially unpause ClingManager events if paused
     }
 
     public void unregister(OnControlChangedListener obj) {
         ceolModel.unregister(obj);
+/*
+        int numRegistered = ceolModel.registerCount();
+        if ( numRegistered <= 1) {
+            pause();
+        }
+*/
         // TODO: Potentially pause ClingManager events if nothing is registered to listen
     }
 
@@ -111,7 +120,7 @@ public class CeolManager2 {
     public void sendCommand(String commandString) {
         Log.d(TAG, "sendCommand: Sending: " + commandString);
         if ( commandString!= null && !commandString.isEmpty()) {
-            ceolDeviceWebSvcCommand.SendCommand( commandString, null);   //TODO We need use callback
+            ceolDeviceWebSvcCommand.sendCeolCommand( commandString, null);   //TODO We need use callback
             ceolWebSvcGatherer.getStatusSoon();
         }
     }
@@ -133,8 +142,9 @@ public class CeolManager2 {
 
     public void start() {
         ceolModel.register(new OnControlChangedListener() {
+/*
             @Override
-            public void onCAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
+            public void onAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
 
             }
 
@@ -163,6 +173,37 @@ public class CeolManager2 {
 
             }
 
+            @Override
+            public void onPlaylistControlChanged(CeolModel ceolModel, PlaylistControlBase playlistControlBase) {
+
+            }
+*/
+
+            @Override
+            public void onControlChanged(CeolModel ceolModel, ObservedControlType observedControlType, ControlBase controlBase) {
+                switch (observedControlType) {
+
+                    case None:
+                        break;
+                    case Connection:
+                        connectionUpdated( (ConnectionControl)controlBase);
+                        break;
+                    case Power:
+                        break;
+                    case Audio:
+                        break;
+                    case Input:
+                        inputUpdated( (InputControl)controlBase);
+                        break;
+                    case Track:
+                        break;
+                    case Navigator:
+                        break;
+                    case Playlist:
+                        break;
+                }
+            }
+
         });
     }
 
@@ -172,21 +213,26 @@ public class CeolManager2 {
     }
 
     private void inputUpdated(InputControl inputControl) {
+        Prefs prefs = new Prefs(context);
+
         switch (inputControl.getStreamingStatus()) {
 
             case CEOL:
             case SPOTIFY:
-                Prefs prefs = new Prefs(context);
+            case NONE:
                 ceolWebSvcGatherer.start(prefs);
                 break;
             case DLNA:
             case OPENHOME:
-                break;
-            case NONE:
+                ceolWebSvcGatherer.stop();
                 break;
         }
         //TODO
 
+    }
+
+    private void pause() {
+        ceolWebSvcGatherer.stop();
     }
 
     public void sendOpenHomeCommand(String commandString) {
@@ -208,7 +254,7 @@ public class CeolManager2 {
                     final String CMDNEXT = "next";
                     final String SERVICECMD = "com.android.music.musicservicecommand";
                     final String CMDNAME = "command";
-                    final String CMDSTOP = "stop";
+                    final String CMDSTOP = "destroy";
 
                     AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
@@ -228,7 +274,7 @@ public class CeolManager2 {
                     i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
                     i.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
                     context.sendOrderedBroadcast(i, null);
-*/
+                    */
                 } catch (Exception exc) {
                     Log.d(TAG, "sendSpotifyCommand: Got exception:" + exc.toString());
                 }
@@ -238,7 +284,19 @@ public class CeolManager2 {
         }
     }
 
-    public void stop() {
+    public void destroy() {
+        ceolWebSvcGatherer.stop();
         clingGatherer.stop();
+    }
+
+    public void pauseGatherers() {
+        ceolWebSvcGatherer.stop();
+        // TODO - Confirm whether we need to pause cling
+    }
+
+    public void resumeGatherers() {
+        Prefs prefs = new Prefs(context);
+        ceolWebSvcGatherer.start(prefs);
+        // TODO - Confirm whether we need to resume cling
     }
 }
