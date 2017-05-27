@@ -9,6 +9,7 @@ import com.candkpeters.ceol.model.control.ControlBase;
 import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.control.PlaylistControlBase;
 import com.candkpeters.ceol.model.control.PowerControl;
+import com.candkpeters.ceol.model.control.ProgressControl;
 import com.candkpeters.ceol.model.control.TrackControl;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class CeolModel implements ControlObserved {
     final public PowerControl powerControl = new PowerControl();
     final public AudioControl audioControl = new AudioControl();
     final public InputControl inputControl = new InputControl();
+    final public ProgressControl progressControl = new ProgressControl();
 
     // ControlObserved
     private final Object MUTEX = new Object();
@@ -103,23 +105,7 @@ public class CeolModel implements ControlObserved {
     }
 
     private void notifyObserver(OnControlChangedListener obj, ControlBase control) {
-/*
-        if ( control instanceof ConnectionControl) {
-            obj.onConnectionControlChanged(this, (ConnectionControl)control );
-        } else if ( control instanceof InputControl) {
-            obj.onInputControlChanged(this, (InputControl)control );
-        } else if ( control instanceof TrackControl) {
-            obj.onTrackControlChanged(this, (TrackControl) control );
-        } else if ( control instanceof AudioControl) {
-            obj.onAudioControlChanged(this, (AudioControl) control );
-        } else if ( control instanceof PowerControl) {
-            obj.onPowerControlChanged(this, (PowerControl) control );
-        } else if ( control instanceof CeolNavigatorControl) {
-            obj.onCeolNavigatorControlChanged(this, (CeolNavigatorControl) control );
-        } else  if (control instanceof PlaylistControlBase) {
-                obj.onPlaylistControlChanged(this, (PlaylistControlBase)control);
-        }
-*/
+
         if ( control != null) {
             obj.onControlChanged(this, control.getObservedControlType(), control);
         }
@@ -133,6 +119,7 @@ public class CeolModel implements ControlObserved {
         notifyObservers(inputControl.trackControl);
         notifyObservers(inputControl.navigatorControl);
         notifyObservers(inputControl.playlistControl);
+        notifyObservers(progressControl);
     }
 
     public void refreshObserver( OnControlChangedListener obj) {
@@ -143,6 +130,7 @@ public class CeolModel implements ControlObserved {
         notifyObserver(obj, inputControl.trackControl);
         notifyObserver(obj, inputControl.navigatorControl);
         notifyObserver(obj, inputControl.playlistControl);
+        notifyObserver(obj, progressControl);
     }
 
 

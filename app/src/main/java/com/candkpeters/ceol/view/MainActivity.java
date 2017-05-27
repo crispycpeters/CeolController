@@ -73,6 +73,7 @@ import com.candkpeters.ceol.model.OnControlChangedListener;
 import com.candkpeters.ceol.model.control.PlaylistControlBase;
 import com.candkpeters.ceol.model.control.PowerControl;
 import com.candkpeters.ceol.model.SIStatusType;
+import com.candkpeters.ceol.model.control.ProgressControl;
 import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.chris.ceol.R;
@@ -161,75 +162,6 @@ public class MainActivity extends AppCompatActivity
 
 
         ceolController2 = new CeolController2(this, new OnControlChangedListener() {
-/*
-            @Override
-            public void onAudioControlChanged(CeolModel ceolModel, final AudioControl audioControl) {
-                Log.d(TAG, "onAudioControlChanged: ");
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        setTextViewText(R.id.volume, audioControl.getMasterVolumeString());
-                    }
-                });
-            }
-
-            @Override
-            public void onConnectionControlChanged(CeolModel ceolModel, final ConnectionControl connectionControl) {
-                Log.d(TAG, "onConnectionControlChanged: " + connectionControl.isConnected());
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        showConnection( connectionControl.isConnected() ) ;
-                    }
-                });
-            }
-
-            @Override
-            public void onCeolNavigatorControlChanged(CeolModel ceolModel,final CeolNavigatorControl ceolNavigatorControl) {
-                Log.d(TAG, "onCeolNavigatorControlChanged: ");
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        updateNavigation( ceolNavigatorControl);
-                    }
-                });
-            }
-
-            @Override
-            public void onInputControlChanged(CeolModel ceolModel,final InputControl inputControl) {
-                Log.d(TAG, "onInputControlChanged: ");
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        updateSIEntries(inputControl);
-                    }
-                });
-            }
-
-            @Override
-            public void onPowerControlChanged(CeolModel ceolModel,final PowerControl powerControl) {
-                Log.d(TAG, "onPowerControlChanged: ");
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        updatePowerButton(powerControl);
-                    }
-                });
-            }
-
-            @Override
-            public void onTrackControlChanged(CeolModel ceolModel, final TrackControl trackControl) {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        updateTrackViews();
-                    }
-                });
-            }
-
-            @Override
-            public void onPlaylistControlChanged(CeolModel ceolModel, PlaylistControlBase playlistControlBase) {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        playlistRecyclerAdapter.notifyDataSetChanged();
-                    }
-                });
-            }
-*/
 
             @Override
             public void onControlChanged(CeolModel ceolModel, final ObservedControlType observedControlType, final ControlBase controlBase) {
@@ -263,6 +195,9 @@ public class MainActivity extends AppCompatActivity
                                           case Playlist:
                                               playlistRecyclerAdapter.notifyDataSetChanged();
                                               break;
+                                          case Progress:
+                                              updateProgress((ProgressControl)controlBase);
+                                              break;
                                       }
                                   }
                 });
@@ -276,6 +211,11 @@ public class MainActivity extends AppCompatActivity
         playlistRecyclerAdapter = new PlaylistRecyclerAdapter(this, getCeolController());
 
         Log.i(TAG, "onCreate: Done");
+    }
+
+    private void updateProgress(ProgressControl progressControl) {
+        CeolModel ceolModel = ceolController2.getCeolModel();
+        updateSeekbar(ceolModel);
     }
 
     protected void updateTrackViews() {
@@ -328,8 +268,6 @@ public class MainActivity extends AppCompatActivity
                         break;
                 }
             }
-
-            updateSeekbar(ceolModel);
 
             scrollPlayListToCurrent();
 
@@ -387,7 +325,7 @@ public class MainActivity extends AppCompatActivity
 
         if ( ceolModel.inputControl.getStreamingStatus() == StreamingStatus.OPENHOME ) {
             int progressSize = (int)ceolModel.inputControl.trackControl.getAudioItem().getDuration();
-            int progress = (int)ceolModel.inputControl.trackControl.getProgress();
+            int progress = (int)ceolModel.progressControl.getProgress();
 
             SeekBar seekBar = (SeekBar) findViewById(R.id.trackSeekBar);
             if (seekBar != null) {

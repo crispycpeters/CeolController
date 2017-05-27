@@ -11,7 +11,7 @@ public enum ObservedControlType {
     Input     ,
     Track     ,
     Navigator ,
-    Playlist
-    ;
+    Playlist,
+    Progress;
 
 }

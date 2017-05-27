@@ -14,7 +14,6 @@ public class TrackControl extends ControlBase {
 
     protected AudioStreamItem audioItem;
     protected PlayStatusType playStatus = PlayStatusType.Unknown;
-    private int progress = 0;
 
     public TrackControl() {
         super(ObservedControlType.Track);
@@ -36,10 +35,6 @@ public class TrackControl extends ControlBase {
             }
             if (this.playStatus != newTrackControl.playStatus) {
                 this.playStatus = newTrackControl.playStatus;
-                hasChanged = true;
-            }
-            if (this.progress != newTrackControl.progress) {
-                this.progress = newTrackControl.progress;
                 hasChanged = true;
             }
         }
@@ -74,24 +69,9 @@ public class TrackControl extends ControlBase {
         return result;
     }
 
-    public boolean updateProgress( long progress) {
-
-        boolean result = false;
-
-        if ( this.progress != progress) {
-            // NOTE we are excluding any really big numbers!
-            this.progress = (int)progress;
-            result = true;
-        }
-
-        return result;
-    }
 
     public AudioStreamItem getAudioItem() {
         return audioItem;
     }
 
-    public int getProgress() {
-        return progress;
-    }
 }

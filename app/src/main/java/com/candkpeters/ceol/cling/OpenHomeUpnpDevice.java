@@ -13,6 +13,7 @@ import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.control.OpenhomePlaylistControl;
+import com.candkpeters.ceol.model.control.ProgressControl;
 import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.ceol.model.TrackList;
 import com.candkpeters.ceol.model.TrackListEntry;
@@ -61,6 +62,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
     private final OpenhomePlaylistControl openhomePlaylistControl;
     private final TrackControl trackControl;
     private final AudioControl audioControl;
+    private final ProgressControl progressControl;
     private Device device;
     private AndroidUpnpService upnpService;
     private ServiceId infoServiceId = new ServiceId("av-openhome-org","Info");
@@ -83,6 +85,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
         this.openhomePlaylistControl = (OpenhomePlaylistControl)ceolModel.inputControl.playlistControl;
         this.audioControl = ceolModel.audioControl;
         this.trackControl = ceolModel.inputControl.trackControl;
+        this.progressControl = ceolModel.progressControl;
 //        ceolDeviceOpenHome = ceolModel.getOpenHome();
     }
 
@@ -183,15 +186,15 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
                     try {
                         Map<String, StateVariableValue> values = sub.getCurrentValues();
 
-                        UnsignedIntegerFourBytes durationV = (UnsignedIntegerFourBytes)(values.get("Duration").getValue());
-                        Log.d(TAG, "EVENT: GOT duration=" + durationV);
+//                        UnsignedIntegerFourBytes durationV = (UnsignedIntegerFourBytes)(values.get("Duration").getValue());
+//                        Log.d(TAG, "EVENT: GOT duration=" + durationV);
 //                        ceolDeviceOpenHome.setDuration((long) (durationV.getValue()));
 
                         UnsignedIntegerFourBytes secondsV = (UnsignedIntegerFourBytes)(values.get("Seconds").getValue());
                         Log.d(TAG, "EVENT: GOT seconds=" + secondsV);
-                        trackControl.updateProgress((long) (secondsV.getValue()));
+                        progressControl.updateProgress((long) (secondsV.getValue()));
 
-                        ceolModel.notifyObservers(trackControl);
+                        ceolModel.notifyObservers(progressControl);
 
                     } catch ( Exception e ) {
                         Log.e( TAG, "Bad values from event: " + e);
