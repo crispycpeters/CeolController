@@ -278,11 +278,16 @@ public class MainActivity extends AppCompatActivity
         PlaylistControlBase playlistControlBase = ceolController2.getCeolModel().inputControl.playlistControl;
         int currentPos = playlistControlBase.getCurrentTrackPosition();
 
-        currentPos--;
-        if ( currentPos < 0 ) currentPos = 0;
+//        currentPos--;
+//        if ( currentPos < 0 ) currentPos = 0;
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
-        recyclerView.scrollToPosition(currentPos);
+        if ( recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager)(recyclerView.getLayoutManager());
+            linearLayoutManager.scrollToPositionWithOffset(currentPos, 120);
+        } else {
+            recyclerView.scrollToPosition(currentPos);
+        }
     }
 
     private void viewUpdateForAllNotifications() {
