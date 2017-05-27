@@ -76,6 +76,14 @@ public class CeolController2 implements View.OnClickListener {
         return ceolManager2.ceolModel;
     }
 
+    public CeolManager2 getCeolManager() {
+        return ceolManager2;
+    }
+
+    public boolean isDebugMode() {
+        return ceolManager2.isDebugMode();
+    }
+
     private void stopListening() {
         Log.d(TAG, "stopListening: ("+bound+")");
         if (bound) {

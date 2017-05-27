@@ -15,7 +15,9 @@ public class InputControl extends ControlBase {
     protected SIStatusType siStatus = SIStatusType.Unknown;
     protected StreamingStatus streamingStatus = StreamingStatus.CEOL;
     final public TrackControl trackControl = new TrackControl();
+
     public PlaylistControlBase playlistControl = new OpenhomePlaylistControl();
+
     public CeolNavigatorControl navigatorControl;   // TODO - Will need to be refactored for other navigators
 
     public InputControl() {
@@ -85,6 +87,7 @@ public class InputControl extends ControlBase {
                 if ( navigatorControl == null || !(navigatorControl instanceof CeolNavigatorControl)) {
                     updateNavigatorControl(new CeolNavigatorControl());
                 }
+
 //                if ( playlistControl != null ) {
 //                    updateNavigatorControl(null);
 //                }
@@ -93,7 +96,7 @@ public class InputControl extends ControlBase {
                 break;
             case OPENHOME:
                 if ( navigatorControl != null ) {
-                    updatePlaylistControl(null);
+                    updateNavigatorControl(null);
                 }
 //                if ( playlistControl == null ) {
 //                    updatePlaylistControl(openhomePlaylistControl);
@@ -101,7 +104,7 @@ public class InputControl extends ControlBase {
                 break;
             case SPOTIFY:
                 if ( navigatorControl != null ) {
-                    updatePlaylistControl(null);
+                    updateNavigatorControl(null);
                 }
 //                if ( playlistControl != null ) {
 //                    updateNavigatorControl(null);

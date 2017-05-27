@@ -279,8 +279,12 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
 //                    ceolDeviceOpenHome.setTransportState((String)(transportState.getValue()));
 
                     StateVariableValue idArrayVal = values.get("IdArray");
-
                     setupIds( idArrayVal );
+
+                    UnsignedIntegerFourBytes currentTrackIdValue = (UnsignedIntegerFourBytes) (values.get("Id").getValue());
+                    Log.d(TAG, "EVENT: GOT Id=" + currentTrackIdValue);
+                    setCurrentTrackId((long)(currentTrackIdValue.getValue()));
+
                     ceolModel.notifyObservers(ceolModel.inputControl.playlistControl);
 //                    ceolDevice.notifyObservers();
 /*
@@ -298,6 +302,11 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
             };
             upnpService.getControlPoint().execute(callback);
         }
+    }
+
+    private void setCurrentTrackId(long currentTrackId) {
+        OpenhomePlaylistControl openhomePlaylistControl = (OpenhomePlaylistControl)ceolModel.inputControl.playlistControl;
+        openhomePlaylistControl.setCurrentTrackId(currentTrackId);
     }
 
     public void setTransportState(String value) {

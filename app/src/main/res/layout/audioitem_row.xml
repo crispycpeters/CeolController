@@ -22,12 +22,23 @@
             android:padding="2dp"
             />
 
+        <ImageView
+            android:id="@+id/playstate"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:scaleType="center"
+            android:padding="2dp"
+            />
+
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/thumbnail"
+            android:layout_toLeftOf="@id/playstate"
             android:layout_alignTop="@id/thumbnail"
             android:layout_marginLeft="12dp"
             android:maxLines="2"
@@ -43,6 +54,7 @@
             android:layout_centerVertical="true"
             android:layout_below="@id/title"
             android:layout_marginLeft="12dp"
+            android:layout_toLeftOf="@id/playstate"
             android:layout_toRightOf="@+id/thumbnail"
             android:maxLines="2"
             android:text="test"

@@ -23,4 +23,5 @@ public abstract class PlaylistControlBase extends ControlBase {
     public abstract int getPlaylistLen();
     public abstract AudioStreamItem getPlaylistAudioItem(int pos);
 
+    public abstract int getCurrentTrackPosition();
 }

@@ -10,6 +10,7 @@ import com.candkpeters.ceol.model.control.CeolNavigatorControl;
 import com.candkpeters.ceol.model.PlayStatusType;
 import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.model.StreamingStatus;
+import com.candkpeters.ceol.model.control.TestPlaylistControl;
 import com.candkpeters.ceol.view.Prefs;
 import com.candkpeters.ceol.view.UIThreadUpdater;
 

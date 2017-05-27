@@ -14,6 +14,8 @@ import com.candkpeters.ceol.controller.CeolController2;
 import com.candkpeters.ceol.device.ImageDownloaderResult;
 import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.control.PlaylistControlBase;
+import com.candkpeters.ceol.model.control.TestPlaylistControl;
+import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.chris.ceol.R;
 import com.squareup.picasso.Picasso;
 
@@ -27,6 +29,7 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
     private final CeolController2 controller;
     //    private List<FeedItem> feedItemList;
     private final Context mContext;
+    private TestPlaylistControl testPlaylistControl;
 
     public PlaylistRecyclerAdapter(Context context, CeolController2 controller) {
 //        this.feedItemList = feedItemList;
@@ -52,6 +55,9 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
                 AudioStreamItem audioItem = playlistControl.getPlaylistAudioItem(i);
                 if (audioItem != null) {
                     audioItemViewHolder.setAudioItem(audioItem);
+                    boolean isCurrent = (playlistControl.getCurrentTrackPosition() == i);
+//                    Log.d(TAG, "onBindViewHolder: Populating: " + i + " isCurrent=" + isCurrent);
+                    audioItemViewHolder.setIsCurrent(isCurrent);
                 }
             }
 //        }
@@ -75,7 +81,22 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
 
     private PlaylistControlBase getPlaylistControl() {
         if ( controller != null && controller.isBound() ) {
-            return controller.getCeolModel().inputControl.playlistControl;
+            if ( controller.isDebugMode()) {
+                if ( testPlaylistControl == null ) {
+                    testPlaylistControl = new TestPlaylistControl(controller.getCeolModel());
+                }
+                return testPlaylistControl;
+            } else {
+                return controller.getCeolModel().inputControl.playlistControl;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private TrackControl getTrackControl() {
+        if ( controller != null && controller.isBound() ) {
+            return controller.getCeolModel().inputControl.trackControl;
         } else {
             return null;
         }
@@ -97,6 +118,7 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
         private ImageView thumbnailView;
         private TextView titleView;
         private TextView artistView;
+        private ImageView playstateView;
         private AudioStreamItem audioItem;
 
         protected AudioItemViewHolder(View view) {
@@ -105,11 +127,12 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
             this.thumbnailView = (ImageView) view.findViewById(R.id.thumbnail);
             this.titleView = (TextView) view.findViewById(R.id.title);
             this.artistView = (TextView) view.findViewById(R.id.artist);
+            this.playstateView = (ImageView) view.findViewById(R.id.playstate);
         }
 
         void setAudioItem(AudioStreamItem audioItem) {
             if ( audioItem != null ) {
-                if ( this.audioItem == null || this.audioItem.getId() != audioItem.getId()) {
+                if ( this.audioItem == null || audioItem.getId() == 0 || this.audioItem.getId() != audioItem.getId()) {
 //                    Log.d(TAG, "setAudioItem: Set new item: " + audioItem.toString());
                     this.audioItem = audioItem;
                     titleView.setText(audioItem.getTitle());
@@ -148,7 +171,37 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
             audioItem.setImageBitmap(bitmap);
         }
 
+        public void setIsCurrent(boolean isCurrent) {
+            if ( isCurrent) {
+                playstateView.setVisibility(View.VISIBLE);
+                setPlaystate();
+            } else {
+                playstateView.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        private void setPlaystate() {
+            TrackControl trackControl = getTrackControl();
+            int playResource = 0;
+            if (trackControl != null) {
+                switch( trackControl.getPlayStatus()) {
+                    case Unknown:
+                        break;
+                    case Playing:
+                        playResource = R.drawable.ic_av_play;
+                        break;
+                    case Paused:
+                        playResource = R.drawable.ic_av_pause;
+                        break;
+                    case Stopped:
+                        playResource = R.drawable.ic_av_stop;
+                        break;
+                }
+            }
+            playstateView.setImageResource(playResource);
+        }
     }
+
 
 }
 

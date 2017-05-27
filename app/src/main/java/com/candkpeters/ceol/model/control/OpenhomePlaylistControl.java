@@ -24,11 +24,13 @@ public class OpenhomePlaylistControl extends PlaylistControlBase {
     private String audioUri;
     private String metadataString;
     private DIDLContent didlContent;
-    private int[] playlist;
+    private int[] playlistIds;
     private int[] TESTPLAYLIST = {
             1,2,3,4
     };
     private Hashtable<Integer, AudioStreamItem> audioList;
+    private int currentTrackPosition;
+    private final Object MUTEX = new Object();
 
     public OpenhomePlaylistControl() {
 //        this.currentAudioItem = currentAudioItem;
@@ -55,19 +57,24 @@ public class OpenhomePlaylistControl extends PlaylistControlBase {
     }
 
     public int getPlaylistLen() {
-        if ( playlist != null) {
-            return playlist.length;
+        if ( playlistIds != null) {
+            return playlistIds.length;
         } else {
             return 0;
         }
     }
 
     public AudioStreamItem getPlaylistAudioItem(int pos) {
-        if ( playlist != null && playlist.length > pos) {
-            return findAudioItemById(playlist[pos]);
+        if ( playlistIds != null && playlistIds.length > pos) {
+            return findAudioItemById(playlistIds[pos]);
         } else {
             return null;
         }
+    }
+
+    @Override
+    public int getCurrentTrackPosition() {
+        return this.currentTrackPosition;
     }
 
     public long getTotalTrackCount() {
@@ -77,13 +84,13 @@ public class OpenhomePlaylistControl extends PlaylistControlBase {
     public List<Integer> setPlaylist(int[] idArray) {
         Stack<Integer> missingIdsList;
         missingIdsList = new Stack<Integer>();
-        playlist = idArray;
+        playlistIds = idArray;
 
-        if ( idArray != null ) {
-            int arrayLen = idArray.length;
+        if ( playlistIds != null ) {
+            int arrayLen = playlistIds.length;
 
             for (int index = 0; index < arrayLen; index++) {
-                int id = idArray[index];
+                int id = playlistIds[index];
                 AudioStreamItem audioItem = findAudioItemById(id);
                 if ( audioItem==null || !audioItem.isPoopulated() ) {
                     // We need the audio information for this ID
@@ -97,11 +104,13 @@ public class OpenhomePlaylistControl extends PlaylistControlBase {
     }
 
     private AudioStreamItem findAudioItemById(int id) {
-        AudioStreamItem audioItem = null;
-        if ( id != 0) {
-            audioItem = audioList.get(id);
+        synchronized (MUTEX) {
+            AudioStreamItem audioItem = null;
+            if (id != 0) {
+                audioItem = audioList.get(id);
+            }
+            return audioItem;
         }
-        return audioItem;
     }
 
     @Override
@@ -109,4 +118,22 @@ public class OpenhomePlaylistControl extends PlaylistControlBase {
         return false;
     }
 
+    public void setCurrentTrackId(long currentTrackId) {
+
+        synchronized (MUTEX) {
+            this.currentTrackPosition = -1;
+            if (playlistIds != null) {
+                int arrayLen = playlistIds.length;
+                for (int index = 0; index < arrayLen; index++) {
+                    int id = playlistIds[index];
+                    // Assume int is big enough
+                    if (id == (int) currentTrackId) {
+                        Log.d(TAG, "setCurrentTrackId: old currentTrackPosition="+this.currentTrackPosition + " new ="+index);
+                        this.currentTrackPosition = index;
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }

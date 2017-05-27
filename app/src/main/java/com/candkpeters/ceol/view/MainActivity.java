@@ -253,6 +253,9 @@ public class MainActivity extends AppCompatActivity
                                               break;
                                           case Track:
                                               updateTrackViews();
+                                              if ( ceolController2.isDebugMode()) {
+                                                  playlistRecyclerAdapter.notifyDataSetChanged();
+                                              }
                                               break;
                                           case Navigator:
                                               updateNavigation( (CeolNavigatorControl)controlBase);
@@ -327,7 +330,21 @@ public class MainActivity extends AppCompatActivity
             }
 
             updateSeekbar(ceolModel);
+
+            scrollPlayListToCurrent();
+
         }
+    }
+
+    private void scrollPlayListToCurrent() {
+        PlaylistControlBase playlistControlBase = ceolController2.getCeolModel().inputControl.playlistControl;
+        int currentPos = playlistControlBase.getCurrentTrackPosition();
+
+        currentPos--;
+        if ( currentPos < 0 ) currentPos = 0;
+
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        recyclerView.scrollToPosition(currentPos);
     }
 
     private void viewUpdateForAllNotifications() {
@@ -925,7 +942,6 @@ public class MainActivity extends AppCompatActivity
             super.onStart();
             Log.d(TAG, "onStart in playlist fragment: ");
         }
-
     }
 
     /**

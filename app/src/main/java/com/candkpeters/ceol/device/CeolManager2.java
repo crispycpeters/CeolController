@@ -34,7 +34,7 @@ public class CeolManager2 {
 //    private final CeolDeviceObserver_DELETE ceolDeviceObserver;
 //    private final ClingManager clingManager;
     private CeolDeviceWebSvcCommand ceolDeviceWebSvcCommand;
-
+    private boolean isDebugMode;
     private final CeolWebSvcGatherer ceolWebSvcGatherer;
     private final ClingGatherer clingGatherer;
 
@@ -61,6 +61,7 @@ public class CeolManager2 {
     public void initialize() {
         if (onSharedPreferenceChangeListener == null) {
             Prefs prefs = new Prefs(context);
+            isDebugMode = prefs.getIsDebugMode();
             onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -74,6 +75,7 @@ public class CeolManager2 {
 
     private void restart(Context context) {
         Prefs prefs = new Prefs(context);
+        isDebugMode = prefs.getIsDebugMode();
         inputUpdated(ceolModel.inputControl);
         ceolWebSvcGatherer.stop();
         ceolWebSvcGatherer.start(prefs);
@@ -202,6 +204,7 @@ public class CeolManager2 {
                     case Playlist:
                         break;
                 }
+
             }
 
         });
@@ -210,6 +213,10 @@ public class CeolManager2 {
     private void connectionUpdated(ConnectionControl connectionControl) {
         //TODO - pause relevant gatherers if disconnected
 
+    }
+
+    public boolean isDebugMode() {
+        return isDebugMode;
     }
 
     private void inputUpdated(InputControl inputControl) {
