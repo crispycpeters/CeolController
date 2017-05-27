@@ -6,21 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.candkpeters.ceol.device.CeolManager2;
+import com.candkpeters.ceol.device.CeolManager;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.device.command.CommandBaseApp;
 import com.candkpeters.ceol.model.ObservedControlType;
-import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.CeolModel;
-import com.candkpeters.ceol.model.control.CeolNavigatorControl;
-import com.candkpeters.ceol.model.control.ConnectionControl;
 import com.candkpeters.ceol.model.control.ControlBase;
-import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.OnControlChangedListener;
-import com.candkpeters.ceol.model.control.PlaylistControlBase;
-import com.candkpeters.ceol.model.control.PowerControl;
-import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.ceol.view.CeolIntentFactory;
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.ceol.view.MainActivity;
@@ -36,7 +29,7 @@ public class CeolWidgetController {
     };
 
     private Prefs prefs;
-    public CeolManager2 ceolManager = null;
+    public CeolManager ceolManager = null;
     CeolModel ceolModel = null;
 
     OnControlChangedListener onControlChangedListener = new OnControlChangedListener() {
@@ -104,7 +97,7 @@ public class CeolWidgetController {
         context = ceolService;
     }
 
-    public void initialize( CeolManager2 ceolManager) {
+    public void initialize( CeolManager ceolManager) {
 
         this.ceolManager = ceolManager;
         ceolModel = ceolManager.ceolModel;

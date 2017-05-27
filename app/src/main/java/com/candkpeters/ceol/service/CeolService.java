@@ -10,7 +10,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.candkpeters.ceol.device.CeolManager2;
+import com.candkpeters.ceol.device.CeolManager;
 import com.candkpeters.ceol.widget.CeolWidgetController;
 import com.candkpeters.ceol.view.Prefs;
 
@@ -34,10 +34,10 @@ public class CeolService extends Service {
     final Context context = this;
 
     CeolWidgetController ceolWidgetController;
-    private CeolManager2 ceolManager2;
+    private CeolManager ceolManager;
 
     public CeolService() {
-        ceolManager2 = new CeolManager2(context);
+        ceolManager = new CeolManager(context);
         ceolWidgetController = new CeolWidgetController(this);
     }
 
@@ -49,8 +49,8 @@ public class CeolService extends Service {
         return new CeolServiceBinder(this);
     }
 
-    public CeolManager2 getCeolManager() {
-        return ceolManager2;
+    public CeolManager getCeolManager() {
+        return ceolManager;
     }
 
     /*
@@ -61,9 +61,9 @@ public class CeolService extends Service {
     public void onCreate() {
         Log.d(TAG, "onCreate: Entering");
 
-        ceolManager2.initialize();
-        ceolWidgetController.initialize(ceolManager2);
-        ceolManager2.start();
+        ceolManager.initialize();
+        ceolWidgetController.initialize(ceolManager);
+        ceolManager.start();
 
         // register receiver that handles various events
         CeolServiceReceiver mReceiver = new CeolServiceReceiver();
@@ -95,21 +95,21 @@ public class CeolService extends Service {
                         break;
                     case SCREEN_OFF:
 //                        Log.d(TAG, "onStartCommand: SCREEN_OFF");
-                        ceolManager2.pauseGatherers();
+                        ceolManager.pauseGatherers();
                         ceolWidgetController.executeScreenOff();
                         break;
                     case SCREEN_ON:
 //                        Log.d(TAG, "onStartCommand: SCREEN_ON");
                         ceolWidgetController.executeScreenOn();
-                        ceolManager2.resumeGatherers();
+                        ceolManager.resumeGatherers();
                         break;
                     case WIFI_ON:
 //                        Log.d(TAG, "onStartCommand: WIFI_ON");
-                        ceolManager2.resumeGatherers();
+                        ceolManager.resumeGatherers();
                         break;
                     case WIFI_OFF:
 //                        Log.d(TAG, "onStartCommand: WIFI_OFF");
-                        ceolManager2.pauseGatherers();
+                        ceolManager.pauseGatherers();
                         break;
                     case CONFIG_CHANGED:
 //                        Log.d(TAG, "onStartCommand: CONFIG_CHANGED");
@@ -135,7 +135,7 @@ public class CeolService extends Service {
     @Override
     public void onDestroy() {
         ceolWidgetController.destroy();
-        ceolManager2.destroy();
+        ceolManager.destroy();
     }
 
     public static boolean isOnWifi( Context context) {

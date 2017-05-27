@@ -5,7 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.candkpeters.ceol.device.CeolManager2;
+import com.candkpeters.ceol.device.CeolManager;
 import com.candkpeters.ceol.device.command.CommandAppBasic;
 import com.candkpeters.ceol.device.command.CommandAppInfo;
 import com.candkpeters.ceol.device.command.CommandAppSelectSI;
@@ -55,7 +55,7 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
     String updateString = "";
 
     @Override
-    protected void updateViews(RemoteViews views, CeolManager2 ceolManager, Context context, String text) {
+    protected void updateViews(RemoteViews views, CeolManager ceolManager, Context context, String text) {
         long curr = System.currentTimeMillis();
         CeolModel ceolModel= ceolManager.ceolModel;
 

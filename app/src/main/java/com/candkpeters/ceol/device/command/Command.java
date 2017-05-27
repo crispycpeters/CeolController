@@ -2,19 +2,12 @@ package com.candkpeters.ceol.device.command;
 
 import android.util.Log;
 
-import com.candkpeters.ceol.device.CeolManager2;
+import com.candkpeters.ceol.device.CeolManager;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.model.ObservedControlType;
-import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.CeolModel;
-import com.candkpeters.ceol.model.control.CeolNavigatorControl;
-import com.candkpeters.ceol.model.control.ConnectionControl;
 import com.candkpeters.ceol.model.control.ControlBase;
-import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.OnControlChangedListener;
-import com.candkpeters.ceol.model.control.PlaylistControlBase;
-import com.candkpeters.ceol.model.control.PowerControl;
-import com.candkpeters.ceol.model.control.TrackControl;
 
 /**
  * Created by crisp on 22/01/2016.
@@ -23,7 +16,7 @@ public abstract class Command {
 
     private static final String TAG = "Command";
     //private final CommandType type;
-    protected CeolManager2 ceolManager;
+    protected CeolManager ceolManager;
     protected int maxExecutionTimeMsecs = 30000;
 //    private OnCeolStatusChangedListener onCeolStatusChangedListener;
     private OnControlChangedListener onControlChangedListener;
@@ -73,7 +66,7 @@ public abstract class Command {
 
     protected abstract boolean isSuccessful( );
 
-    public boolean isSuccessful(CeolManager2 ceolManager) {
+    public boolean isSuccessful(CeolManager ceolManager) {
         setIsDone(false);
         this.ceolManager = ceolManager;
         this.ceolModel = ceolManager.ceolModel;
@@ -97,11 +90,11 @@ public abstract class Command {
 
     protected abstract void execute();
 
-    public void execute(CeolManager2 ceolManager) {
+    public void execute(CeolManager ceolManager) {
         execute(ceolManager,null);
     }
 
-    public void execute(CeolManager2 ceolManager, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
+    public void execute(CeolManager ceolManager, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
 
         setIsDone(false);
         this.onDoneCeolStatusChangedListener = onDoneCeolStatusChangedListener;

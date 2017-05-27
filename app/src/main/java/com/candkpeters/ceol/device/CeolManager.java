@@ -26,13 +26,11 @@ import java.util.ArrayList;
 /**
  * Created by crisp on 25/01/2016.
  */
-public class CeolManager2 {
+public class CeolManager {
 
-    private static final String TAG = "CeolManager2" ;
+    private static final String TAG = "CeolManager" ;
     public final CeolModel ceolModel;
     private final Context context;
-//    private final CeolDeviceObserver_DELETE ceolDeviceObserver;
-//    private final ClingManager clingManager;
     private CeolDeviceWebSvcCommand ceolDeviceWebSvcCommand;
     private boolean isDebugMode;
     private final CeolWebSvcGatherer ceolWebSvcGatherer;
@@ -44,12 +42,9 @@ public class CeolManager2 {
 
     private String message;
 
-    public CeolManager2(final Context context) {
+    public CeolManager(final Context context) {
         this.context = context;
         ceolModel = new CeolModel();
-//        ceolDeviceObserver = new CeolDeviceObserver_DELETE();
-//DELETE        ceolDevice = new CeolDevice_DELETE(ceolDeviceObserver);
-//        clingManager = new ClingManager(context, ceolDevice);
         ceolWebSvcGatherer = new CeolWebSvcGatherer(ceolModel);
         clingGatherer = new ClingGatherer(context, ceolModel);
         ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(ceolModel);
@@ -101,7 +96,7 @@ public class CeolManager2 {
         ceolModel.register(obj);
         // Ensure all gatherers are running
         inputUpdated(ceolModel.inputControl);
-        // TODO: Potentially unpause ClingManager events if paused
+        // TODO: Potentially unpause openhome events if paused
     }
 
     public void unregister(OnControlChangedListener obj) {
@@ -112,7 +107,7 @@ public class CeolManager2 {
             pause();
         }
 */
-        // TODO: Potentially pause ClingManager events if nothing is registered to listen
+        // TODO: Potentially pause openhome events if nothing is registered to listen
     }
 
     public void notifyObservers(ControlBase controlBase) {
