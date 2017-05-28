@@ -127,6 +127,12 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@color/imageOverlay</item>
     </style>
+    <style name="ProgressText.Tiny" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:paddingStart">4dip</item>
+        <item name="android:paddingEnd">4dip</item>
+    </style>
 
     <style name="AlbumArtPlayStatus.Small" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">#f9a616</item>
@@ -153,4 +159,8 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="ProgressBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:paddingLeft">2dip</item>
+        <item name="android:paddingRight">2dip</item>
+    </style>
 </resources>

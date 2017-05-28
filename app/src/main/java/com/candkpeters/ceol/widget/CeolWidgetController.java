@@ -175,7 +175,7 @@ public class CeolWidgetController {
     private void commandDone(int widgetId, AppWidgetManager appWidgetMan) {
         commandDepth --;
         if ( !isWaiting()) {
-            Log.d(TAG, "commandStarting: Send destroy waiting");
+            Log.d(TAG, "commandStarting: Send stopGatherers waiting");
             for (CeolWidgetHelper ceolWidgetHelper : ceolWidgetHelpers) {
                 ceolWidgetHelper.setWaiting(false);
                 ceolWidgetHelper.updateWidgets(ceolManager, context, "Waiting");

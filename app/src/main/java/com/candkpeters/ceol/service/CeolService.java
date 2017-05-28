@@ -63,7 +63,7 @@ public class CeolService extends Service {
 
         ceolManager.initialize();
         ceolWidgetController.initialize(ceolManager);
-        ceolManager.start();
+        ceolManager.startGatherers();
 
         // register receiver that handles various events
         CeolServiceReceiver mReceiver = new CeolServiceReceiver();
@@ -105,11 +105,11 @@ public class CeolService extends Service {
                         break;
                     case WIFI_ON:
 //                        Log.d(TAG, "onStartCommand: WIFI_ON");
-                        ceolManager.resumeGatherers();
+                        ceolManager.networkBack();
                         break;
                     case WIFI_OFF:
 //                        Log.d(TAG, "onStartCommand: WIFI_OFF");
-                        ceolManager.pauseGatherers();
+                        ceolManager.networkGone();
                         break;
                     case CONFIG_CHANGED:
 //                        Log.d(TAG, "onStartCommand: CONFIG_CHANGED");
@@ -135,7 +135,7 @@ public class CeolService extends Service {
     @Override
     public void onDestroy() {
         ceolWidgetController.destroy();
-        ceolManager.destroy();
+        ceolManager.stopGatherers();
     }
 
     public static boolean isOnWifi( Context context) {

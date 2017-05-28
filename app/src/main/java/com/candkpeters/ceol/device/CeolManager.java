@@ -65,79 +65,6 @@ public class CeolManager {
             };
             prefs.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
         }
-        restart(context);
-    }
-
-    private void restart(Context context) {
-        Prefs prefs = new Prefs(context);
-        isDebugMode = prefs.getIsDebugMode();
-        inputUpdated(ceolModel.inputControl);
-        ceolWebSvcGatherer.stop();
-        ceolWebSvcGatherer.start(prefs);
-        clingGatherer.stop();
-        clingGatherer.start(prefs);
-        ceolDeviceWebSvcCommand.stop();
-        ceolDeviceWebSvcCommand.start(prefs);
-
-        macroInflater = new MacroInflater(prefs.getMacroNames(), prefs.getMacroValues());
-    }
-
-    public ArrayList<Command> getMacro(int macroNumber) {
-        ArrayList<Command> commands;
-        commands = macroInflater.getMacro(macroNumber);
-
-        if ( commands == null ) {
-            commands = new ArrayList<Command>();
-        }
-        return commands;
-    }
-
-    public void register(OnControlChangedListener obj) {
-        ceolModel.register(obj);
-        // Ensure all gatherers are running
-        inputUpdated(ceolModel.inputControl);
-        // TODO: Potentially unpause openhome events if paused
-    }
-
-    public void unregister(OnControlChangedListener obj) {
-        ceolModel.unregister(obj);
-/*
-        int numRegistered = ceolModel.registerCount();
-        if ( numRegistered <= 1) {
-            pause();
-        }
-*/
-        // TODO: Potentially pause openhome events if nothing is registered to listen
-    }
-
-    public void notifyObservers(ControlBase controlBase) {
-        ceolModel.notifyObservers(controlBase);
-    }
-
-    public void sendCommand(String commandString) {
-        Log.d(TAG, "sendCommand: Sending: " + commandString);
-        if ( commandString!= null && !commandString.isEmpty()) {
-            ceolDeviceWebSvcCommand.sendCeolCommand( commandString, null);   //TODO We need use callback
-            ceolWebSvcGatherer.getStatusSoon();
-        }
-    }
-
-    public void execute(Command command) {
-        if ( command!= null ) {
-//            command.execute(this);
-            command.execute(this);
-        }
-    }
-
-    public void execute(Command command, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
-        if ( command!= null ) {
-//            command.execute(this, onDoneCeolStatusChangedListener);
-            command.execute(this, onDoneCeolStatusChangedListener);
-        }
-    }
-
-
-    public void start() {
         ceolModel.register(new OnControlChangedListener() {
 /*
             @Override
@@ -203,10 +130,66 @@ public class CeolManager {
             }
 
         });
+        startGatherers();
     }
 
+    public ArrayList<Command> getMacro(int macroNumber) {
+        ArrayList<Command> commands;
+        commands = macroInflater.getMacro(macroNumber);
+
+        if ( commands == null ) {
+            commands = new ArrayList<Command>();
+        }
+        return commands;
+    }
+
+    public void register(OnControlChangedListener obj) {
+        ceolModel.register(obj);
+        // Ensure all gatherers are running
+        inputUpdated(ceolModel.inputControl);
+        // TODO: Potentially unpause openhome events if paused
+    }
+
+    public void unregister(OnControlChangedListener obj) {
+        ceolModel.unregister(obj);
+/*
+        int numRegistered = ceolModel.registerCount();
+        if ( numRegistered <= 1) {
+            pause();
+        }
+*/
+        // TODO: Potentially pause openhome events if nothing is registered to listen
+    }
+
+    public void notifyObservers(ControlBase controlBase) {
+        ceolModel.notifyObservers(controlBase);
+    }
+
+    public void sendCommand(String commandString) {
+        Log.d(TAG, "sendCommand: Sending: " + commandString);
+        if ( commandString!= null && !commandString.isEmpty()) {
+            ceolDeviceWebSvcCommand.sendCeolCommand( commandString, null);   //TODO We need use callback
+            ceolWebSvcGatherer.getStatusSoon();
+        }
+    }
+
+    public void execute(Command command) {
+        if ( command!= null ) {
+//            command.execute(this);
+            command.execute(this);
+        }
+    }
+
+    public void execute(Command command, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
+        if ( command!= null ) {
+//            command.execute(this, onDoneCeolStatusChangedListener);
+            command.execute(this, onDoneCeolStatusChangedListener);
+        }
+    }
+
+
+
     private void connectionUpdated(ConnectionControl connectionControl) {
-        //TODO - pause relevant gatherers if disconnected
 
     }
 
@@ -243,6 +226,12 @@ public class CeolManager {
         }
     }
 
+    public void sendOpenHomeSeekIdCommand(int trackId) {
+        if (context != null) {
+            clingGatherer.getOpenHomeUpnpDevice().performPlaylistSeekIdCommand(trackId);
+        }
+    }
+
     public void sendSpotifyCommand(String commandString) {
         if ( context != null ) {
             if ( commandString.equalsIgnoreCase("PLAY")) {
@@ -256,7 +245,7 @@ public class CeolManager {
                     final String CMDNEXT = "next";
                     final String SERVICECMD = "com.android.music.musicservicecommand";
                     final String CMDNAME = "command";
-                    final String CMDSTOP = "destroy";
+                    final String CMDSTOP = "stopGatherers";
 
                     AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
@@ -286,19 +275,53 @@ public class CeolManager {
         }
     }
 
-    public void destroy() {
+    private void restart(Context context) {
+        Prefs prefs = new Prefs(context);
+        isDebugMode = prefs.getIsDebugMode();
+        inputUpdated(ceolModel.inputControl);
+        ceolWebSvcGatherer.stop();
+        ceolWebSvcGatherer.start(prefs);
+        clingGatherer.stop();
+        clingGatherer.start(prefs);
+        ceolDeviceWebSvcCommand.stop();
+        ceolDeviceWebSvcCommand.start(prefs);
+
+        macroInflater = new MacroInflater(prefs.getMacroNames(), prefs.getMacroValues());
+    }
+
+    public void startGatherers() {
+        Prefs prefs = new Prefs(context);
+        ceolWebSvcGatherer.start(prefs);
+        clingGatherer.start(prefs);
+    }
+
+    public void stopGatherers() {
         ceolWebSvcGatherer.stop();
         clingGatherer.stop();
     }
 
     public void pauseGatherers() {
+        // Screen is likely off
         ceolWebSvcGatherer.stop();
-        // TODO - Confirm whether we need to pause cling
+//        clingGatherer.stop();
     }
 
     public void resumeGatherers() {
         Prefs prefs = new Prefs(context);
         ceolWebSvcGatherer.start(prefs);
-        // TODO - Confirm whether we need to resume cling
+//        clingGatherer.start(prefs);
+    }
+
+    public void networkBack() {
+        Log.d(TAG, "networkBack: ");
+        Prefs prefs = new Prefs(context);
+        ceolWebSvcGatherer.start(prefs);
+        clingGatherer.start(prefs);
+    }
+
+    public void networkGone() {
+        Log.d(TAG, "networkGone: ");
+        ceolWebSvcGatherer.stop();
+        ceolModel.notifyConnectionStatus(false);
     }
 }

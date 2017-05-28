@@ -3,14 +3,13 @@ package com.candkpeters.ceol.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.candkpeters.ceol.controller.CeolController2;
+import com.candkpeters.ceol.controller.CeolController;
 import com.candkpeters.ceol.device.ImageDownloaderResult;
 import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.control.PlaylistControlBase;
@@ -26,16 +25,18 @@ import com.squareup.picasso.Picasso;
 
 public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecyclerAdapter.AudioItemViewHolder> {
     protected static String TAG = "PlaylistRecyclerAdapter";
-    private final CeolController2 controller;
+    private final CeolController controller;
     //    private List<FeedItem> feedItemList;
     private final Context mContext;
+    private final OnAudioItemClickListener onAudioItemClickListener;
     private TestPlaylistControl testPlaylistControl;
 
-    public PlaylistRecyclerAdapter(Context context, CeolController2 controller) {
+    public PlaylistRecyclerAdapter(Context context, CeolController controller, OnAudioItemClickListener onAudioItemClickListener) {
 //        this.feedItemList = feedItemList;
         this.controller = controller;
 //        this.openHoemDevice = contro.getOpenHome();
         this.mContext = context;
+        this.onAudioItemClickListener = onAudioItemClickListener;
     }
 
     @Override
@@ -56,8 +57,9 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
                 if (audioItem != null) {
                     audioItemViewHolder.setAudioItem(audioItem);
                     boolean isCurrent = (playlistControl.getCurrentTrackPosition() == i);
-//                    Log.d(TAG, "onBindViewHolder: Populating: " + i + " isCurrent=" + isCurrent);
+//                    Log.d(TAG, "onBindViewHolder: Populating: " + i + " isCurrentTrack=" + isCurrentTrack);
                     audioItemViewHolder.setIsCurrent(isCurrent);
+                    audioItemViewHolder.setListener(onAudioItemClickListener);
                 }
             }
 //        }
@@ -115,14 +117,17 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
 
 
     class AudioItemViewHolder extends RecyclerView.ViewHolder implements  ImageDownloaderResult {
+        private View itemView;
         private ImageView thumbnailView;
         private TextView titleView;
         private TextView artistView;
         private ImageView playstateView;
         private AudioStreamItem audioItem;
+        private boolean isCurrentTrack;
 
         protected AudioItemViewHolder(View view) {
             super(view);
+            this.itemView = view;
 //            Log.d(TAG, "AudioItemViewHolder: Created");
             this.thumbnailView = (ImageView) view.findViewById(R.id.thumbnail);
             this.titleView = (TextView) view.findViewById(R.id.title);
@@ -178,6 +183,7 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
             } else {
                 playstateView.setVisibility(View.INVISIBLE);
             }
+            this.isCurrentTrack = isCurrent;
         }
 
         private void setPlaystate() {
@@ -199,6 +205,15 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
                 }
             }
             playstateView.setImageResource(playResource);
+        }
+
+        public void setListener(final OnAudioItemClickListener onAudioItemClickListener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onAudioItemClickListener.onAudioItemClick(audioItem, isCurrentTrack);
+                }
+            });
         }
     }
 

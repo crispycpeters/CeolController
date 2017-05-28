@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.candkpeters.ceol.controller.CeolController2;
+import com.candkpeters.ceol.controller.CeolController;
 import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.control.TrackControl;
@@ -21,7 +21,7 @@ public class InfoFragment extends DialogFragment implements View.OnClickListener
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "3";
-    private CeolController2 ceolController;
+    private CeolController ceolController;
     CeolModel ceolModel ;
     TrackControl trackControl ;
 

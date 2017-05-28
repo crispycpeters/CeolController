@@ -22,6 +22,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.text.SpannableString;
+import android.text.format.DateUtils;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -41,7 +42,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.candkpeters.ceol.controller.CeolController2;
+import com.candkpeters.ceol.controller.CeolController;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.device.command.CommandBaseApp;
 import com.candkpeters.ceol.device.command.CommandControlStop;
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity
      * may be best to switch to a
      * {@link FragmentStatePagerAdapter}.
      */
-    private CeolController2 ceolController2;
+    private CeolController ceolController;
 
     private Animation powerAnimation;
     private boolean isLargeDevice;
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity
         powerAnimation.setRepeatMode(Animation.REVERSE);
 
 
-        ceolController2 = new CeolController2(this, new OnControlChangedListener() {
+        ceolController = new CeolController(this, new OnControlChangedListener() {
 
             @Override
             public void onControlChanged(CeolModel ceolModel, final ObservedControlType observedControlType, final ControlBase controlBase) {
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity
                                               break;
                                           case Track:
                                               updateTrackViews();
-                                              if ( ceolController2.isDebugMode()) {
+                                              if ( ceolController.isDebugMode()) {
                                                   playlistRecyclerAdapter.notifyDataSetChanged();
                                               }
                                               break;
@@ -208,20 +209,27 @@ public class MainActivity extends AppCompatActivity
 
         setNavigationMenuStrings(navigationView);
 
-        playlistRecyclerAdapter = new PlaylistRecyclerAdapter(this, getCeolController());
+        playlistRecyclerAdapter = new PlaylistRecyclerAdapter(this, getCeolController(), new OnAudioItemClickListener() {
+            @Override
+            public void onAudioItemClick(AudioStreamItem item, boolean isCurrentTrack) {
+                Log.d(TAG, "onAudioItemClick: Got a click");
+
+                getCeolController().togglePlaylistItem(item, isCurrentTrack);
+            }
+        });
 
         Log.i(TAG, "onCreate: Done");
     }
 
     private void updateProgress(ProgressControl progressControl) {
-        CeolModel ceolModel = ceolController2.getCeolModel();
+        CeolModel ceolModel = ceolController.getCeolModel();
         updateSeekbar(ceolModel);
     }
 
     protected void updateTrackViews() {
-        if ( ceolController2.isBound()) {
-            CeolModel ceolModel = ceolController2.getCeolModel();
-            TrackControl trackControl = ceolController2.getCeolModel().inputControl.trackControl;
+        if ( ceolController.isBound()) {
+            CeolModel ceolModel = ceolController.getCeolModel();
+            TrackControl trackControl = ceolController.getCeolModel().inputControl.trackControl;
 
             AudioStreamItem audioStreamItem = trackControl.getAudioItem();
             setTextViewText(R.id.textTrack, audioStreamItem.getTitle());
@@ -275,7 +283,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void scrollPlayListToCurrent() {
-        PlaylistControlBase playlistControlBase = ceolController2.getCeolModel().inputControl.playlistControl;
+        PlaylistControlBase playlistControlBase = ceolController.getCeolModel().inputControl.playlistControl;
         int currentPos = playlistControlBase.getCurrentTrackPosition();
 
 //        currentPos--;
@@ -328,15 +336,22 @@ public class MainActivity extends AppCompatActivity
 
     private void updateSeekbar(CeolModel ceolModel) {
 
+        SeekBar seekBar = (SeekBar) findViewById(R.id.trackSeekBar);
+        TextView progressT = (TextView)findViewById(R.id.trackProgressT);
+        TextView reverseProgressT = (TextView)findViewById(R.id.trackReverseProgressT);
+
         if ( ceolModel.inputControl.getStreamingStatus() == StreamingStatus.OPENHOME ) {
             int progressSize = (int)ceolModel.inputControl.trackControl.getAudioItem().getDuration();
             int progress = (int)ceolModel.progressControl.getProgress();
 
-            SeekBar seekBar = (SeekBar) findViewById(R.id.trackSeekBar);
+            progressT.setText(DateUtils.formatElapsedTime(progress));
+            reverseProgressT.setText(DateUtils.formatElapsedTime(progressSize-progress));
             if (seekBar != null) {
                 seekBar.setMax(progressSize);
                 seekBar.setProgress(progress);
             }
+        }  else {
+
         }
     }
 
@@ -526,7 +541,7 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
         Log.d(TAG, "Activity onStart: Entered");
 //        ceolController.activityOnStart();
-        ceolController2.activityOnStart();
+        ceolController.activityOnStart();
         if ( action != null ) {
             if ( action.equals( CommandBaseApp.Action.SELECTSI.name())) {
                 openDrawer();
@@ -541,7 +556,7 @@ public class MainActivity extends AppCompatActivity
     public void onStop() {
         super.onStop();
 //        ceolController.activityOnStop();
-        ceolController2.activityOnStop();
+        ceolController.activityOnStop();
     }
 
     @Override
@@ -607,7 +622,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showVolumeChangeTemporarily(int delta) {
-        int newVolume = ceolController2.getCeolModel().audioControl.getMasterVolume() + delta;
+        int newVolume = ceolController.getCeolModel().audioControl.getMasterVolume() + delta;
 
         setTextViewText(R.id.volume, Integer.toString(newVolume));
     }
@@ -620,7 +635,7 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "buttonClick: " + view.getTag());
         Command command = getCommandFromId(view.getId());
         if ( command != null) {
-            ceolController2.performCommand(command);
+            ceolController.performCommand(command);
         }
     }
 
@@ -716,7 +731,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if ( command != null) {
-            ceolController2.performCommand(command);
+            ceolController.performCommand(command);
         }
 
         return true;
@@ -728,8 +743,8 @@ public class MainActivity extends AppCompatActivity
         infoFragment.show(fm,"infoFragment");
     }
 
-    public CeolController2 getCeolController() {
-        return ceolController2;
+    public CeolController getCeolController() {
+        return ceolController;
     }
 
     public PlaylistRecyclerAdapter getPlaylistRecyclerAdapter() {
@@ -794,7 +809,7 @@ public class MainActivity extends AppCompatActivity
             if (!isConnected) {
                 siB.setText(getString(R.string.not_connected_short));
             } else {
-                siB.setText(ceolController2.getCeolModel().inputControl.getSIStatus().name);
+                siB.setText(ceolController.getCeolModel().inputControl.getSIStatus().name);
             }
         }
 /*
@@ -965,7 +980,7 @@ public class MainActivity extends AppCompatActivity
 
     private void doVolumeControl( DirectionType direction) {
         Command command = new CommandMasterVolume(direction);
-        ceolController2.performCommand(command);
+        ceolController.performCommand(command);
         String text = String.format(getResources().getString(R.string.volume_toast),direction.toString());
         int duration = Toast.LENGTH_SHORT;
 

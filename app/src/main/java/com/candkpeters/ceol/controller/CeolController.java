@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.candkpeters.ceol.device.CeolManager;
 import com.candkpeters.ceol.device.command.Command;
+import com.candkpeters.ceol.device.command.CommandControlPlayAt;
 import com.candkpeters.ceol.device.command.CommandControlStop;
 import com.candkpeters.ceol.device.command.CommandControlToggle;
 import com.candkpeters.ceol.device.command.CommandCursor;
@@ -19,6 +20,7 @@ import com.candkpeters.ceol.device.command.CommandMasterVolumeUp;
 import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
 import com.candkpeters.ceol.device.command.CommandSkipBackward;
 import com.candkpeters.ceol.device.command.CommandSkipForward;
+import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.model.OnControlChangedListener;
@@ -30,8 +32,8 @@ import com.candkpeters.chris.ceol.R;
 /**
  * Created by crisp on 07/01/2016.
  */
-public class CeolController2 implements View.OnClickListener {
-    private static final String TAG = "CeolController2";
+public class CeolController implements View.OnClickListener {
+    private static final String TAG = "CeolController";
 
 //    Prefs prefs;
     Context context;
@@ -42,7 +44,7 @@ public class CeolController2 implements View.OnClickListener {
 
     OnControlChangedListener onControlChangedListener;
 
-    public CeolController2(Context context, final OnControlChangedListener onControlChangedListener) {
+    public CeolController(Context context, final OnControlChangedListener onControlChangedListener) {
         if ( onControlChangedListener!= null) {
             this.onControlChangedListener= onControlChangedListener;
         }
@@ -162,6 +164,18 @@ public class CeolController2 implements View.OnClickListener {
         if ( bound && v.getTag() != null && v.getTag() instanceof Command ) {
             Command command = (Command)v.getTag();
 //            ceolManager.execute(command);
+        }
+    }
+
+    public void togglePlaylistItem(AudioStreamItem item, boolean isCurrentTrack) {
+        if ( isCurrentTrack) {
+            // Toggle the playstate
+            Command command = new CommandControlToggle();
+            performCommand(command);
+        } else {
+            // We want to start openhome with this track
+            Command command = new CommandControlPlayAt(item.getId());
+            performCommand(command);
         }
     }
 }

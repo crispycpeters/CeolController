@@ -75,8 +75,7 @@ public class ClingGatherer extends GathererBase {
             }
 
             // Search asynchronously for all devices, they will respond soon
-            Log.d(TAG,"Initiating search...");
-            upnpService.getControlPoint().search();
+            checkSubscriptions();
 
         }
 
@@ -86,24 +85,34 @@ public class ClingGatherer extends GathererBase {
         }
     };
 
+    private void checkSubscriptions() {
+        if ( isClingServiceBound) {
+            if ( !openHomeUpnpDevice.isSubscribed() ) {
+                Log.d(TAG, "Initiating search...");
+                upnpService.getControlPoint().search();
+            }
+        }
+    }
+
     public void bindToCling() {
 
-//        unbindFromCling();
-// Fix the logging integration between java.util.logging and Android internal logging
-        org.seamless.util.logging.LoggingUtil.resetRootHandler(
-                new FixedAndroidLogHandler()
-        );
-        // Now you can enable logging as needed for various categories of Cling:
-        Logger.getLogger("org.fourthline.cling").setLevel(Level.INFO);
-
-        prefs = new Prefs(context);
-
         // This will start the UPnP service if it wasn't already started
-        context.bindService(
-                new Intent(context, AndroidUpnpServiceImpl.class),
-                serviceConnection,
-                Context.BIND_AUTO_CREATE
-        );
+        if ( !isClingServiceBound) {
+            // Fix the logging integration between java.util.logging and Android internal logging
+            org.seamless.util.logging.LoggingUtil.resetRootHandler(
+                    new FixedAndroidLogHandler()
+            );
+            // Now you can enable logging as needed for various categories of Cling:
+            Logger.getLogger("org.fourthline.cling").setLevel(Level.INFO);
+
+            prefs = new Prefs(context);
+
+            context.bindService(
+                    new Intent(context, AndroidUpnpServiceImpl.class),
+                    serviceConnection,
+                    Context.BIND_AUTO_CREATE
+            );
+        }
     }
 
     public void unbindFromCling() {
@@ -118,7 +127,11 @@ public class ClingGatherer extends GathererBase {
 
     @Override
     public void start(Prefs prefs) {
-        bindToCling();
+        if ( !isClingServiceBound) {
+            bindToCling();
+        } else {
+            checkSubscriptions();
+        }
     }
 
     @Override

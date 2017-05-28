@@ -69,6 +69,7 @@
         android:layout_height="wrap_content"
         android:minWidth="15dp"
         android:background="#00000000"
+        android:visibility="gone"
         />
 
 </LinearLayout>

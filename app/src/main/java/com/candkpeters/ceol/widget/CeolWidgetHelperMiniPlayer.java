@@ -64,12 +64,6 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
         views.setTextViewText(R.id.playStatus, ceolModel.inputControl.trackControl.getPlayStatus().toString());
         views.setTextViewText(R.id.volume, ceolModel.audioControl.getMasterVolumeString());
 
-        if ( ceolModel.connectionControl.isConnected() ) {
-            views.setTextViewText(R.id.siB, ceolModel.inputControl.getSIStatus().name);
-        } else {
-            views.setTextViewText(R.id.siB, context.getString(R.string.not_connected_short));
-        }
-
         switch ( ceolModel.inputControl.getSIStatus()) {
 
             case Tuner:
@@ -114,27 +108,40 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
                 break;
         }
 
-        switch ( ceolModel.powerControl.getDeviceStatus()) {
+        if ( ceolModel.connectionControl.isConnected() ) {
+            views.setTextViewText(R.id.siB, ceolModel.inputControl.getSIStatus().name);
 
-            case Connecting:
-                views.setViewVisibility(R.id.waitingPB, View.GONE);
-                break;
-            case Standby:
-                views.setViewVisibility(R.id.powerV, View.VISIBLE);
-                views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power_back);
-                views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_back);
-                views.setViewVisibility(R.id.waitingPB, View.GONE);
-                break;
-            case Starting:
-                views.setViewVisibility(R.id.powerV, View.VISIBLE);
-                views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_back);
-                views.setViewVisibility(R.id.waitingPB, View.VISIBLE);
-                break;
-            case On:
-                views.setViewVisibility(R.id.powerV, View.GONE);
-                views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power);
-                break;
+            switch ( ceolModel.powerControl.getDeviceStatus()) {
+
+                case Connecting:
+                    break;
+                case Standby:
+                    views.setViewVisibility(R.id.waitingPB, View.GONE);
+                    views.setViewVisibility(R.id.powerV, View.VISIBLE);
+                    views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power_back);
+                    views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_back);
+                    break;
+                case Starting:
+                    views.setViewVisibility(R.id.waitingPB, View.VISIBLE);
+                    views.setViewVisibility(R.id.powerV, View.VISIBLE);
+                    views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power_back);
+                    views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_back);
+                    break;
+                case On:
+                    views.setViewVisibility(R.id.powerV, View.GONE);
+                    views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power);
+                    break;
+            }
+
+
+        } else {
+            views.setTextViewText(R.id.siB, context.getString(R.string.not_connected_short));
+
+            views.setViewVisibility(R.id.powerV, View.VISIBLE);
+            views.setViewVisibility(R.id.waitingPB, View.VISIBLE);
+            views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_back);
         }
+
     }
 
 }

@@ -34,10 +34,16 @@ public class OpenhomePlaylistControl extends PlaylistControlBase {
 
     public OpenhomePlaylistControl() {
 //        this.currentAudioItem = currentAudioItem;
-        audioList = new Hashtable<Integer, AudioStreamItem>();
+        clearTracklist();
 
 //        parseReadList(TESTIT);
 //        setPlaylist( TESTPLAYLIST);
+    }
+
+    public void clearTracklist() {
+        audioList = new Hashtable<Integer, AudioStreamItem>();
+        setPlaylist(null);
+        currentTrackPosition = 0;
     }
 
     public boolean isOperating( ) {
@@ -136,4 +142,5 @@ public class OpenhomePlaylistControl extends PlaylistControlBase {
             }
         }
     }
+
 }
