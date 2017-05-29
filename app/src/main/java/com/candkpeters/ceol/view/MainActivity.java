@@ -493,7 +493,7 @@ public class MainActivity extends AppCompatActivity
                         powerB.clearAnimation();
                         isPowerAnimating = false;
                     }
-                    powerB.setImageResource(R.drawable.ic_av_power_back );
+                    powerB.setImageResource(R.drawable.ic_av_power_off);
                     break;
                 case Starting:
                     if ( !isPowerAnimating ) {
@@ -811,6 +811,12 @@ public class MainActivity extends AppCompatActivity
             } else {
                 siB.setText(ceolController.getCeolModel().inputControl.getSIStatus().name);
             }
+        }
+
+        if ( isConnected) {
+            rootView.setVisibility(View.GONE);
+        } else {
+            rootView.setVisibility(View.VISIBLE);
         }
 /*
         boolean isFullyUnDimmed = ( rootView.getAlpha() == TRANSPARENT || rootView.getVisibility() != View.VISIBLE );

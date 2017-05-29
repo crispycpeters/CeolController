@@ -84,54 +84,53 @@
         />
 
     <TextView
+        android:id="@+id/dimV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/dimV"
-        android:visibility="gone"
-        android:alpha="0.8"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:alpha="0.5"
         android:background="@drawable/shape_background"
         android:gravity="center"
-        android:text="@string/not_connected"
-        />
+        android:visibility="gone" />
+    <!--android:text="@string/not_connected"-->
 
     <RelativeLayout
+        android:id="@+id/powerV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/powerV"
-        android:visibility="visible"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:background="@drawable/shape_background"
-        >
+        android:layout_alignParentTop="true"
+        android:visibility="visible">
+
         <ImageButton
             android:id="@+id/powerB2"
-            android:src="@drawable/ic_av_power"
+            style="@style/PowerButton"
             android:layout_width="@dimen/av_button_size_small"
             android:layout_height="@dimen/av_button_size_small"
-            style="@style/PowerButton"
-            android:onClick="buttonClick"
-            android:contentDescription="@string/power_toggle"
             android:layout_centerInParent="true"
-            />
+            android:contentDescription="@string/power_toggle"
+            android:visibility="invisible"
+            android:onClick="buttonClick"
+            android:src="@drawable/ic_av_power" />
+
         <TextView
+            style="@style/WhiteText"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/av_button_size_small"
-            android:text="@string/ceol_controller"
-            style="@style/WhiteText"
             android:layout_above="@id/powerB2"
             android:layout_centerHorizontal="true"
-            />
+            android:visibility="invisible"
+            android:text="@string/ceol_controller" />
+
         <ProgressBar
+            android:id="@+id/waitingPB"
             android:layout_width="@dimen/av_button_size_small"
             android:layout_height="wrap_content"
-            android:id="@+id/waitingPB"
-            android:indeterminate="true"
-            android:layout_margin="8dp"
             android:layout_below="@id/powerB2"
             android:layout_centerHorizontal="true"
-            />
+            android:layout_margin="8dp"
+            android:indeterminate="true" />
     </RelativeLayout>
 
 </RelativeLayout>

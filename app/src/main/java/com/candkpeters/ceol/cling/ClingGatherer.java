@@ -139,6 +139,10 @@ public class ClingGatherer extends GathererBase {
         unbindFromCling();
     }
 
+    public void checkOperation() {
+        getOpenHomeUpnpDevice().checkOperation();
+    }
+
     protected class BrowseRegistryListener extends DefaultRegistryListener {
 
         /* Discovery performance optimization for very slow Android devices! */

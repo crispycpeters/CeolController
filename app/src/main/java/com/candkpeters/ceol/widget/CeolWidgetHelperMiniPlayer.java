@@ -108,7 +108,9 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
                 break;
         }
 
+
         if ( ceolModel.connectionControl.isConnected() ) {
+            views.setViewVisibility(R.id.dimV, View.GONE);
             views.setTextViewText(R.id.siB, ceolModel.inputControl.getSIStatus().name);
 
             switch ( ceolModel.powerControl.getDeviceStatus()) {
@@ -117,29 +119,34 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
                     break;
                 case Standby:
                     views.setViewVisibility(R.id.waitingPB, View.GONE);
-                    views.setViewVisibility(R.id.powerV, View.VISIBLE);
-                    views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power_back);
-                    views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_back);
+                    views.setViewVisibility(R.id.powerV, View.GONE);
+                    views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power_off);
+//                    views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_off);
+//                    views.setInt(R.id.siB, "setBackgroundResource", R.color.dimmedWhite);
                     break;
                 case Starting:
                     views.setViewVisibility(R.id.waitingPB, View.VISIBLE);
                     views.setViewVisibility(R.id.powerV, View.VISIBLE);
-                    views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power_back);
-                    views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_back);
+                    views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power_off);
+//                    views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_off);
+//                    views.setInt(R.id.siB, "setBackgroundResource", R.color.dimmedWhite);
                     break;
                 case On:
+                    views.setViewVisibility(R.id.waitingPB, View.GONE);
                     views.setViewVisibility(R.id.powerV, View.GONE);
                     views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power);
+//                    views.setInt(R.id.siB, "setBackgroundResource", R.color.white);
                     break;
             }
 
 
         } else {
+            views.setViewVisibility(R.id.dimV, View.VISIBLE);
             views.setTextViewText(R.id.siB, context.getString(R.string.not_connected_short));
 
-            views.setViewVisibility(R.id.powerV, View.VISIBLE);
-            views.setViewVisibility(R.id.waitingPB, View.VISIBLE);
-            views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_back);
+            views.setViewVisibility(R.id.waitingPB, View.GONE);
+            views.setViewVisibility(R.id.powerV, View.GONE);
+            views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power_off);
         }
 
     }

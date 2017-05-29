@@ -3,14 +3,11 @@ package com.candkpeters.ceol.model;
 import android.util.Log;
 
 import com.candkpeters.ceol.model.control.AudioControl;
-import com.candkpeters.ceol.model.control.CeolNavigatorControl;
 import com.candkpeters.ceol.model.control.ConnectionControl;
 import com.candkpeters.ceol.model.control.ControlBase;
 import com.candkpeters.ceol.model.control.InputControl;
-import com.candkpeters.ceol.model.control.PlaylistControlBase;
 import com.candkpeters.ceol.model.control.PowerControl;
 import com.candkpeters.ceol.model.control.ProgressControl;
-import com.candkpeters.ceol.model.control.TrackControl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +53,7 @@ public class CeolModel implements ControlObserved {
         if ( hasChangedConnection ) {
             if ( newIsConnected) {
                 Log.d(TAG, "notifyConnectionStatus: We are connected. Refresh all observers." );
-                refreshAllObservers();
+                notifyAllObservers();
             } else {
                 Log.w(TAG, "notifyConnectionStatus: We are no longer connected." );
                 notifyObservers(connectionControl);
@@ -111,7 +108,7 @@ public class CeolModel implements ControlObserved {
         }
     }
 
-    public void refreshAllObservers() {
+    public void notifyAllObservers() {
         notifyObservers(connectionControl);
         notifyObservers(powerControl);
         notifyObservers(audioControl);

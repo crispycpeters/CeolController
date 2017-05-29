@@ -9,16 +9,11 @@ import android.util.Log;
 import com.candkpeters.ceol.cling.ClingGatherer;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.model.ObservedControlType;
-import com.candkpeters.ceol.model.control.AudioControl;
 import com.candkpeters.ceol.model.CeolModel;
-import com.candkpeters.ceol.model.control.CeolNavigatorControl;
 import com.candkpeters.ceol.model.control.ConnectionControl;
 import com.candkpeters.ceol.model.control.ControlBase;
 import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.OnControlChangedListener;
-import com.candkpeters.ceol.model.control.PlaylistControlBase;
-import com.candkpeters.ceol.model.control.PowerControl;
-import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.ceol.view.Prefs;
 
 import java.util.ArrayList;
@@ -291,6 +286,7 @@ public class CeolManager {
 
     public void startGatherers() {
         Prefs prefs = new Prefs(context);
+        ceolDeviceWebSvcCommand.start(prefs);
         ceolWebSvcGatherer.start(prefs);
         clingGatherer.start(prefs);
     }
@@ -309,8 +305,9 @@ public class CeolManager {
     public void resumeGatherers() {
         Prefs prefs = new Prefs(context);
         ceolWebSvcGatherer.start(prefs);
-//        clingGatherer.start(prefs);
-    }
+//        clingGatherer.checkOperation();
+        ceolModel.notifyAllObservers();
+  }
 
     public void networkBack() {
         Log.d(TAG, "networkBack: ");

@@ -273,14 +273,17 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
     }
 
     private void notifyInputControlIsOpenhome() {
+        if ( !ceolModel.connectionControl.isConnected()) {
+            ceolModel.notifyConnectionStatus(true);
+        }
         if ( isOperating() ) {
-            if ( !ceolModel.connectionControl.isConnected()) {
-                ceolModel.notifyConnectionStatus(true);
-            }
             if ( ceolModel.inputControl.getStreamingStatus() != StreamingStatus.OPENHOME) {
                 ceolModel.inputControl.updateSIStatus(SIStatusType.OpenHome);
                 ceolModel.notifyObservers(ceolModel.inputControl);
             }
+        } else {
+            ceolModel.inputControl.updateSIStatus(SIStatusType.Unknown);
+            ceolModel.notifyObservers(ceolModel.inputControl);
         }
     }
 
@@ -569,6 +572,12 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
 
     public long getTotalTrackCount() {
         return totalTrackCount;
+    }
+
+    public void checkOperation() {
+        if ( isOperating()) {
+            notifyInputControlIsOpenhome();
+        }
     }
 
     public abstract class OpenHomeSubscriptionCallback extends SubscriptionCallback {

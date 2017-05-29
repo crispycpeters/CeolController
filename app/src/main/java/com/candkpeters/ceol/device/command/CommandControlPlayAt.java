@@ -30,6 +30,8 @@ public class CommandControlPlayAt extends Command {
     @Override
     public void execute() {
 
+        ceolManager.sendOpenHomeSeekIdCommand(trackId);
+/*
         switch (ceolModel.inputControl.getSIStatus()) {
             case Unknown:
                 break;
@@ -44,11 +46,11 @@ public class CommandControlPlayAt extends Command {
             case Spotify:
                 break;
             case OpenHome:
-                ceolManager.sendOpenHomeSeekIdCommand(trackId);
                 break;
             case AnalogIn:
                 break;
         }
+*/
     }
 
     private PlayStatusType toggleCurrentStatus() {

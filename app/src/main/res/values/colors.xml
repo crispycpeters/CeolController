@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#111111</color>
     <color name="colorAccent">#e80d0d</color>
     <color name="white">#ffffffff</color>
+    <color name="dimmedWhite">#bbb</color>
 <!--    <color name="background">#ff000000</color>-->
     <color name="imageOverlay">#aa000000</color>
 <!--

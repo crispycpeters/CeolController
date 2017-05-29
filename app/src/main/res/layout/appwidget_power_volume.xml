@@ -22,13 +22,12 @@
     <Button
         android:id="@+id/siB"
         style="@style/SIButton.Small"
+        android:layout_width="0dp"
         android:layout_height="@dimen/av_button_size_small"
         android:layout_gravity="center"
-        android:gravity="center"
         android:layout_weight="1"
-        android:layout_width="0dp"
-        android:onClick="buttonClick"
-        />
+        android:gravity="center"
+        android:onClick="buttonClick" />
 
     <ImageButton
         android:id="@+id/volumedownB"
