@@ -7,6 +7,7 @@ import android.media.AudioManager;
 import android.util.Log;
 
 import com.candkpeters.ceol.cling.ClingGatherer;
+import com.candkpeters.ceol.cling.OnClingListener;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.model.ObservedControlType;
 import com.candkpeters.ceol.model.CeolModel;
@@ -40,8 +41,13 @@ public class CeolManager {
     public CeolManager(final Context context) {
         this.context = context;
         ceolModel = new CeolModel();
-        ceolWebSvcGatherer = new CeolWebSvcGatherer(ceolModel);
-        clingGatherer = new ClingGatherer(context, ceolModel);
+        ceolWebSvcGatherer = new CeolWebSvcGatherer(context, ceolModel);
+            clingGatherer = new ClingGatherer(context, ceolModel, new OnClingListener() {
+                @Override
+                public void onClingDisconnected() {
+                    startGatherers();
+                }
+            });
         ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(ceolModel);
     }
 
@@ -105,7 +111,6 @@ public class CeolManager {
                     case None:
                         break;
                     case Connection:
-                        connectionUpdated( (ConnectionControl)controlBase);
                         break;
                     case Power:
                         break;
@@ -184,10 +189,6 @@ public class CeolManager {
 
 
 
-    private void connectionUpdated(ConnectionControl connectionControl) {
-
-    }
-
     public boolean isDebugMode() {
         return isDebugMode;
     }
@@ -216,15 +217,11 @@ public class CeolManager {
     }
 
     public void sendOpenHomeCommand(String commandString) {
-        if (context != null) {
-            clingGatherer.getOpenHomeUpnpDevice().performPlaylistCommand(commandString);
-        }
+        clingGatherer.sendOpenHomeCommand(commandString);
     }
 
     public void sendOpenHomeSeekIdCommand(int trackId) {
-        if (context != null) {
-            clingGatherer.getOpenHomeUpnpDevice().performPlaylistSeekIdCommand(trackId);
-        }
+        clingGatherer.sendOpenHomeSeekIdCommand(trackId);
     }
 
     public void sendSpotifyCommand(String commandString) {
@@ -270,7 +267,7 @@ public class CeolManager {
         }
     }
 
-    private void restart(Context context) {
+    public void restart(Context context) {
         Prefs prefs = new Prefs(context);
         isDebugMode = prefs.getIsDebugMode();
         inputUpdated(ceolModel.inputControl);
@@ -319,6 +316,7 @@ public class CeolManager {
     public void networkGone() {
         Log.d(TAG, "networkGone: ");
         ceolWebSvcGatherer.stop();
+        clingGatherer.stop();
         ceolModel.notifyConnectionStatus(false);
     }
 }

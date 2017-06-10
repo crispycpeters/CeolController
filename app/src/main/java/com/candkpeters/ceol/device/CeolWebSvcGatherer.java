@@ -1,5 +1,6 @@
 package com.candkpeters.ceol.device;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.Log;
@@ -10,9 +11,9 @@ import com.candkpeters.ceol.model.control.CeolNavigatorControl;
 import com.candkpeters.ceol.model.PlayStatusType;
 import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.model.StreamingStatus;
-import com.candkpeters.ceol.model.control.TestPlaylistControl;
 import com.candkpeters.ceol.view.Prefs;
 import com.candkpeters.ceol.view.UIThreadUpdater;
+import com.squareup.picasso.Picasso;
 
 import org.simpleframework.xml.util.Dictionary;
 
@@ -37,6 +38,7 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     private static final int BACKGROUNDRATE_MSECS = 1800000;
     private static final int REPEATONCE_MSECS = 600;
     private static final long IMAGE_LOAD_DELAY_MSECS = 1000;
+    private final Context context;
 //    private static final long BACKGROUNDTIMEOUT_MSECS = 10000;
 //    private final int backgroundTimeoutMsecs;
 //    private final int backgroundRateMsecs;
@@ -90,7 +92,8 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     private boolean ceolNavigatorControlChanged = false;
     private boolean isActive = false;
 
-    CeolWebSvcGatherer(CeolModel ceolModel) {
+    CeolWebSvcGatherer(Context context, CeolModel ceolModel) {
+        this.context = context;
         this.ceolModel = ceolModel;
 
         initiatlizeControls();
@@ -414,6 +417,7 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
                                     texts.get("bitrate").text
                             );
                             newCeolNavigatorControl.setIsBrowsing(false);
+                            audioItem.setImageBitmapUrl(imageUrl);
                         }
 //                    }
                     checkTrackControlChanged(ceolModel.inputControl.trackControl.updateAudioItem(audioItem));
@@ -453,11 +457,25 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
             e.printStackTrace();
         }
 
+
+/*
+        if ( ceolModel.inputControl.trackControl.getAudioItem().getImageBitmapUrl() != null ) {
+            AudioStreamItem audioStreamItem = ceolModel.inputControl.trackControl.getAudioItem()
+            Picasso.with(context)
+                    .load(String.valueOf(audioStreamItem.getImageBitmapUrl()))
+                    .stableKey(audioStreamItem.getKey())
+                    .into(imageV);
+
+        }
+*/
+
         if ( imageDownloaderTask == null ||
                 (!imageDownloaderTask.isRunning() &&
                         (oldTrack == null || !oldTrack.equals(ceolModel.inputControl.trackControl.getAudioItem().getTitle()) ))) {
             getImage();
         }
+
+
 
 //        ceolModel.setAudioControl(audioControlUpdate);
 //        ceolModel.setInputControl(inputControl);

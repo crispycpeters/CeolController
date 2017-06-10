@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import java.net.URI;
+import java.net.URL;
 
 /**
  * Created by crisp on 06/01/2016.
@@ -19,7 +20,7 @@ public class AudioStreamItem {
     private String format;
     private String bitrate;
     private String audioUrl;
-    private URI imageBitmapUri;
+    private URL imageBitmapUrl;
     private Bitmap imageBitmap;
     private int id;
     private int duration;
@@ -65,7 +66,7 @@ public class AudioStreamItem {
         id = 0;
         title = artist = album = format = bitrate = band = frequency = "";
         isAuto = false;
-        imageBitmapUri = null;
+        imageBitmapUrl = null;
         audioUrl = null;
         duration = 0;
     }
@@ -124,11 +125,11 @@ public class AudioStreamItem {
         this.imageBitmap = imageBitmap;
     }
 
-    public URI getImageBitmapUri() {
-        return imageBitmapUri;
+    public URL getImageBitmapUrl() {
+        return imageBitmapUrl;
     }
-    public void setImageBitmapUri(URI imageBitmap) {
-        this.imageBitmapUri = imageBitmap;
+    public void setImageBitmapUrl(URL imageBitmap) {
+        this.imageBitmapUrl = imageBitmap;
     }
 
     public String getAudioUrl() {
@@ -190,7 +191,7 @@ public class AudioStreamItem {
         format = audioItem.format;
         duration = audioItem.duration;
         imageBitmap = audioItem.imageBitmap;
-        imageBitmapUri = audioItem.imageBitmapUri;
+        imageBitmapUrl = audioItem.imageBitmapUrl;
         audioUrl = audioItem.audioUrl;
         frequency = audioItem.frequency;
         band = audioItem.band;
@@ -241,4 +242,9 @@ public class AudioStreamItem {
         this.duration = duration;
     }
 
+    public String getKey() {
+        return imageBitmapUrl != null ? imageBitmapUrl.toString() : ""
+                + title != null ? title : ""
+                + album != null ? album : "";
+    }
 }

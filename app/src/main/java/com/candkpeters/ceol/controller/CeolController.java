@@ -42,12 +42,9 @@ public class CeolController implements View.OnClickListener {
 
     private boolean bound = false;
 
-    OnControlChangedListener onControlChangedListener;
+    private OnControlChangedListener onControlChangedListener;
 
-    public CeolController(Context context, final OnControlChangedListener onControlChangedListener) {
-        if ( onControlChangedListener!= null) {
-            this.onControlChangedListener= onControlChangedListener;
-        }
+    public CeolController(Context context) {
         this.context = context;
     }
 
@@ -57,6 +54,7 @@ public class CeolController implements View.OnClickListener {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
+            Log.d(TAG, "onServiceConnected: Connected to CeolService");
             CeolServiceBinder binder = (CeolServiceBinder) service;
             ceolService = binder.getCeolService();
             ceolManager = ceolService.getCeolManager();
@@ -66,6 +64,7 @@ public class CeolController implements View.OnClickListener {
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
+            Log.d(TAG, "onServiceDisconnected: Disconnected from CeolService");
             bound = false;
         }
     };
@@ -86,23 +85,38 @@ public class CeolController implements View.OnClickListener {
         return ceolManager.isDebugMode();
     }
 
-    private void stopListening() {
-        Log.d(TAG, "stopListening: ("+bound+")");
-        if (bound) {
-            ceolManager.ceolModel.unregister(onControlChangedListener);
-        }
-    }
-
-    private void startListening() {
-        Log.d(TAG, "startListening: ("+bound+")");
-        if (bound) {
-            ceolManager.ceolModel.register(onControlChangedListener);
-        } else {
+    public void create() {
+        if (!bound) {
+            Log.d(TAG, "create: Binding");
             Intent intent = new Intent(context, CeolService.class);
             context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         }
     }
 
+    public void stop() {
+        Log.d(TAG, "stop: ("+bound+")");
+        if ( bound) {
+            ceolManager.ceolModel.unregister(onControlChangedListener);
+        }
+        this.onControlChangedListener = null;
+    }
+
+    public void start(OnControlChangedListener onControlChangedListener) {
+        Log.d(TAG, "start: ("+bound+")");
+        this.onControlChangedListener= onControlChangedListener;
+        create();
+        if (bound) {
+            ceolManager.ceolModel.register(onControlChangedListener);
+        }
+    }
+
+    public void destroy() {
+        stop();
+        if (bound) {
+            Log.d(TAG, "destroy: Unbinding");
+            context.unbindService(serviceConnection);
+        }
+    }
 
     public void performCommand( Command command ) {
         if ( command != null && bound) {
@@ -120,19 +134,16 @@ public class CeolController implements View.OnClickListener {
         return isConnected;
     }
 
+    public void restart() {
+        if ( ceolManager != null) {
+            ceolManager.startGatherers();
+        }
+    }
 /*
     public void performMacro() {
         ceolManager.execute(new CommandMacro(1));
     }
 */
-
-    public void activityOnStop() {
-        stopListening();
-    }
-
-    public void activityOnStart() {
-        startListening();
-    }
 
     public void setViewCommandHandlers(View rootView) {
 

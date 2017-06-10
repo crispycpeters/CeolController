@@ -47,4 +47,8 @@
         </menu>
     </item>
 
+    <item
+        android:id="@+id/nav_library"
+        android:title="@string/menu_library" />
+
 </menu>

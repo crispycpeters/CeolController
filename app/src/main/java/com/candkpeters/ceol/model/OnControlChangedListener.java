@@ -14,15 +14,5 @@ import com.candkpeters.ceol.model.control.TrackControl;
  */
 
 public interface OnControlChangedListener {
-/*
-    void onAudioControlChanged(CeolModel ceolModel, AudioControl audioControl);
-    void onConnectionControlChanged(CeolModel ceolModel,ConnectionControl connectionControl);
-    void onCeolNavigatorControlChanged(CeolModel ceolModel,CeolNavigatorControl ceolNavigatorControl);
-    void onInputControlChanged(CeolModel ceolModel,InputControl inputControl);
-    void onPowerControlChanged(CeolModel ceolModel,PowerControl powerControl);
-    void onTrackControlChanged(CeolModel ceolModel,TrackControl trackControl);
-    void onPlaylistControlChanged(CeolModel ceolModel,PlaylistControlBase playlistControlBase);
-*/
-
     void onControlChanged(CeolModel ceolModel, ObservedControlType observedControlType, ControlBase controlBase);
 }

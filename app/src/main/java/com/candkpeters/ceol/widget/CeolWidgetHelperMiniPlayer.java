@@ -126,7 +126,7 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
                     break;
                 case Starting:
                     views.setViewVisibility(R.id.waitingPB, View.VISIBLE);
-                    views.setViewVisibility(R.id.powerV, View.VISIBLE);
+//                    views.setViewVisibility(R.id.powerV, View.VISIBLE);
                     views.setImageViewResource(R.id.powerB, R.drawable.ic_av_power_off);
 //                    views.setImageViewResource(R.id.powerB2, R.drawable.ic_av_power_off);
 //                    views.setInt(R.id.siB, "setBackgroundResource", R.color.dimmedWhite);

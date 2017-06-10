@@ -102,7 +102,6 @@ public class CeolModel implements ControlObserved {
     }
 
     private void notifyObserver(OnControlChangedListener obj, ControlBase control) {
-
         if ( control != null) {
             obj.onControlChanged(this, control.getObservedControlType(), control);
         }

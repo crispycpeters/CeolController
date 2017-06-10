@@ -23,7 +23,7 @@ import com.squareup.picasso.Picasso;
  * Created by crisp on 27/04/2017.
  */
 
-public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecyclerAdapter.AudioItemViewHolder> {
+public class ContentRecyclerAdapter extends RecyclerView.Adapter<ContentRecyclerAdapter.AudioItemViewHolder> {
     protected static String TAG = "PlaylistRecyclerAdapter";
     private final CeolController controller;
     //    private List<FeedItem> feedItemList;
@@ -31,7 +31,7 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
     private final OnAudioItemClickListener onAudioItemClickListener;
     private TestPlaylistControl testPlaylistControl;
 
-    public PlaylistRecyclerAdapter(Context context, CeolController controller, OnAudioItemClickListener onAudioItemClickListener) {
+    public ContentRecyclerAdapter(Context context, CeolController controller, OnAudioItemClickListener onAudioItemClickListener) {
 //        this.feedItemList = feedItemList;
         this.controller = controller;
 //        this.openHoemDevice = contro.getOpenHome();

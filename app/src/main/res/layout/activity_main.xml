@@ -86,8 +86,8 @@
                 android:alpha="0.5"
                 android:background="@drawable/shape_background"
                 android:gravity="center"
-                android:text="@string/not_connected"
                 />
+            <!--android:text="@string/not_connected"-->
 
         </FrameLayout>
 

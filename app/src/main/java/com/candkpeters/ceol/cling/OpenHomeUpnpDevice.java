@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.candkpeters.ceol.device.ImageDownloaderResult;
 import com.candkpeters.ceol.device.ImageDownloaderTask;
+import com.candkpeters.ceol.model.DeviceStatusType;
 import com.candkpeters.ceol.model.PlayStatusType;
 import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.model.StreamingStatus;
@@ -33,7 +34,6 @@ import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.state.StateVariableValue;
 import org.fourthline.cling.model.types.ServiceId;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
-import org.fourthline.cling.support.avtransport.callback.Play;
 import org.fourthline.cling.support.contentdirectory.DIDLParser;
 import org.fourthline.cling.support.model.DIDLContent;
 import org.fourthline.cling.support.model.DIDLObject;
@@ -43,6 +43,7 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import java.net.URI;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -56,16 +57,17 @@ import java.util.Map;
 public class OpenHomeUpnpDevice implements ImageDownloaderResult {
     private static final String TAG = "OpenHomeUpnpDevice";
 
-    private static final int DEFAULT_EVENT_RENEWAL_SECS = 600;
+    private static final int DEFAULT_EVENT_RENEWAL_SECS = 100;
     private final Context context;
     private final CeolModel ceolModel;
     private final OpenhomePlaylistControl openhomePlaylistControl;
     private final TrackControl trackControl;
     private final AudioControl audioControl;
     private final ProgressControl progressControl;
+    private final OnClingListener onClingListener;
     private boolean isSubscribed;
-    private Device device;
-    private AndroidUpnpService upnpService;
+    final private Device device;
+    final private AndroidUpnpService upnpService;
     private ServiceId infoServiceId = new ServiceId("av-openhome-org","Info");
     private ServiceId timeServiceId = new ServiceId("av-openhome-org","Time");
     private ServiceId playlistServiceId = new ServiceId("av-openhome-org","Playlist");
@@ -79,37 +81,37 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
     private long totalTrackCount;
 
 
-    public OpenHomeUpnpDevice(Context context, CeolModel ceolModel) {
+    public OpenHomeUpnpDevice(Context context, AndroidUpnpService upnpService, Device device, CeolModel ceolModel, OnClingListener onClingListener) {
         this.context = context;
         this.ceolModel = ceolModel;
+        this.upnpService = upnpService;
+        this.device = device;
         //TODO - Should be using an interface or base methods in PlaylistControlBase
         this.openhomePlaylistControl = (OpenhomePlaylistControl)ceolModel.inputControl.playlistControl;
         this.audioControl = ceolModel.audioControl;
         this.trackControl = ceolModel.inputControl.trackControl;
         this.progressControl = ceolModel.progressControl;
         this.isSubscribed = false;
-//        ceolDeviceOpenHome = ceolModel.getOpenHome();
+        this.onClingListener = onClingListener;
+
+        addDevice();
     }
 
     public void removeDevice() {
-        device = null;
-        timeService = infoService = playlistService = null;
-        totalTrackCount = 0;
-        this.openhomePlaylistControl.clearTracklist();
-//        ceolDeviceOpenHome.setDuration(0);
-//        ceolDeviceOpenHome.setTotalTrackCount(0);
-//        ceolDeviceOpenHome.setSeconds(0);
-//        ceolDeviceOpenHome.setAudioUri("");
-//        ceolDeviceOpenHome.setMetadata("");
+//        device = null;
+//        timeService = infoService = playlistService = null;
+//        totalTrackCount = 0;
+//        this.openhomePlaylistControl.clearTracklist();
+//        if ( onClingListener != null) {
+//            onClingListener.onClingDisconnected();
+//        }
     }
 
     public Device getDevice() {
         return device;
     }
 
-    public void addDevice(AndroidUpnpService upnpService, Device device) {
-        this.upnpService = upnpService;
-        this.device = device;
+    private void addDevice() {
         DeviceDetails dd = device.getDetails();
 //        Log.d(TAG, "Details: " + dd.toString());
         DeviceIdentity di = device.getIdentity();
@@ -159,7 +161,6 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
                 public void eventReceived(GENASubscription sub) {
 
                     Log.d(TAG,"Volume Event: " + sub.getCurrentSequence().getValue());
-                    isSubscribed = true;
                     try {
                         if ( isOperating()) {
                             Map<String, StateVariableValue> values = sub.getCurrentValues();
@@ -189,16 +190,20 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
 
                 @Override
                 public void eventReceived(GENASubscription sub) {
-                    isSubscribed = true;
 
                     long eventSequence = sub.getCurrentSequence().getValue();
 
                     try {
                         Map<String, StateVariableValue> values = sub.getCurrentValues();
 
-//                        UnsignedIntegerFourBytes durationV = (UnsignedIntegerFourBytes)(values.get("Duration").getValue());
+                        UnsignedIntegerFourBytes durationV = (UnsignedIntegerFourBytes)(values.get("Duration").getValue());
 //                        Log.d(TAG, "EVENT: GOT duration=" + durationV);
-//                        ceolDeviceOpenHome.setDuration((long) (durationV.getValue()));
+
+                        long duration = (long) (durationV.getValue());
+                        if ( trackControl.getAudioItem().getDuration() != duration) {
+                            trackControl.getAudioItem().setDuration((int)duration);
+                            ceolModel.notifyObservers(trackControl);
+                        }
 
                         UnsignedIntegerFourBytes secondsV = (UnsignedIntegerFourBytes)(values.get("Seconds").getValue());
 
@@ -207,6 +212,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
                         }
                         progressControl.updateProgress((long) (secondsV.getValue()));
 
+                        notifyInputControlIsOpenhome();
                         ceolModel.notifyObservers(progressControl);
 
                     } catch ( Exception e ) {
@@ -253,19 +259,32 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
 
 //                    trackControl.getAudioStreamItem().setAudioUrl((String)(uri.getValue()));
 
-//                    URI oldImageUri = trackControl.getAudioStreamItem().getImageBitmapUri();
+//                    URI oldImageUri = trackControl.getAudioStreamItem().getImageBitmapUrl();
 
                         if (!audioStreamItem.equals(trackControl.getAudioItem())) {
                             Log.d(TAG, "eventReceived: New stream is different: " + audioStreamItem);
                             trackControl.updateAudioItem(audioStreamItem);
                             imageDownloaderTask = new ImageDownloaderTask(imageDownloaderResult);
-                            if (audioStreamItem.getImageBitmapUri() != null) {
-                                imageDownloaderTask.execute(audioStreamItem.getImageBitmapUri().toString());
+                            if (audioStreamItem.getImageBitmapUrl() != null) {
+                                imageDownloaderTask.execute(audioStreamItem.getImageBitmapUrl().toString());
                             }
                         }
                         ceolModel.notifyObservers(trackControl);
                     }
                 }
+
+/*
+                @Override
+                public void ended(GENASubscription sub,
+                                  CancelReason reason,
+                                  UpnpResponse response) {
+                    Log.d(TAG,"Info subscription ended: "+ reason);
+                    isSubscribed = false;
+                    setTotalTrackCount(0);
+
+                    removeDevice();
+                }
+*/
 
             };
             upnpService.getControlPoint().execute(callback);
@@ -276,13 +295,11 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
         if ( !ceolModel.connectionControl.isConnected()) {
             ceolModel.notifyConnectionStatus(true);
         }
-        if ( isOperating() ) {
-            if ( ceolModel.inputControl.getStreamingStatus() != StreamingStatus.OPENHOME) {
-                ceolModel.inputControl.updateSIStatus(SIStatusType.OpenHome);
-                ceolModel.notifyObservers(ceolModel.inputControl);
-            }
-        } else {
-            ceolModel.inputControl.updateSIStatus(SIStatusType.Unknown);
+        if ( ceolModel.powerControl.updateDeviceStatus(DeviceStatusType.On) ) {
+            ceolModel.notifyObservers(ceolModel.powerControl);
+        }
+        if ( isOperating() && ceolModel.inputControl.getStreamingStatus() != StreamingStatus.OPENHOME) {
+            ceolModel.inputControl.updateSIStatus(SIStatusType.OpenHome);
             ceolModel.notifyObservers(ceolModel.inputControl);
         }
     }
@@ -293,7 +310,6 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
 
                 @Override
                 public void eventReceived(GENASubscription sub) {
-                    isSubscribed = true;
 
                     Log.d(TAG,"Playlist Event: " + sub.getCurrentSequence().getValue());
 
@@ -312,17 +328,8 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
                     setCurrentTrackId((long)(currentTrackIdValue.getValue()));
 
                     ceolModel.notifyObservers(ceolModel.inputControl.playlistControl);
-//                    ceolDevice.notifyObservers();
-/*
 
-                    StateVariableValue uri = values.get("Uri");
-                    Log.d(TAG, "EVENT: GOT uri="+uri);
-                    ceolDeviceOpenHome.setAudioUri((String)(uri.getValue()));
-
-                    StateVariableValue metadata = values.get("Metadata");
-                    Log.d(TAG, "EVENT: GOT metadata="+metadata);
-                    ceolDeviceOpenHome.setMetadata((String)(metadata.getValue()));
-*/
+                    notifyInputControlIsOpenhome();
                 }
 
             };
@@ -522,7 +529,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
                 audioItem.setBitrate(Long.toString(res.getBitrate()/1000) + "k"); // TODO Wrong - should be using protocol info flags some way
                 DIDLObject.Property<URI> didlUri = item.getFirstProperty(DIDLObject.Property.UPNP.ALBUM_ART_URI.class);
                 if ( didlUri != null) {
-                    audioItem.setImageBitmapUri(didlUri.getValue());
+                    audioItem.setImageBitmapUrl(new URL(didlUri.getValue().toString()));
                 }
             } catch (Exception e) {
                 Log.e(TAG, "parseDIDL: Bad XML in DIDL.", e);
@@ -555,10 +562,6 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
         }
     }
 
-    public boolean isSubscribed( ) {
-        return isSubscribed;
-    }
-
     @Override
     public void imageDownloaded(Bitmap bitmap) {
         Log.d(TAG, "imageDownloaded: Downloaded!");
@@ -566,7 +569,7 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
         ceolModel.notifyObservers(trackControl);
     }
 
-    public void setTotalTrackCount(long totalTrackCount) {
+    private void setTotalTrackCount(long totalTrackCount) {
         this.totalTrackCount = totalTrackCount;
     }
 
@@ -607,8 +610,8 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
                           UpnpResponse response) {
 //                    assertNull(reason);
             Log.d(TAG,"Subscription ended: "+ reason);
-            isSubscribed = false;
-            removeDevice();
+//            isSubscribed = false;
+//            removeDevice();
         }
 
         @Override

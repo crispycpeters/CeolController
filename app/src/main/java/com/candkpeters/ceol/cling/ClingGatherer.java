@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -28,16 +29,17 @@ import java.util.logging.Logger;
  * Created by crisp on 10/04/2017.
  */
 
-public class ClingGatherer extends GathererBase {
+public class ClingGatherer extends GathererBase implements Runnable {
+    private static final long SEARCH_RETRY_MSECS = 15000;
     private static String TAG = "ClingGatherer";
     //    private BrowserUpnpService browserUpnpService;
     private AndroidUpnpService upnpService;
     private BrowseRegistryListener registryListener = new BrowseRegistryListener();
     private final Context context;
     private Prefs prefs;
-    private boolean isClingServiceBound;
-
-    final private OpenHomeUpnpDevice openHomeUpnpDevice;
+    private boolean isClingServiceBound = false;
+    private final OnClingListener onClingListener;
+    private OpenHomeUpnpDevice openHomeUpnpDevice;
     private final CeolModel ceolModel;
 
     public OpenHomeUpnpDevice getOpenHomeUpnpDevice() {
@@ -49,14 +51,15 @@ public class ClingGatherer extends GathererBase {
     private void setupCachedPlayer() {
     }
 
-    public ClingGatherer(Context context, CeolModel ceolModel) {
+    public ClingGatherer(Context context, CeolModel ceolModel, OnClingListener onClingListener) {
         this.context = context;
-        openHomeUpnpDevice = new OpenHomeUpnpDevice(context, ceolModel);
         this.ceolModel = ceolModel;
+        this.onClingListener = onClingListener;
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
+            Log.d(TAG, "onServiceConnected: Cling service connected");
             isClingServiceBound = true;
             upnpService = (AndroidUpnpService) service;
 
@@ -80,6 +83,7 @@ public class ClingGatherer extends GathererBase {
         }
 
         public void onServiceDisconnected(ComponentName className) {
+            Log.d(TAG, "onServiceConnected: Cling service disconnected");
             upnpService = null;
             isClingServiceBound = false;
         }
@@ -87,9 +91,15 @@ public class ClingGatherer extends GathererBase {
 
     private void checkSubscriptions() {
         if ( isClingServiceBound) {
-            if ( !openHomeUpnpDevice.isSubscribed() ) {
+            if ( !isOpenHomeRunning() ) {
                 Log.d(TAG, "Initiating search...");
-                upnpService.getControlPoint().search();
+                upnpService.getControlPoint().search(10);
+                new Handler(context.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        checkSubscriptions();
+                    }
+                }, SEARCH_RETRY_MSECS);
             }
         }
     }
@@ -121,7 +131,11 @@ public class ClingGatherer extends GathererBase {
             upnpService.getRegistry().removeListener(registryListener);
         }
         if ( isClingServiceBound) {
-            context.unbindService(serviceConnection);
+            try {
+                context.unbindService(serviceConnection);
+            } catch ( Exception exc ) {
+                Log.w(TAG, "unbindFromCling: unbindService() failed, assuming unbound.",exc );
+            }
         }
     }
 
@@ -139,17 +153,28 @@ public class ClingGatherer extends GathererBase {
         unbindFromCling();
     }
 
-    public void checkOperation() {
-        getOpenHomeUpnpDevice().checkOperation();
+    @Override
+    public void run() {
+
     }
 
-    protected class BrowseRegistryListener extends DefaultRegistryListener {
+    private boolean isOpenHomeRunning() {
+        return ( isClingServiceBound && openHomeUpnpDevice != null);
+    }
 
-        /* Discovery performance optimization for very slow Android devices! */
-        @Override
-        public void remoteDeviceDiscoveryStarted(Registry registry, RemoteDevice device) {
-//            deviceAdded(device);
+    public void sendOpenHomeCommand(String commandString) {
+        if ( isOpenHomeRunning()) {
+            openHomeUpnpDevice.performPlaylistCommand(commandString);
         }
+    }
+
+    public void sendOpenHomeSeekIdCommand(int trackId) {
+        if ( isOpenHomeRunning()) {
+            openHomeUpnpDevice.performPlaylistSeekIdCommand(trackId);
+        }
+    }
+
+    private class BrowseRegistryListener extends DefaultRegistryListener {
 
         @Override
         public void remoteDeviceDiscoveryFailed(Registry registry, final RemoteDevice device, final Exception ex) {
@@ -165,6 +190,7 @@ public class ClingGatherer extends GathererBase {
                 }
             });
 */
+
             deviceRemoved(device);
         }
         /* End of optimization, you can remove the whole block if your Android handset is fast (>= 600 Mhz) */
@@ -197,39 +223,29 @@ public class ClingGatherer extends GathererBase {
 
             if ( friendlyName.compareToIgnoreCase(prefOpenhomeNmae) == 0) {
                 Log.d(TAG, "deviceAdded: Aha - found: " + device.getDisplayString());
-                openHomeUpnpDevice.addDevice(upnpService, device);
+
+                openHomeUpnpDevice = new OpenHomeUpnpDevice(context, upnpService, device, ceolModel, onClingListener);
+//                openHomeUpnpDevice.addDevice(upnpService, device);
             }
-/*            runOnUiThread(new Runnable() {
-                public void run() {
-
-                    DeviceDisplay d = new DeviceDisplay(device);
-                    int position = listAdapter.getPosition(d);
-                    if (position >= 0) {
-                        // Device already in the list, re-set new value at same position
-                        listAdapter.remove(d);
-                        listAdapter.insert(d, position);
-                    } else {
-                        listAdapter.add(d);
-                    }
-
-                }
-            });
-*/
         }
 
         public void deviceRemoved(final Device device) {
 
             if ( device.equals(openHomeUpnpDevice.getDevice())) {
                 Log.d(TAG, "deviceRemoved: " + device);
-                openHomeUpnpDevice.removeDevice();
+                openHomeUpnpDevice = null;
+//                openHomeUpnpDevice.removeDevice();
 
                 // Need to switch back to ceol
+                if ( onClingListener != null ) {
+                    onClingListener.onClingDisconnected();
+                }
+
                 ceolModel.inputControl.updateSIStatus(SIStatusType.Unknown);
                 ceolModel.notifyObservers(ceolModel.inputControl);
             }
 
         }
     }
-
 
 }

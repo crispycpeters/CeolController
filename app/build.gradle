@@ -4,11 +4,15 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
 
+    def date = new Date()
+    def formattedDate = date.format('yyMMddHHmm')
+    def code = formattedDate.toInteger()
+
     defaultConfig {
         applicationId "com.candkpeters.ceol"
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 1
+        versionCode code
         versionName "1.0"
     }
     buildTypes {
