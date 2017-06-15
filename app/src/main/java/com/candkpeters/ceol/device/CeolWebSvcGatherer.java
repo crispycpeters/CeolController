@@ -49,6 +49,7 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     private int repeatrate;
     private final CeolModel ceolModel;
     private URL imageUrl;
+    private final Object MUTEX = new Object();
 
     // Observer
 /*
@@ -281,17 +282,19 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
 
 
     private void getImage() {
-        imageDownloaderTask = new ImageDownloaderTask(this);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    imageDownloaderTask.execute(imageUrl.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
+        synchronized ( MUTEX) {
+            imageDownloaderTask = new ImageDownloaderTask(this);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        imageDownloaderTask.execute(imageUrl.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        }, IMAGE_LOAD_DELAY_MSECS);
+            }, IMAGE_LOAD_DELAY_MSECS);
+        }
     }
 
     private void logResponse(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse) {
@@ -363,7 +366,8 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
 
     private void updateDeviceStatus(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse) {
 
-        String oldTrack = ceolModel.inputControl.trackControl.getAudioItem().getTitle();
+        AudioStreamItem oldAudioItem = ceolModel.inputControl.trackControl.getAudioItem();
+        String oldTrack = oldAudioItem.getTitle();
 /*
         if (oldTrack == null || oldTrack.length()==0) {
             Log.d(TAG, "updateDeviceStatus: oldtrack is null or blank");
@@ -431,6 +435,8 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
                 }
 
             } else {
+                AudioStreamItem audioItem = new AudioStreamItem();
+                checkTrackControlChanged(ceolModel.inputControl.trackControl.updatePlayStatus(PlayStatusType.Playing));
                 switch (ceolModel.inputControl.getSIStatus()) {
 
                     case Unknown:
@@ -439,18 +445,15 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
                         // TODO
                         break;
                     case Tuner:
-                        AudioStreamItem audioItem = new AudioStreamItem();
-                        checkTrackControlChanged(ceolModel.inputControl.trackControl.updatePlayStatus(PlayStatusType.Stopped));
                         audioItem.setBand(webSvcHttpAppCommandResponse.band);
                         audioItem.setFrequency(webSvcHttpAppCommandResponse.frequency);
                         audioItem.setTitle(webSvcHttpAppCommandResponse.name);
                         audioItem.setAuto(webSvcHttpAppCommandResponse.automanual != null && webSvcHttpAppCommandResponse.automanual.equalsIgnoreCase("AUTO"));
-                        checkTrackControlChanged(ceolModel.inputControl.trackControl.updateAudioItem(audioItem));
                         break;
-                    case AnalogIn:
                     default:
                         break;
                 }
+                checkTrackControlChanged(ceolModel.inputControl.trackControl.updateAudioItem(audioItem));
             }
         } catch (Exception e) {
             Log.w(TAG, "updateDeviceStatus: Exception in web response: " + e.toString());
@@ -471,9 +474,17 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
 
         if ( imageDownloaderTask == null ||
                 (!imageDownloaderTask.isRunning() &&
+                    !oldAudioItem.equals(ceolModel.inputControl.trackControl.getAudioItem()))) {
+            getImage();
+        }
+
+/*
+        if ( imageDownloaderTask == null ||
+                (!imageDownloaderTask.isRunning() &&
                         (oldTrack == null || !oldTrack.equals(ceolModel.inputControl.trackControl.getAudioItem().getTitle()) ))) {
             getImage();
         }
+*/
 
 
 
