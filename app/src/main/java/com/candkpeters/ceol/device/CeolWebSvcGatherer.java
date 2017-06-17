@@ -36,7 +36,7 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
 
     private static final int REPEATRATE_MSECS = 900;
     private static final int BACKGROUNDRATE_MSECS = 1800000;
-    private static final int REPEATONCE_MSECS = 600;
+    private static final int REPEATONCE_MSECS = 500;
     private static final long IMAGE_LOAD_DELAY_MSECS = 1000;
     private final Context context;
 //    private static final long BACKGROUNDTIMEOUT_MSECS = 10000;
@@ -103,11 +103,13 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     @Override
     public void run() {
         initiatlizeControls();
+        if ( !ceolModel.connectionControl.isConnected() || ceolModel.inputControl.getStreamingStatus() != StreamingStatus.OPENHOME ) {
 //        if (!ceolDevice.isOpenHomeOperating() || isTimeForBackground()) {
             getStatus_Async();
 //        } else {
 //            activeThreadUpdater.next();
 //        }
+        }
     }
 
     private void initiatlizeControls() {

@@ -37,6 +37,7 @@ public class CeolManager {
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
 
     private String message;
+    private boolean haveNetwork = true;
 
     public CeolManager(final Context context) {
         this.context = context;
@@ -45,7 +46,10 @@ public class CeolManager {
             clingGatherer = new ClingGatherer(context, ceolModel, new OnClingListener() {
                 @Override
                 public void onClingDisconnected() {
-                    startGatherers();
+                    if ( haveNetwork) {
+                        Log.d(TAG, "onClingDisconnected: We were disconnected. Let's connect again.");
+                        startGatherers();
+                    }
                 }
             });
         ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(ceolModel);
@@ -66,43 +70,8 @@ public class CeolManager {
             };
             prefs.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
         }
-        ceolModel.register(new OnControlChangedListener() {
 /*
-            @Override
-            public void onAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
-
-            }
-
-            @Override
-            public void onConnectionControlChanged(CeolModel ceolModel, ConnectionControl connectionControl) {
-                connectionUpdated( connectionControl);
-            }
-
-            @Override
-            public void onCeolNavigatorControlChanged(CeolModel ceolModel, CeolNavigatorControl ceolNavigatorControl) {
-
-            }
-
-            @Override
-            public void onInputControlChanged(CeolModel ceolModel, InputControl inputControl) {
-                inputUpdated( inputControl);
-            }
-
-            @Override
-            public void onPowerControlChanged(CeolModel ceolModel, PowerControl powerControl) {
-
-            }
-
-            @Override
-            public void onTrackControlChanged(CeolModel ceolModel, TrackControl trackControl) {
-
-            }
-
-            @Override
-            public void onPlaylistControlChanged(CeolModel ceolModel, PlaylistControlBase playlistControlBase) {
-
-            }
-*/
+        ceolModel.register(new OnControlChangedListener() {
 
             @Override
             public void onControlChanged(CeolModel ceolModel, ObservedControlType observedControlType, ControlBase controlBase) {
@@ -130,6 +99,7 @@ public class CeolManager {
             }
 
         });
+*/
         startGatherers();
     }
 
@@ -146,7 +116,7 @@ public class CeolManager {
     public void register(OnControlChangedListener obj) {
         ceolModel.register(obj);
         // Ensure all gatherers are running
-        inputUpdated(ceolModel.inputControl);
+//        inputUpdated(ceolModel.inputControl);
         // TODO: Potentially unpause openhome events if paused
     }
 
@@ -270,7 +240,7 @@ public class CeolManager {
     public void restart(Context context) {
         Prefs prefs = new Prefs(context);
         isDebugMode = prefs.getIsDebugMode();
-        inputUpdated(ceolModel.inputControl);
+//        inputUpdated(ceolModel.inputControl);
         ceolWebSvcGatherer.stop();
         ceolWebSvcGatherer.start(prefs);
         clingGatherer.stop();
@@ -296,17 +266,18 @@ public class CeolManager {
     public void pauseGatherers() {
         // Screen is likely off
         ceolWebSvcGatherer.stop();
-//        clingGatherer.stop();
+        clingGatherer.pause();
     }
 
     public void resumeGatherers() {
         Prefs prefs = new Prefs(context);
         ceolWebSvcGatherer.start(prefs);
-//        clingGatherer.checkOperation();
+        clingGatherer.start(prefs);
         ceolModel.notifyAllObservers();
   }
 
     public void networkBack() {
+        haveNetwork = true;
         Log.d(TAG, "networkBack: ");
         Prefs prefs = new Prefs(context);
         ceolWebSvcGatherer.start(prefs);
@@ -314,9 +285,10 @@ public class CeolManager {
     }
 
     public void networkGone() {
+        haveNetwork = false;
         Log.d(TAG, "networkGone: ");
         ceolWebSvcGatherer.stop();
-        clingGatherer.stop();
+//        clingGatherer.stop();
         ceolModel.notifyConnectionStatus(false);
     }
 }

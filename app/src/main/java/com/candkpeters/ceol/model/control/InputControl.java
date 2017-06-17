@@ -80,7 +80,7 @@ public class InputControl extends ControlBase {
         return hasChanged;
     }
 
-    private void checkStreamingStatus() {
+    private void updateNavigatorControl() {
         switch (streamingStatus) {
             case CEOL:
                 // TODO Needs refactoring when we have other types of navigation and playlist
@@ -223,7 +223,7 @@ public class InputControl extends ControlBase {
             }
         }
 
-        checkStreamingStatus();
+        updateNavigatorControl();
         return hasChanged;
     }
 

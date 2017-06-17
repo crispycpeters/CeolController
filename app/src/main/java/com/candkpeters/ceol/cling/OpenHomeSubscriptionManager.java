@@ -54,8 +54,8 @@ import java.util.Map;
  * Created by crisp on 14/04/2017.
  */
 
-public class OpenHomeUpnpDevice implements ImageDownloaderResult {
-    private static final String TAG = "OpenHomeUpnpDevice";
+public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
+    private static final String TAG = "OpenHomeSubManager";
 
     private static final int DEFAULT_EVENT_RENEWAL_SECS = 100;
     private final Context context;
@@ -64,10 +64,10 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
     private final TrackControl trackControl;
     private final AudioControl audioControl;
     private final ProgressControl progressControl;
-    private final OnClingListener onClingListener;
+    private final OnSubscriptionListener onSubscriptionListener;
     private boolean isSubscribed;
-    final private Device device;
-    final private AndroidUpnpService upnpService;
+    private Device device;
+    private AndroidUpnpService upnpService;
     private ServiceId infoServiceId = new ServiceId("av-openhome-org","Info");
     private ServiceId timeServiceId = new ServiceId("av-openhome-org","Time");
     private ServiceId playlistServiceId = new ServiceId("av-openhome-org","Playlist");
@@ -81,42 +81,37 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
     private long totalTrackCount;
 
 
-    public OpenHomeUpnpDevice(Context context, AndroidUpnpService upnpService, Device device, CeolModel ceolModel, OnClingListener onClingListener) {
+    public OpenHomeSubscriptionManager(Context context, CeolModel ceolModel, OnSubscriptionListener onSubscriptionListener) {
         this.context = context;
         this.ceolModel = ceolModel;
-        this.upnpService = upnpService;
-        this.device = device;
         //TODO - Should be using an interface or base methods in PlaylistControlBase
         this.openhomePlaylistControl = (OpenhomePlaylistControl)ceolModel.inputControl.playlistControl;
         this.audioControl = ceolModel.audioControl;
         this.trackControl = ceolModel.inputControl.trackControl;
         this.progressControl = ceolModel.progressControl;
         this.isSubscribed = false;
-        this.onClingListener = onClingListener;
+        this.onSubscriptionListener = onSubscriptionListener;
 
-        addDevice();
+//        addDevice();
     }
 
     public void removeDevice() {
-//        device = null;
-//        timeService = infoService = playlistService = null;
-//        totalTrackCount = 0;
-//        this.openhomePlaylistControl.clearTracklist();
-//        if ( onClingListener != null) {
-//            onClingListener.onClingDisconnected();
-//        }
+        device = null;
+        isSubscribed = false;
+        timeService = infoService = playlistService = null;
+        totalTrackCount = 0;
+        this.openhomePlaylistControl.clearTracklist();
     }
 
     public Device getDevice() {
         return device;
     }
 
-    private void addDevice() {
-        DeviceDetails dd = device.getDetails();
-//        Log.d(TAG, "Details: " + dd.toString());
-        DeviceIdentity di = device.getIdentity();
-//        Log.d(TAG, "Identity: " + di.toString());
+    public boolean hasDevice() {
+        return device != null;
+    }
 
+    public void subscribe() {
         infoService = findService(infoServiceId);
         playlistService = findService(playlistServiceId);
         timeService = findService(timeServiceId);
@@ -126,6 +121,17 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
         setupTimeEvents();
         setupInfoEvents();
         setupPlaylistEvents();
+    }
+
+    public void addDevice(AndroidUpnpService upnpService, Device device ) {
+        this.device = device;
+        this.upnpService = upnpService;
+
+        DeviceDetails dd = device.getDetails();
+//        Log.d(TAG, "Details: " + dd.toString());
+        DeviceIdentity di = device.getIdentity();
+//        Log.d(TAG, "Identity: " + di.toString());
+        subscribe();
     }
 
     private Service findService( ServiceId serviceId) {
@@ -273,18 +279,35 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
                     }
                 }
 
-/*
+
                 @Override
                 public void ended(GENASubscription sub,
                                   CancelReason reason,
                                   UpnpResponse response) {
                     Log.d(TAG,"Info subscription ended: "+ reason);
-                    isSubscribed = false;
-                    setTotalTrackCount(0);
 
-                    removeDevice();
+                    switch (reason) {
+
+                        case RENEWAL_FAILED:
+                        case EXPIRED:
+                            // TODO - Need to inform manager and go into a retry...
+                            isSubscribed = false;
+                            if ( onSubscriptionListener != null) {
+                                onSubscriptionListener.onSubscriptionDisconnected();
+                            }
+                            break;
+                        case UNSUBSCRIBE_FAILED:
+                            break;
+                        case DEVICE_WAS_REMOVED:
+                            removeDevice();
+                            if ( onSubscriptionListener != null) {
+                                onSubscriptionListener.onDeviceDisconnected();
+                            }
+                            break;
+                    }
+
                 }
-*/
+
 
             };
             upnpService.getControlPoint().execute(callback);
@@ -554,6 +577,10 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
         }
     }
 
+    public boolean isSubscribed() {
+        return isSubscribed;
+    }
+
     public boolean isOperating( ) {
         if (isSubscribed && totalTrackCount > 0) {
             return true;
@@ -610,8 +637,6 @@ public class OpenHomeUpnpDevice implements ImageDownloaderResult {
                           UpnpResponse response) {
 //                    assertNull(reason);
             Log.d(TAG,"Subscription ended: "+ reason);
-//            isSubscribed = false;
-//            removeDevice();
         }
 
         @Override

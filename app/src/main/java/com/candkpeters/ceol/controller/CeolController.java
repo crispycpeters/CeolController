@@ -24,6 +24,7 @@ import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.DirectionType;
 import com.candkpeters.ceol.model.OnControlChangedListener;
+import com.candkpeters.ceol.model.StreamingStatus;
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.ceol.service.CeolServiceBinder;
 import com.candkpeters.chris.ceol.R;
@@ -179,7 +180,7 @@ public class CeolController implements View.OnClickListener {
     }
 
     public void togglePlaylistItem(AudioStreamItem item, boolean isCurrentTrack) {
-        if ( isCurrentTrack) {
+        if ( isCurrentTrack && getCeolModel().inputControl.getStreamingStatus() == StreamingStatus.OPENHOME) {
             // Toggle the playstate
             Command command = new CommandControlToggle();
             performCommand(command);
