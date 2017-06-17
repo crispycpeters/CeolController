@@ -18,7 +18,7 @@ public class CommandMacro extends CommandBaseInteger {
         this(-1);
     }
 
-    CommandMacro(int value) {
+    public CommandMacro(int value) {
         super(value);
     }
 
