@@ -3,15 +3,15 @@ package com.candkpeters.ceol.device.command;
 /**
  * Created by crisp on 25/01/2016.
  */
-public abstract class CommandBaseString extends Command {
+abstract class CommandBaseString extends Command {
     private String value;
 
-    public CommandBaseString(String value) {
+    CommandBaseString(String value) {
         super();
         this.value = value;
     }
 
-    public CommandBaseString() {
+    CommandBaseString() {
         this("");
     }
 

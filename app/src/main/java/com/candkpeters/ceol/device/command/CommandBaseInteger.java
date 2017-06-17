@@ -7,7 +7,7 @@ public abstract class CommandBaseInteger extends Command {
 
     private int value;
 
-    public CommandBaseInteger(int value) {
+    CommandBaseInteger(int value) {
         super();
         this.value = value;
     }

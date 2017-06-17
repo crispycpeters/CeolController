@@ -12,7 +12,7 @@ import com.candkpeters.ceol.model.StreamingStatus;
 /**
  * Created by crisp on 25/01/2016.
  */
-public class CommandBrowseInto extends CommandBaseString {
+class CommandBrowseInto extends CommandBaseString {
 
     private int startPosition;
     private boolean isFound;
@@ -28,17 +28,17 @@ public class CommandBrowseInto extends CommandBaseString {
     private SearchSteps searchSteps = SearchSteps.NotStarted;
     private static final String TAG = "CommandBrowseInto";
 
-    public CommandBrowseInto(String value, boolean playFirstEntry) {
+    CommandBrowseInto(String value, boolean playFirstEntry) {
         super(value);
         isFound = false;
         this.playFirstEntry = playFirstEntry;
     }
 
-    public CommandBrowseInto(String value) {
+    private CommandBrowseInto(String value) {
         this(value, false);
     }
 
-    public CommandBrowseInto() {
+    CommandBrowseInto() {
         this(null);
     }
 

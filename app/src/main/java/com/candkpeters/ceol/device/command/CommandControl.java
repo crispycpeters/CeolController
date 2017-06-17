@@ -5,16 +5,16 @@ import com.candkpeters.ceol.model.PlayStatusType;
 /**
  * Created by crisp on 25/01/2016.
  */
-public class CommandControl extends Command {
+class CommandControl extends Command {
 
     private static final String TAG = "CommandControl";
-    protected PlayStatusType playStatusType;
+    PlayStatusType playStatusType;
 
     public CommandControl() {
         this( PlayStatusType.Stopped);
     }
 
-    public CommandControl(PlayStatusType playStatusType) {
+    CommandControl(PlayStatusType playStatusType) {
         super();
         this.playStatusType = playStatusType;
     }

@@ -17,7 +17,7 @@ public abstract class Command {
     private static final String TAG = "Command";
     //private final CommandType type;
     protected CeolManager ceolManager;
-    protected int maxExecutionTimeMsecs = 30000;
+    int maxExecutionTimeMsecs = 30000;
 //    private OnCeolStatusChangedListener onCeolStatusChangedListener;
     private OnControlChangedListener onControlChangedListener;
     private OnCeolStatusChangedListener onDoneCeolStatusChangedListener;
@@ -104,43 +104,9 @@ public abstract class Command {
         this.ceolModel = ceolManager.ceolModel;
 
         preExecute();
+
+        // TODO - How do we check status?
         onControlChangedListener = new OnControlChangedListener() {
-/*
-            @Override
-            public void onAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
-                checkOverallStatus();
-            }
-
-            @Override
-            public void onConnectionControlChanged(CeolModel ceolModel, ConnectionControl connectionControl) {
-                checkOverallStatus();
-            }
-
-            @Override
-            public void onCeolNavigatorControlChanged(CeolModel ceolModel, CeolNavigatorControl ceolNavigatorControl) {
-                checkOverallStatus();
-            }
-
-            @Override
-            public void onInputControlChanged(CeolModel ceolModel, InputControl inputControl) {
-                checkOverallStatus();
-            }
-
-            @Override
-            public void onPowerControlChanged(CeolModel ceolModel, PowerControl powerControl) {
-                checkOverallStatus();
-            }
-
-            @Override
-            public void onTrackControlChanged(CeolModel ceolModel, TrackControl trackControl) {
-                checkOverallStatus();
-            }
-
-            @Override
-            public void onPlaylistControlChanged(CeolModel ceolModel, PlaylistControlBase playlistControlBase) {
-
-            }
-*/
 
             @Override
             public void onControlChanged(CeolModel ceolModel, ObservedControlType observedControlType, ControlBase controlBase) {

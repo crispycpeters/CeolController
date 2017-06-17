@@ -42,8 +42,7 @@ public class ContentRecyclerAdapter extends RecyclerView.Adapter<ContentRecycler
     @Override
     public AudioItemViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.audioitem_row, null);
-        AudioItemViewHolder viewHolder = new AudioItemViewHolder(view);
-        return viewHolder;
+        return new AudioItemViewHolder(view);
     }
 
     @Override
@@ -64,20 +63,7 @@ public class ContentRecyclerAdapter extends RecyclerView.Adapter<ContentRecycler
             }
 //        }
         }
-/*
-        FeedItem feedItem = feedItemList.get(i);
 
-        //Render image using Picasso library
-        if (!TextUtils.isEmpty(feedItem.getThumbnail())) {
-            Picasso.with(mContext).load(feedItem.getThumbnail())
-                    .error(R.drawable.placeholder)
-                    .placeholder(R.drawable.placeholder)
-                    .into(customViewHolder.thumbnailView);
-        }
-
-        //Setting text view titleView
-        customViewHolder.titleView.setText(Html.fromHtml(feedItem.getTitle()));
-*/
     }
 
 
@@ -116,7 +102,7 @@ public class ContentRecyclerAdapter extends RecyclerView.Adapter<ContentRecycler
     }
 
 
-    class AudioItemViewHolder extends RecyclerView.ViewHolder implements  ImageDownloaderResult {
+    class AudioItemViewHolder extends RecyclerView.ViewHolder {
         private View itemView;
         private ImageView thumbnailView;
         private TextView titleView;
@@ -170,11 +156,6 @@ public class ContentRecyclerAdapter extends RecyclerView.Adapter<ContentRecycler
             }
         }
 
-        @Override
-        public void imageDownloaded(Bitmap bitmap) {
-            thumbnailView.setImageBitmap(bitmap);
-            audioItem.setImageBitmap(bitmap);
-        }
 
         public void setIsCurrent(boolean isCurrent) {
             if ( isCurrent) {

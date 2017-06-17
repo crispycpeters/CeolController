@@ -11,14 +11,14 @@ public class CommandMacro extends CommandBaseInteger {
 
     private static final String TAG = "CommandMacro";
     private ArrayList<Command> commands;
-    int commandPosition = 0;
-    int commandSize = 0;
+    private int commandPosition = 0;
+    private int commandSize = 0;
 
     public CommandMacro() {
         this(-1);
     }
 
-    public CommandMacro(int value) {
+    CommandMacro(int value) {
         super(value);
     }
 
@@ -29,7 +29,6 @@ public class CommandMacro extends CommandBaseInteger {
     @Override
     protected void onCeolStatusChangedListener() {
         checkProgress();
-        return;
     }
 
     private void checkProgress() {

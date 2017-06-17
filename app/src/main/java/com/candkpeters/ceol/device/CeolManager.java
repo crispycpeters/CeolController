@@ -9,11 +9,7 @@ import android.util.Log;
 import com.candkpeters.ceol.cling.ClingGatherer;
 import com.candkpeters.ceol.cling.OnClingListener;
 import com.candkpeters.ceol.device.command.Command;
-import com.candkpeters.ceol.model.ObservedControlType;
 import com.candkpeters.ceol.model.CeolModel;
-import com.candkpeters.ceol.model.control.ConnectionControl;
-import com.candkpeters.ceol.model.control.ControlBase;
-import com.candkpeters.ceol.model.control.InputControl;
 import com.candkpeters.ceol.model.OnControlChangedListener;
 import com.candkpeters.ceol.view.Prefs;
 
@@ -36,7 +32,6 @@ public class CeolManager {
 
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
 
-    private String message;
     private boolean haveNetwork = true;
 
     public CeolManager(final Context context) {
@@ -108,7 +103,7 @@ public class CeolManager {
         commands = macroInflater.getMacro(macroNumber);
 
         if ( commands == null ) {
-            commands = new ArrayList<Command>();
+            commands = new ArrayList<>();
         }
         return commands;
     }
@@ -129,10 +124,6 @@ public class CeolManager {
         }
 */
         // TODO: Potentially pause openhome events if nothing is registered to listen
-    }
-
-    public void notifyObservers(ControlBase controlBase) {
-        ceolModel.notifyObservers(controlBase);
     }
 
     public void sendCommand(String commandString) {
@@ -163,29 +154,6 @@ public class CeolManager {
         return isDebugMode;
     }
 
-    private void inputUpdated(InputControl inputControl) {
-        Prefs prefs = new Prefs(context);
-
-        switch (inputControl.getStreamingStatus()) {
-
-            case CEOL:
-            case SPOTIFY:
-            case NONE:
-                ceolWebSvcGatherer.start(prefs);
-                break;
-            case DLNA:
-            case OPENHOME:
-                ceolWebSvcGatherer.stop();
-                break;
-        }
-        //TODO
-
-    }
-
-    private void pause() {
-        ceolWebSvcGatherer.stop();
-    }
-
     public void sendOpenHomeCommand(String commandString) {
         clingGatherer.sendOpenHomeCommand(commandString);
     }
@@ -199,7 +167,7 @@ public class CeolManager {
             if ( commandString.equalsIgnoreCase("PLAY")) {
                 try {
                     /*
-                     * ISSUE - Not working yet - it starts then stops
+                     * TODO - Not working yet - it starts then stops
                      */
                     final String CMDTOGGLEPAUSE = "togglepause";
                     final String CMDPAUSE = "pause";
@@ -237,7 +205,7 @@ public class CeolManager {
         }
     }
 
-    public void restart(Context context) {
+    private void restart(Context context) {
         Prefs prefs = new Prefs(context);
         isDebugMode = prefs.getIsDebugMode();
 //        inputUpdated(ceolModel.inputControl);

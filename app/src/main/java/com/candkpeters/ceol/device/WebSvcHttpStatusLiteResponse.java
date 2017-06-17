@@ -23,6 +23,6 @@ public class WebSvcHttpStatusLiteResponse {
 
     @Element( required = false, name = "value")
     @Path("InputFuncSelect")
-    public String inputFunc;
+    String inputFunc;
 
 }

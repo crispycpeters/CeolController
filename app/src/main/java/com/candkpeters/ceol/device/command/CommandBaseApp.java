@@ -11,9 +11,9 @@ public class CommandBaseApp extends Command {
         SELECTSI
     }
 
-    Action action = Action.BASIC;
+    private Action action = Action.BASIC;
 
-    public CommandBaseApp(Action action) {
+    CommandBaseApp(Action action) {
         super();
         this.action = action;
     }
@@ -25,7 +25,6 @@ public class CommandBaseApp extends Command {
 
     @Override
     protected void execute() {
-        return;
     }
 
     @Override
@@ -35,7 +34,6 @@ public class CommandBaseApp extends Command {
 
     @Override
     protected void initialize(String valueString) throws InstantiationException {
-        return;
     }
 
     public String toString() {

@@ -25,8 +25,6 @@ import org.fourthline.cling.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.fourthline.cling.binding.xml.Descriptor.Device.ELEMENT.device;
-
 /**
  * Created by crisp on 10/04/2017.
  */
@@ -44,14 +42,6 @@ public class ClingGatherer extends GathererBase implements Runnable {
     private OpenHomeSubscriptionManager openHomeSubscriptionManager;
     private final CeolModel ceolModel;
     private boolean isPaused = false;
-    private boolean isRestart;
-    private Device device;
-
-    public OpenHomeSubscriptionManager getOpenHomeSubscriptionManager() {
-        return openHomeSubscriptionManager;
-    }
-
-    private Device cachedOpenHomeDevice;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -82,10 +72,6 @@ public class ClingGatherer extends GathererBase implements Runnable {
             Log.d(TAG, "onServiceConnected: Cling service disconnected");
             upnpService = null;
             isClingServiceBound = false;
-            if ( isRestart) {
-                isRestart = false;
-                bindToCling();
-            }
         }
     };
 
@@ -108,7 +94,7 @@ public class ClingGatherer extends GathererBase implements Runnable {
         }
     }
 
-    public void bindToCling() {
+    private void bindToCling() {
 
         // This will start the UPnP service if it wasn't already started
         if ( !isClingServiceBound) {
@@ -168,7 +154,7 @@ public class ClingGatherer extends GathererBase implements Runnable {
         }
     }
 
-    public void unbindFromCling() {
+    private void unbindFromCling() {
         if (upnpService != null) {
             Log.d(TAG, "unbindFromCling: Removing device");
             openHomeSubscriptionManager.removeDevice();
@@ -230,32 +216,12 @@ public class ClingGatherer extends GathererBase implements Runnable {
         }
     }
 
-    public void restart(Prefs prefs) {
-        isRestart = true;
-        stop();
-        start(prefs);
-    }
-
     private class BrowseRegistryListener extends DefaultRegistryListener {
 
         @Override
         public void remoteDeviceDiscoveryFailed(Registry registry, final RemoteDevice device, final Exception ex) {
-/*            runOnUiThread(new Runnable() {
-                public void run() {
-
-                    Toast.makeText(
-                            BrowserActivity.this,
-                            "Discovery failed of '" + device.getDisplayString() + "': "
-                                    + (ex != null ? ex.toString() : "Couldn't retrieve device/service descriptors"),
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
-            });
-*/
-
             deviceRemoved(device);
         }
-        /* End of optimization, you can remove the whole block if your Android handset is fast (>= 600 Mhz) */
 
         @Override
         public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
@@ -277,7 +243,7 @@ public class ClingGatherer extends GathererBase implements Runnable {
             deviceRemoved(device);
         }
 
-        public void deviceAdded(final Device device) {
+        void deviceAdded(final Device device) {
 //            Log.d(TAG, "Got device: " + device.toString());
             String friendlyName = device.getDetails().getFriendlyName();
 //            Log.d(TAG, "FriendlyName = " + friendlyName);
@@ -290,7 +256,7 @@ public class ClingGatherer extends GathererBase implements Runnable {
             }
         }
 
-        public void deviceRemoved(final Device device) {
+        void deviceRemoved(final Device device) {
 
             if ( device.equals(openHomeSubscriptionManager.getDevice())) {
                 Log.d(TAG, "deviceRemoved: " + device);

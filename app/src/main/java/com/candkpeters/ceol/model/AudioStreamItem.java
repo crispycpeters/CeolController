@@ -3,7 +3,6 @@ package com.candkpeters.ceol.model;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import java.net.URI;
 import java.net.URL;
 
 /**
@@ -47,7 +46,7 @@ public class AudioStreamItem {
     public String getTitle() {
         return title;
     }
-    public boolean setTitle(String title) {
+    private boolean setTitle(String title) {
         title = title == null ? "" : title;
 
         if ( !this.title.equals(title)) {
@@ -58,36 +57,13 @@ public class AudioStreamItem {
         }
     }
 
-    public boolean isPoopulated() {
-        return title !=null && title.length()>0;
-    }
-
-    public void clear() {
+    private void clear() {
         id = 0;
         title = artist = album = format = bitrate = band = frequency = "";
         isAuto = false;
         imageBitmapUrl = null;
         audioUrl = null;
         duration = 0;
-    }
-
-    public void setStreamInfo(int id, String title, String artist, String album, String format, String bitrate) {
-        clear();
-        setId(0);
-        setTitle(title);
-        setArtist(artist);
-        setAlbum(album);
-        setFormat(format);
-        setBitrate(bitrate);
-        duration = 0;
-    }
-
-    public void setTunerInfo(String title, String band, String frequency, boolean auto) {
-        clear();
-        setTitle(title);
-        setBand(band);
-        setFrequency(frequency);
-        setAuto(auto);
     }
 
     public String getArtist() {

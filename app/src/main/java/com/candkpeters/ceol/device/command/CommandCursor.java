@@ -5,13 +5,13 @@ import com.candkpeters.ceol.model.DirectionType;
 /**
  * Created by crisp on 25/01/2016.
  */
-public class CommandCursor extends CommandBaseDirection {
+class CommandCursor extends CommandBaseDirection {
 
-    public CommandCursor() {
+    CommandCursor() {
         this(DirectionType.Down);
     }
 
-    public CommandCursor(DirectionType directionType) {
+    CommandCursor(DirectionType directionType) {
         super( directionType);
     }
 

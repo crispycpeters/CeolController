@@ -9,7 +9,7 @@ public class CommandBrowseIntoAndPlay extends CommandBrowseInto {
         this(null);
     }
 
-    public CommandBrowseIntoAndPlay( String value ) {
+    private CommandBrowseIntoAndPlay(String value) {
         super(value,true);
     }
 

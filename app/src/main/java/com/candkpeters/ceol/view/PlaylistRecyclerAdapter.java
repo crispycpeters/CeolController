@@ -116,7 +116,7 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
     }
 
 
-    class AudioItemViewHolder extends RecyclerView.ViewHolder implements  ImageDownloaderResult {
+    class AudioItemViewHolder extends RecyclerView.ViewHolder  {
         private View itemView;
         private ImageView thumbnailView;
         private TextView titleView;
@@ -168,12 +168,6 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
                 }
 */
             }
-        }
-
-        @Override
-        public void imageDownloaded(Bitmap bitmap) {
-            thumbnailView.setImageBitmap(bitmap);
-            audioItem.setImageBitmap(bitmap);
         }
 
         public void setIsCurrent(boolean isCurrent) {

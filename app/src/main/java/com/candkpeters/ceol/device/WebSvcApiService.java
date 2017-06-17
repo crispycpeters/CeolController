@@ -12,7 +12,7 @@ import retrofit.mime.TypedString;
 /**
  * Created by crisp on 02/01/2016.
  */
-public interface WebSvcApiService {
+interface WebSvcApiService {
 
 /*
     @POST("/goform/AppCommand.xml")

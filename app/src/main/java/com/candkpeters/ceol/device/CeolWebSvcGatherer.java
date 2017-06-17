@@ -13,7 +13,6 @@ import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.model.StreamingStatus;
 import com.candkpeters.ceol.view.Prefs;
 import com.candkpeters.ceol.view.UIThreadUpdater;
-import com.squareup.picasso.Picasso;
 
 import org.simpleframework.xml.util.Dictionary;
 
@@ -30,7 +29,7 @@ import retrofit.mime.TypedString;
 /**
  * Created by crisp on 08/01/2016.
  */
-public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownloaderResult /*, Observed */{
+class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownloaderResult /*, Observed */{
 
     private static final String TAG = "CeolWebSvcGatherer";
 
@@ -38,15 +37,12 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     private static final int BACKGROUNDRATE_MSECS = 1800000;
     private static final int REPEATONCE_MSECS = 500;
     private static final long IMAGE_LOAD_DELAY_MSECS = 1000;
-    private final Context context;
 //    private static final long BACKGROUNDTIMEOUT_MSECS = 10000;
 //    private final int backgroundTimeoutMsecs;
 //    private final int backgroundRateMsecs;
 
     private WebSvcApiService webSvcApiService = null;
     private UIThreadUpdater activeThreadUpdater;
-    private UIThreadUpdater backgroundThreadUpdater;
-    private int repeatrate;
     private final CeolModel ceolModel;
     private URL imageUrl;
     private final Object MUTEX = new Object();
@@ -85,7 +81,6 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     private TypedString statusQuery_Tuner = new TypedString(statusQueryString_Tuner);
     private ImageDownloaderTask imageDownloaderTask;
     private static final String IMAGEURLSPEC = "/NetAudio/art.asp-jpg";
-    private long lastSuccessMsecs;
     private boolean powerControlChanged = false;
     private boolean inputControlChanged = false;
     private boolean trackControlChanged = false;
@@ -94,7 +89,6 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     private boolean isActive = false;
 
     CeolWebSvcGatherer(Context context, CeolModel ceolModel) {
-        this.context = context;
         this.ceolModel = ceolModel;
 
         initiatlizeControls();
@@ -185,7 +179,7 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
         }
     }
 
-    public void getStatusSoon() {
+    void getStatusSoon() {
         activeThreadUpdater.fireOnce(REPEATONCE_MSECS);
 //        resetBackgroundCountdown();
     }
@@ -283,14 +277,16 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     }
 
 
-    private void getImage() {
-        synchronized ( MUTEX) {
+    private void getImage(final AudioStreamItem audioItem) {
+
+        if ( imageDownloaderTask == null || !imageDownloaderTask.isRunning()) {
+            Log.d(TAG, "getImage: Initiating delayed download");
             imageDownloaderTask = new ImageDownloaderTask(this);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        imageDownloaderTask.execute(imageUrl.toString());
+                        imageDownloaderTask.execute(audioItem);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -298,6 +294,26 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
             }, IMAGE_LOAD_DELAY_MSECS);
         }
     }
+
+    @Override
+    public void imageDownloaded(AudioStreamItem item) {
+        updateDeviceImage(item);
+    }
+
+    private void updateDeviceImage(AudioStreamItem item) {
+        AudioStreamItem audioStreamItem = ceolModel.inputControl.trackControl.getAudioItem();
+        if (audioStreamItem == null) {
+            Log.w(TAG, "updateDeviceImage: Cannot update bitmap as the audio item is not an AudioStreamItem. Have we changed SI input?" );
+        } else {
+            if ( item.equals(audioStreamItem)) {
+                Log.d(TAG, "updateDeviceImage: Updating image in AudioStreamItem: " + audioStreamItem.toString());
+                audioStreamItem.setImageBitmap(item.getImageBitmap());
+                trackControlChanged = true;
+                notifyObservers();
+            }
+        }
+    }
+
 
     private void logResponse(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse) {
         Log.d(TAG, "logResponse: " + webSvcHttpAppCommandResponse.toString());
@@ -317,18 +333,6 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
         }
     }
 
-
-    private void updateDeviceImage(Bitmap bitmap) {
-        AudioStreamItem audioStreamItem = ceolModel.inputControl.trackControl.getAudioItem();
-        if (audioStreamItem == null) {
-            Log.w(TAG, "updateDeviceImage: Cannot update bitmap as the audio item is not an AudioStreamItem. Have we changed SI input?" );
-        } else {
-            Log.d(TAG, "updateDeviceImage: Updating image in AudioStreamItem: " + audioStreamItem.toString() );
-            audioStreamItem.setImageBitmap(bitmap);
-            trackControlChanged = true;
-            notifyObservers();
-        }
-    }
 
     private void updateDeviceErrorStatus() {
 //        synchronized (ceolDevice) {
@@ -369,16 +373,9 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     private void updateDeviceStatus(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse) {
 
         AudioStreamItem oldAudioItem = ceolModel.inputControl.trackControl.getAudioItem();
-        String oldTrack = oldAudioItem.getTitle();
-/*
-        if (oldTrack == null || oldTrack.length()==0) {
-            Log.d(TAG, "updateDeviceStatus: oldtrack is null or blank");
-        }
-*/
 
         try {
 
-//            synchronized (ceolDevice) {
             checkInputControlChanged(ceolModel.inputControl.updateSIStatus(webSvcHttpAppCommandResponse.source));
             checkPowerControlChanged(ceolModel.powerControl.updateDeviceStatus(webSvcHttpAppCommandResponse.power));
             checkAudioControlChanged(ceolModel.audioControl.updateMasterVolume(webSvcHttpAppCommandResponse.dispvalue));
@@ -474,10 +471,8 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
         }
 */
 
-        if ( imageDownloaderTask == null ||
-                (!imageDownloaderTask.isRunning() &&
-                    !oldAudioItem.equals(ceolModel.inputControl.trackControl.getAudioItem()))) {
-            getImage();
+        if ( !oldAudioItem.equals(ceolModel.inputControl.trackControl.getAudioItem())) {
+            getImage(ceolModel.inputControl.trackControl.getAudioItem());
         }
 
 /*
@@ -502,10 +497,5 @@ public class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageD
     }
 
 
-
-    @Override
-    public void imageDownloaded(Bitmap bitmap) {
-        updateDeviceImage(bitmap);
-    }
 
 }

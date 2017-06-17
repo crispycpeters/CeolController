@@ -29,7 +29,7 @@ public class WebSvcHttpAppCommandResponse {
 
     @Element( required = false)
     @Path("cmd[2]")
-    public String dispvalue;
+    String dispvalue;
 
     //
     // cmd[5] is variable, based on query type
@@ -42,11 +42,11 @@ public class WebSvcHttpAppCommandResponse {
 
     @ElementList(required = false, entry = "text",inline = true)
     @Path("cmd[3]")
-    public Dictionary<WebSvcHttpResponseText> texts;
+    Dictionary<WebSvcHttpResponseText> texts;
 
     @Element( required = false)
     @Path("cmd[3]")
-    public String playstatus;
+    String playstatus;
                                     // CD: REW, FF, PLAY, STOP, PAUSE(?)
                                     // Netserver: Play, ...
 
@@ -56,11 +56,11 @@ public class WebSvcHttpAppCommandResponse {
 
     @Element( required = false)
     @Path("cmd[3]")
-    public String listmax;
+    String listmax;
 
     @Element( required = false)
     @Path("cmd[3]")
-    public String listposition;
+    String listposition;
 
     @Element( required = false)
     @Path("cmd[3]")
@@ -80,11 +80,11 @@ public class WebSvcHttpAppCommandResponse {
 
     @Element( required = false)
     @Path("cmd[3]")
-    public String band;             // Tuner: Tuner, AM
+    String band;             // Tuner: Tuner, AM
 
     @Element( required = false)
     @Path("cmd[3]")
-    public String frequency;        // Tuner: 92.50, 522
+    String frequency;        // Tuner: 92.50, 522
 
     @Element( required = false)
     @Path("cmd[3]")
@@ -92,13 +92,13 @@ public class WebSvcHttpAppCommandResponse {
 
     @Element( required = false)
     @Path("cmd[3]")
-    public String automanual;        // Tuner: AUTO
+    String automanual;        // Tuner: AUTO
 
     // Due to a CEOL bug, we need to cope with this field not being returned, so keep this as last cmd element
     // (Scenario is switching to RADIO from SPOTIFY)
     @Element( required = false)
     @Path("cmd[4]")
-    public String source = "";
+    String source = "";
 
     // TODO - Add other entries for CD: foldername, filename, artistname, albumname, songname, time
 
@@ -106,13 +106,4 @@ public class WebSvcHttpAppCommandResponse {
 //    @Path("cmd[5][text[@id='scridValue']]")
 //    public String scridValue;
 
-/*
-    public CeolAppCommandResponseCmd getCmd( int id) {
-        if (cmds.size() > id) {
-            return cmds.get(id);
-        } else {
-            return null;
-        }
-    }
-*/
 }

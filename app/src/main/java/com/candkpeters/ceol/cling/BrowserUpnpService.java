@@ -18,8 +18,6 @@ package com.candkpeters.ceol.cling;
 import org.fourthline.cling.UpnpServiceConfiguration;
 import org.fourthline.cling.android.AndroidUpnpServiceConfiguration;
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
-import org.fourthline.cling.model.types.ServiceType;
-import org.fourthline.cling.model.types.UDAServiceType;
 
 /**
  * @author Christian Bauer

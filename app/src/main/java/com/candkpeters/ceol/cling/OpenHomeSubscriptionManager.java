@@ -28,8 +28,6 @@ import org.fourthline.cling.model.gena.CancelReason;
 import org.fourthline.cling.model.gena.GENASubscription;
 import org.fourthline.cling.model.message.UpnpResponse;
 import org.fourthline.cling.model.meta.Device;
-import org.fourthline.cling.model.meta.DeviceDetails;
-import org.fourthline.cling.model.meta.DeviceIdentity;
 import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.state.StateVariableValue;
 import org.fourthline.cling.model.types.ServiceId;
@@ -54,11 +52,10 @@ import java.util.Map;
  * Created by crisp on 14/04/2017.
  */
 
-public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
+class OpenHomeSubscriptionManager implements ImageDownloaderResult {
     private static final String TAG = "OpenHomeSubManager";
 
     private static final int DEFAULT_EVENT_RENEWAL_SECS = 100;
-    private final Context context;
     private final CeolModel ceolModel;
     private final OpenhomePlaylistControl openhomePlaylistControl;
     private final TrackControl trackControl;
@@ -77,12 +74,10 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
     private Service playlistService;
     private Service volumeService;
     private ImageDownloaderTask imageDownloaderTask;
-    private DIDLContent didlContent;
     private long totalTrackCount;
 
 
-    public OpenHomeSubscriptionManager(Context context, CeolModel ceolModel, OnSubscriptionListener onSubscriptionListener) {
-        this.context = context;
+    OpenHomeSubscriptionManager(Context context, CeolModel ceolModel, OnSubscriptionListener onSubscriptionListener) {
         this.ceolModel = ceolModel;
         //TODO - Should be using an interface or base methods in PlaylistControlBase
         this.openhomePlaylistControl = (OpenhomePlaylistControl)ceolModel.inputControl.playlistControl;
@@ -95,7 +90,7 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
 //        addDevice();
     }
 
-    public void removeDevice() {
+    void removeDevice() {
         device = null;
         isSubscribed = false;
         timeService = infoService = playlistService = null;
@@ -107,11 +102,11 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
         return device;
     }
 
-    public boolean hasDevice() {
+    boolean hasDevice() {
         return device != null;
     }
 
-    public void subscribe() {
+    void subscribe() {
         infoService = findService(infoServiceId);
         playlistService = findService(playlistServiceId);
         timeService = findService(timeServiceId);
@@ -123,34 +118,32 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
         setupPlaylistEvents();
     }
 
-    public void addDevice(AndroidUpnpService upnpService, Device device ) {
+    void addDevice(AndroidUpnpService upnpService, Device device) {
         this.device = device;
         this.upnpService = upnpService;
 
-        DeviceDetails dd = device.getDetails();
+//        DeviceDetails dd = device.getDetails();
 //        Log.d(TAG, "Details: " + dd.toString());
-        DeviceIdentity di = device.getIdentity();
+//        DeviceIdentity di = device.getIdentity();
 //        Log.d(TAG, "Identity: " + di.toString());
         subscribe();
     }
 
     private Service findService( ServiceId serviceId) {
         Service service;
-        if ((service = device.findService(serviceId)) != null) {
-//            Log.d(TAG, "Service discovered: " + service);
-        } else {
+        if ((service = device.findService(serviceId)) == null) {
             Log.e(TAG, "No service for " + serviceId);
         }
         return service;
     }
 
-    public void performPlaylistCommand( String command) {
+    void performPlaylistCommand(String command) {
         if ( playlistService != null ) {
             executeAction( playlistService, command);
         }
     }
 
-    public void performPlaylistSeekIdCommand( int trackId ) {
+    void performPlaylistSeekIdCommand(int trackId) {
         if ( playlistService != null ) {
             executeActionSeekId( trackId);
         }
@@ -173,7 +166,7 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
 
                             UnsignedIntegerFourBytes volumeV = (UnsignedIntegerFourBytes) (values.get("Volume").getValue());
                             Log.d(TAG, "EVENT: GOT volume=" + volumeV);
-                            audioControl.updateMasterVolumePerCent((long) (volumeV.getValue()));
+                            audioControl.updateMasterVolumePerCent(volumeV.getValue());
 
                             ceolModel.notifyObservers(audioControl);
                         }
@@ -205,7 +198,7 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
                         UnsignedIntegerFourBytes durationV = (UnsignedIntegerFourBytes)(values.get("Duration").getValue());
 //                        Log.d(TAG, "EVENT: GOT duration=" + durationV);
 
-                        long duration = (long) (durationV.getValue());
+                        long duration = durationV.getValue();
                         if ( trackControl.getAudioItem().getDuration() != duration) {
                             trackControl.getAudioItem().setDuration((int)duration);
                             ceolModel.notifyObservers(trackControl);
@@ -216,7 +209,7 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
                         if ( eventSequence % 10 == 0 ) {
                             Log.d(TAG, "Getting time ev (every sec): GOT seconds=" + secondsV + " sequence=" + eventSequence);
                         }
-                        progressControl.updateProgress((long) (secondsV.getValue()));
+                        progressControl.updateProgress(secondsV.getValue());
 
                         notifyInputControlIsOpenhome();
                         ceolModel.notifyObservers(progressControl);
@@ -248,7 +241,7 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
 
                     UnsignedIntegerFourBytes trackCountV = (UnsignedIntegerFourBytes) (values.get("TrackCount").getValue());
                     Log.d(TAG, "EVENT: GOT trackCount=" + trackCountV);
-                    long trackCount = (long) (trackCountV.getValue());
+                    long trackCount = trackCountV.getValue();
                     setTotalTrackCount(trackCount);
 
                     notifyInputControlIsOpenhome();
@@ -272,7 +265,7 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
                             trackControl.updateAudioItem(audioStreamItem);
                             imageDownloaderTask = new ImageDownloaderTask(imageDownloaderResult);
                             if (audioStreamItem.getImageBitmapUrl() != null) {
-                                imageDownloaderTask.execute(audioStreamItem.getImageBitmapUrl().toString());
+                                imageDownloaderTask.execute(audioStreamItem);
                             }
                         }
                         ceolModel.notifyObservers(trackControl);
@@ -314,6 +307,13 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
         }
     }
 
+    @Override
+    public void imageDownloaded(AudioStreamItem item) {
+        Log.d(TAG, "imageDownloaded: Downloaded!");
+        trackControl.getAudioItem().setImageBitmap(item.getImageBitmap());
+        ceolModel.notifyObservers(trackControl);
+    }
+
     private void notifyInputControlIsOpenhome() {
         if ( !ceolModel.connectionControl.isConnected()) {
             ceolModel.notifyConnectionStatus(true);
@@ -348,7 +348,7 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
 
                     UnsignedIntegerFourBytes currentTrackIdValue = (UnsignedIntegerFourBytes) (values.get("Id").getValue());
                     Log.d(TAG, "EVENT: GOT Id=" + currentTrackIdValue);
-                    setCurrentTrackId((long)(currentTrackIdValue.getValue()));
+                    setCurrentTrackId(currentTrackIdValue.getValue());
 
                     ceolModel.notifyObservers(ceolModel.inputControl.playlistControl);
 
@@ -365,7 +365,7 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
         openhomePlaylistControl.setCurrentTrackId(currentTrackId);
     }
 
-    public void setTransportState(String value) {
+    private void setTransportState(String value) {
         // Not sure this is needed
         PlayStatusType playStatusType = PlayStatusType.Unknown;
         switch (value) {
@@ -538,10 +538,10 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
             try {
                 audioItem.clear();
 //                Log.d(TAG, "parseDIDL: Parsing: "+ metadata);
-                didlContent = didlParser.parse(metadata);
-                if ( didlContent.getItems().size() > 1 ) {
+                DIDLContent didlContent = didlParser.parse(metadata);
+                if ( didlContent.getItems().size() > 1 )
                     throw new Exception("Should only have one item");
-                };
+
                 Item item = didlContent.getItems().get(0);
                 audioItem.setTitle(item.getTitle() );
                 audioItem.setArtist(item.getFirstPropertyValue(DIDLObject.Property.UPNP.ARTIST.class).getName() );
@@ -577,42 +577,21 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
         }
     }
 
-    public boolean isSubscribed() {
+    boolean isSubscribed() {
         return isSubscribed;
     }
 
-    public boolean isOperating( ) {
-        if (isSubscribed && totalTrackCount > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public void imageDownloaded(Bitmap bitmap) {
-        Log.d(TAG, "imageDownloaded: Downloaded!");
-        trackControl.getAudioItem().setImageBitmap(bitmap);
-        ceolModel.notifyObservers(trackControl);
+    private boolean isOperating() {
+        return isSubscribed && totalTrackCount > 0;
     }
 
     private void setTotalTrackCount(long totalTrackCount) {
         this.totalTrackCount = totalTrackCount;
     }
 
-    public long getTotalTrackCount() {
-        return totalTrackCount;
-    }
+    abstract class OpenHomeSubscriptionCallback extends SubscriptionCallback {
 
-    public void checkOperation() {
-        if ( isOperating()) {
-            notifyInputControlIsOpenhome();
-        }
-    }
-
-    public abstract class OpenHomeSubscriptionCallback extends SubscriptionCallback {
-
-        protected OpenHomeSubscriptionCallback(Service service) {
+        OpenHomeSubscriptionCallback(Service service) {
             super(service, DEFAULT_EVENT_RENEWAL_SECS);
         }
 
@@ -644,6 +623,6 @@ public class OpenHomeSubscriptionManager implements ImageDownloaderResult {
             Log.d(TAG,"Missed events: " + numberOfMissedEvents);
         }
 
-    };
+    }
 
 }

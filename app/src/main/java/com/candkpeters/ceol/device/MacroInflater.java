@@ -9,16 +9,15 @@ import java.util.ArrayList;
 /**
  * Created by crisp on 12/03/2016.
  */
-public class MacroInflater {
+class MacroInflater {
 
-    public final static int MACRO_COUNT = 8;
+    private final static int MACRO_COUNT = 8;
     private static final String TAG = "MacroInflater";
-    public ArrayList<String> macroNames;
-    public ArrayList<ArrayList<Command>> macroValues;
+    private ArrayList<ArrayList<Command>> macroValues;
 
-    public MacroInflater( String[]macroStringNames, String[]macroStringValues ) {
+    MacroInflater(String[] macroStringNames, String[] macroStringValues) {
 
-        this.macroNames = new ArrayList<String>(MACRO_COUNT);
+        ArrayList<String> macroNames = new ArrayList<String>(MACRO_COUNT);
         this.macroValues = new ArrayList<ArrayList<Command>>(MACRO_COUNT);
         for (String name :
                 macroStringNames) {
@@ -73,7 +72,7 @@ public class MacroInflater {
     }
 
     /* macroNumber = 1,2,3 ... */
-    public ArrayList<Command> getMacro(int macroNumber) {
+    ArrayList<Command> getMacro(int macroNumber) {
         if ( macroNumber <= 0 || macroNumber > MACRO_COUNT) return null;
         return macroValues.get(macroNumber-1);
     }

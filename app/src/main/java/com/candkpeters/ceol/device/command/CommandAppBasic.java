@@ -16,7 +16,6 @@ public class CommandAppBasic extends CommandBaseApp {
 
     @Override
     protected void execute() {
-        return;
     }
 
     @Override
@@ -26,7 +25,6 @@ public class CommandAppBasic extends CommandBaseApp {
 
     @Override
     protected void initialize(String valueString) throws InstantiationException {
-        return;
     }
 
     public String toString() {

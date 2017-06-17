@@ -5,16 +5,16 @@ import com.candkpeters.ceol.model.DirectionType;
 /**
  * Created by crisp on 25/01/2016.
  */
-public abstract class CommandBaseDirection extends Command {
+abstract class CommandBaseDirection extends Command {
 
     private DirectionType directionType;
 
-    public CommandBaseDirection(DirectionType directionType) {
+    CommandBaseDirection(DirectionType directionType) {
         super();
         this.directionType = directionType;
     }
 
-    public DirectionType getDirectionType() {
+    DirectionType getDirectionType() {
         return directionType;
     }
 

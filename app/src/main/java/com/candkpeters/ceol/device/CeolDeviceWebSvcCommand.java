@@ -1,6 +1,5 @@
 package com.candkpeters.ceol.device;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.candkpeters.ceol.model.CeolModel;
@@ -13,29 +12,26 @@ import retrofit.client.Response;
 /**
  * Created by crisp on 08/01/2016.
  */
-public class CeolDeviceWebSvcCommand {
+class CeolDeviceWebSvcCommand {
 
     private static final String TAG = "CeolDeviceWebSvcCommand";
-    private final CeolModel ceolModel;
 
     private WebSvcApiService webSvcApiService = null;
 
-    OnCeolCommandListener onCeolCommandListener;
-
-    public interface OnCeolCommandListener {
+    interface OnCeolCommandListener {
         void success();
         void failure();
     }
 
-    public CeolDeviceWebSvcCommand(CeolModel ceolModel) {
-        this.ceolModel = ceolModel;
+    CeolDeviceWebSvcCommand(CeolModel ceolModel) {
+
     }
 
     private void recreateService(String baseUrl) {
         webSvcApiService = WebSvcGenerator.createService(baseUrl);
     }
 
-    public void sendCeolCommand(String value, final OnCeolCommandListener onCeolCommandListener) {
+    void sendCeolCommand(String value, final OnCeolCommandListener onCeolCommandListener) {
 
         webSvcApiService.appDirectCommandAsync("?" + value, new Callback<Void>() {
             @Override
