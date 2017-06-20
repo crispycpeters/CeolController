@@ -13,7 +13,10 @@ import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.view.Prefs;
 
+import org.fourthline.cling.UpnpService;
+import org.fourthline.cling.UpnpServiceImpl;
 import org.fourthline.cling.android.AndroidUpnpService;
+import org.fourthline.cling.android.AndroidUpnpServiceConfiguration;
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import org.fourthline.cling.android.FixedAndroidLogHandler;
 import org.fourthline.cling.model.meta.Device;
@@ -29,11 +32,11 @@ import java.util.logging.Logger;
  * Created by crisp on 10/04/2017.
  */
 
-public class ClingGatherer extends GathererBase implements Runnable {
+public class ClingGatherer2 extends GathererBase implements Runnable {
     private static final long SEARCH_RETRY_MSECS = 15000;
     private static String TAG = "ClingGatherer";
     //    private BrowserUpnpService browserUpnpService;
-    private AndroidUpnpService upnpService;
+    private UpnpService upnpService;
     private BrowseRegistryListener registryListener = new BrowseRegistryListener();
     private final Context context;
     private Prefs prefs;
@@ -43,42 +46,10 @@ public class ClingGatherer extends GathererBase implements Runnable {
     private final CeolModel ceolModel;
     private boolean isPaused = false;
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            Log.d(TAG, "onServiceConnected: Cling service connected");
-            isClingServiceBound = true;
-            upnpService = (AndroidUpnpService) service;
-
-            // Clear the list
-//            listAdapter.clear();
-
-            // Set up cached OpenHome player
-            setupCachedPlayer();
-
-            // Get ready for future device advertisements
-            upnpService.getRegistry().addListener(registryListener);
-
-            // Now add all devices to the list we already know about
-            for (Device device : upnpService.getRegistry().getDevices()) {
-                registryListener.deviceAdded(device);
-            }
-
-            // Search asynchronously for all devices, they will respond soon
-            checkSubscriptions();
-
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            Log.d(TAG, "onServiceConnected: Cling service disconnected");
-            upnpService = null;
-            isClingServiceBound = false;
-        }
-    };
-
     private void setupCachedPlayer() {
     }
 
-    public ClingGatherer(Context context, CeolModel ceolModel, OnClingListener onClingListener) {
+    public ClingGatherer2(Context context, CeolModel ceolModel, OnClingListener onClingListener) {
         this.context = context;
         this.ceolModel = ceolModel;
         this.onClingListener = onClingListener;
@@ -122,11 +93,16 @@ public class ClingGatherer extends GathererBase implements Runnable {
 
             prefs = new Prefs(context);
 
-            context.bindService(
-                    new Intent(context, AndroidUpnpServiceImpl.class),
-                    serviceConnection,
-                    Context.BIND_AUTO_CREATE
-            );
+            upnpService = new UpnpServiceImpl(new AndroidUpnpServiceConfiguration(), registryListener);
+
+            isClingServiceBound = true;
+
+            // Now add all devices to the list we already know about
+            for (Device device : upnpService.getRegistry().getDevices()) {
+                registryListener.deviceAdded(device);
+            }
+
+            checkSubscriptions();
         }
     }
 
@@ -162,10 +138,10 @@ public class ClingGatherer extends GathererBase implements Runnable {
         }
         if ( isClingServiceBound) {
             try {
-                Log.d(TAG, "unbindFromCling: Unbind service");
-                context.unbindService(serviceConnection);
+                Log.d(TAG, "unbindFromCling: Shutdown UPnP service");
+                upnpService.shutdown();
             } catch ( Exception exc ) {
-                Log.w(TAG, "unbindFromCling: unbindService() failed, assuming unbound.",exc );
+                Log.w(TAG, "unbindFromCling: UPnP service shutdown failed.",exc );
             }
         }
     }
@@ -252,7 +228,7 @@ public class ClingGatherer extends GathererBase implements Runnable {
             if ( friendlyName.compareToIgnoreCase(prefOpenhomeNmae) == 0) {
                 Log.d(TAG, "deviceAdded: Aha - found: " + device.getDisplayString());
 
-//TODO - Temp testing                openHomeSubscriptionManager.addDevice(upnpService, device);
+                openHomeSubscriptionManager.addDevice(upnpService, device);
             }
         }
 

@@ -112,7 +112,7 @@ public abstract class CeolWidgetHelper /*extends AppWidgetProvider*/ {
         for (int widgetId : appWidgetMan.getAppWidgetIds(myWidget)) {
 
             RemoteViews views =
-                buildRemoteView(context, widgetId);
+                    buildRemoteView(context, widgetId);
             if ( views != null ) {
                 updateViews(views, ceolManager, context, text);
                 pushWidgetUpdate(context, views);
@@ -120,7 +120,25 @@ public abstract class CeolWidgetHelper /*extends AppWidgetProvider*/ {
         }
     }
 
+    public void updateWidgetsOnDestroy(CeolManager ceolManager, Context context) {
+
+        AppWidgetManager appWidgetMan = AppWidgetManager.getInstance(context);
+        ComponentName myWidget = getComponentName(context);
+
+        for (int widgetId : appWidgetMan.getAppWidgetIds(myWidget)) {
+
+            RemoteViews views =
+                    buildRemoteView(context, widgetId);
+            if ( views != null ) {
+                updateViewsOnDestroy(views, ceolManager, context);
+                pushWidgetUpdate(context, views);
+            }
+        }
+    }
+
     protected abstract void updateViews(RemoteViews views, CeolManager ceolManager, Context context, String text);
+
+    protected abstract void updateViewsOnDestroy(RemoteViews views, CeolManager ceolManager, Context context);
 
     protected void pushWidgetUpdate(Context context, RemoteViews views) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);

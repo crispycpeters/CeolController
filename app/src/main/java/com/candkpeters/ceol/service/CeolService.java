@@ -29,6 +29,8 @@ public class CeolService extends Service {
     public static final String START_ACTIVITY_ACTION = "CeolAction";
     public static final String WIFI_ON = "WifiOn";
     public static final String WIFI_OFF = "WifiOff";
+    public static final String STOP_CLING = "StopCling";
+    public static final String START_CLING = "StartCling";
 
     private Prefs prefs;
     final Context context = this;
@@ -118,6 +120,14 @@ public class CeolService extends Service {
                     case BOOT_COMPLETED:
 //                        Log.d(TAG, "onStartCommand: BOOT_COMPLETED");
                         ceolWidgetController.executeBootCompleted();
+                        break;
+                    case STOP_CLING:
+//                        Log.d(TAG, "onStartCommand: BOOT_COMPLETED");
+                        ceolManager.stopCling();
+                        break;
+                    case START_CLING:
+//                        Log.d(TAG, "onStartCommand: BOOT_COMPLETED");
+                        ceolManager.startGatherers();
                         break;
                     default:
                         break;

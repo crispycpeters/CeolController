@@ -7,6 +7,7 @@ import android.media.AudioManager;
 import android.util.Log;
 
 import com.candkpeters.ceol.cling.ClingGatherer;
+import com.candkpeters.ceol.cling.ClingGatherer2;
 import com.candkpeters.ceol.cling.OnClingListener;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.model.CeolModel;
@@ -26,7 +27,8 @@ public class CeolManager {
     private CeolDeviceWebSvcCommand ceolDeviceWebSvcCommand;
     private boolean isDebugMode;
     private final CeolWebSvcGatherer ceolWebSvcGatherer;
-    private final ClingGatherer clingGatherer;
+//    private final ClingGatherer clingGatherer;
+    private final ClingGatherer2 clingGatherer;
 
     private MacroInflater macroInflater;
 
@@ -38,15 +40,24 @@ public class CeolManager {
         this.context = context;
         ceolModel = new CeolModel();
         ceolWebSvcGatherer = new CeolWebSvcGatherer(context, ceolModel);
-            clingGatherer = new ClingGatherer(context, ceolModel, new OnClingListener() {
-                @Override
-                public void onClingDisconnected() {
-                    if ( haveNetwork) {
-                        Log.d(TAG, "onClingDisconnected: We were disconnected. Let's connect again.");
-                        startGatherers();
-                    }
+//        clingGatherer = new ClingGatherer(context, ceolModel, new OnClingListener() {
+//                @Override
+//                public void onClingDisconnected() {
+//                    if ( haveNetwork) {
+//                        Log.d(TAG, "onClingDisconnected: We were disconnected. Let's connect again.");
+//                        startGatherers();
+//                    }
+//                }
+//            });
+        clingGatherer = new ClingGatherer2(context, ceolModel, new OnClingListener() {
+            @Override
+            public void onClingDisconnected() {
+                if ( haveNetwork) {
+                    Log.d(TAG, "onClingDisconnected: We were disconnected. Let's connect again.");
+                    startGatherers();
                 }
-            });
+            }
+        });
         ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(ceolModel);
     }
 
@@ -65,36 +76,6 @@ public class CeolManager {
             };
             prefs.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
         }
-/*
-        ceolModel.register(new OnControlChangedListener() {
-
-            @Override
-            public void onControlChanged(CeolModel ceolModel, ObservedControlType observedControlType, ControlBase controlBase) {
-                switch (observedControlType) {
-
-                    case None:
-                        break;
-                    case Connection:
-                        break;
-                    case Power:
-                        break;
-                    case Audio:
-                        break;
-                    case Input:
-                        inputUpdated( (InputControl)controlBase);
-                        break;
-                    case Track:
-                        break;
-                    case Navigator:
-                        break;
-                    case Playlist:
-                        break;
-                }
-
-            }
-
-        });
-*/
         startGatherers();
     }
 
@@ -232,9 +213,7 @@ public class CeolManager {
     }
 
     public void pauseGatherers() {
-        // Screen is likely off
-        ceolWebSvcGatherer.stop();
-        clingGatherer.pause();
+
     }
 
     public void resumeGatherers() {
@@ -259,4 +238,9 @@ public class CeolManager {
 //        clingGatherer.stop();
         ceolModel.notifyConnectionStatus(false);
     }
+
+    public void stopCling() {
+        clingGatherer.stop();
+    }
+
 }

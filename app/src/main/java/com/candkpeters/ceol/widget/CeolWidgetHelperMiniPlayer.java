@@ -151,4 +151,11 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
 
     }
 
+    @Override
+    protected void updateViewsOnDestroy(RemoteViews views, CeolManager ceolManager, Context context) {
+
+        views.setViewVisibility(R.id.dimV, View.VISIBLE);
+
+    }
+
 }

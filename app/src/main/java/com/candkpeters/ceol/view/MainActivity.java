@@ -513,6 +513,18 @@ public class MainActivity extends AppCompatActivity
             ceolController.restart();
             return true;
         }
+        if (id == R.id.action_unbind) {
+            Intent intent = new Intent(this, CeolService.class);
+            intent.setAction(CeolService.STOP_CLING);
+            startService(intent);
+            return true;
+        }
+        if (id == R.id.action_bind) {
+            Intent intent = new Intent(this, CeolService.class);
+            intent.setAction(CeolService.START_CLING);
+            startService(intent);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

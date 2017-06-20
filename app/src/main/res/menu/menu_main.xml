@@ -11,4 +11,14 @@
         android:title="@string/action_refresh"
         android:orderInCategory="100"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_unbind"
+        android:title="Openhome Unbind"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_bind"
+        android:title="Openhome Bind"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
 </menu>

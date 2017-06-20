@@ -129,6 +129,14 @@ public class CeolWidgetController {
         }
     }
 
+    private void updateWidgetsOnDestroy() {
+
+        for ( CeolWidgetHelper ceolWidgetHelper : ceolWidgetHelpers) {
+            ceolWidgetHelper.setWaiting(isWaiting());
+            ceolWidgetHelper.updateWidgetsOnDestroy(ceolManager, context);
+        }
+    }
+
     public void executeCommand(final int widgetId, final AppWidgetManager appWidgetMan, Intent intent) {
 
         Command command = CeolIntentFactory.newInstance(intent);
@@ -198,6 +206,7 @@ public class CeolWidgetController {
     }
 
     public void destroy() {
+        updateWidgetsOnDestroy();
         stopWidgetUpdates();
     }
 

@@ -19,6 +19,7 @@ import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.ceol.model.TrackList;
 import com.candkpeters.ceol.model.TrackListEntry;
 
+import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.controlpoint.ActionCallback;
 import org.fourthline.cling.controlpoint.SubscriptionCallback;
@@ -64,7 +65,7 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
     private final OnSubscriptionListener onSubscriptionListener;
     private boolean isSubscribed;
     private Device device;
-    private AndroidUpnpService upnpService;
+    private UpnpService upnpService;
     private ServiceId infoServiceId = new ServiceId("av-openhome-org","Info");
     private ServiceId timeServiceId = new ServiceId("av-openhome-org","Time");
     private ServiceId playlistServiceId = new ServiceId("av-openhome-org","Playlist");
@@ -118,7 +119,7 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
         setupPlaylistEvents();
     }
 
-    void addDevice(AndroidUpnpService upnpService, Device device) {
+    void addDevice(UpnpService upnpService, Device device) {
         this.device = device;
         this.upnpService = upnpService;
 
@@ -350,6 +351,7 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
                     Log.d(TAG, "EVENT: GOT Id=" + currentTrackIdValue);
                     setCurrentTrackId(currentTrackIdValue.getValue());
 
+                    ceolModel.notifyObservers(ceolModel.inputControl.trackControl);
                     ceolModel.notifyObservers(ceolModel.inputControl.playlistControl);
 
                     notifyInputControlIsOpenhome();
@@ -605,7 +607,7 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
                               UpnpResponse responseStatus,
                               Exception exception,
                               String defaultMsg) {
-            Log.d(TAG,"Subscripiton failed: " + defaultMsg);
+            Log.d(TAG,"Subscription failed: " + defaultMsg);
             isSubscribed = false;
             removeDevice();
         }
