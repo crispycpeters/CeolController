@@ -54,6 +54,7 @@ public class FragmentPlayer extends Fragment {
         ceolController = new CeolController(getContext());
 
         ceolController.create();
+
     }
 
     @Override
@@ -90,6 +91,25 @@ public class FragmentPlayer extends Fragment {
             }
         }
         );
+
+        SeekBar seekBar = (SeekBar) (getView().findViewById(R.id.trackSeekBar));
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int i = seekBar.getProgress();
+                ceolController.setTrackPosition(i);
+            }
+        });
+
 
     }
 

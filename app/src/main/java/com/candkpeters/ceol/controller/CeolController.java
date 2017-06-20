@@ -9,8 +9,9 @@ import android.util.Log;
 
 import com.candkpeters.ceol.device.CeolManager;
 import com.candkpeters.ceol.device.command.Command;
-import com.candkpeters.ceol.device.command.CommandControlPlayAt;
 import com.candkpeters.ceol.device.command.CommandControlToggle;
+import com.candkpeters.ceol.device.command.CommandOpenHomeSeekAbsoluteSecond;
+import com.candkpeters.ceol.device.command.CommandOpenHomeSeekIndex;
 import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.OnControlChangedListener;
@@ -136,8 +137,15 @@ public class CeolController {
             performCommand(command);
         } else {
             // We want to start openhome with this track
-            Command command = new CommandControlPlayAt(item.getId());
+            Command command = new CommandOpenHomeSeekIndex(item.getId());
             performCommand(command);
         }
+    }
+
+    public void setTrackPosition(int newPosition) {
+//        int progressSize = (int)(getCeolModel().inputControl.trackControl.getAudioItem().getDuration());
+
+        Command command = new CommandOpenHomeSeekAbsoluteSecond(newPosition);
+        performCommand(command);
     }
 }

@@ -150,6 +150,12 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
         }
     }
 
+    void performPlaylistSeekSecondAbsoluteCommand(int absoluteSeconds) {
+        if ( playlistService != null ) {
+            executeActionSeekSecondAbsolute( absoluteSeconds);
+        }
+    }
+
     private void setupVolumeEvents() {
         if (volumeService != null) {
 
@@ -465,6 +471,31 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
         final String action = "SeekId";
         ActionInvocation actionInvocation = new ActionInvocation(playlistService.getAction(action));
         UnsignedIntegerFourBytes value = new UnsignedIntegerFourBytes(trackId);
+        actionInvocation.setInput("Value",value);
+
+        upnpService.getControlPoint().execute(new ActionCallback(actionInvocation) {
+
+                                                  @Override
+                                                  public void success(ActionInvocation invocation) {
+                                                      Log.d(TAG,"Successfully called action: " + action);
+
+//                                                      ceolModel.notifyObservers(ceolModel.inputControl.playlistControl);
+                                                  }
+
+                                                  @Override
+                                                  public void failure(ActionInvocation invocation,
+                                                                      UpnpResponse operation,
+                                                                      String defaultMsg) {
+                                                      System.err.println(defaultMsg);
+                                                  }
+                                              }
+        );
+    }
+
+    private void executeActionSeekSecondAbsolute(int absoluteSeconds) {
+        final String action = "SeekSecondAbsolute";
+        ActionInvocation actionInvocation = new ActionInvocation(playlistService.getAction(action));
+        UnsignedIntegerFourBytes value = new UnsignedIntegerFourBytes(absoluteSeconds);
         actionInvocation.setInput("Value",value);
 
         upnpService.getControlPoint().execute(new ActionCallback(actionInvocation) {

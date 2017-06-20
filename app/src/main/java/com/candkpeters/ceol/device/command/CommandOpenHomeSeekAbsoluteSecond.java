@@ -7,18 +7,18 @@ import com.candkpeters.ceol.model.PlayStatusType;
 /**
  * Created by crisp on 25/01/2016.
  */
-public class CommandControlPlayAt extends Command {
+public class CommandOpenHomeSeekAbsoluteSecond extends Command {
 
-    private static final String TAG = "CmdControlToggle";
-    private int trackId;
+    private static final String TAG = "CommandAbsSeconds";
+    private int absoluteSeconds;
 
-    public CommandControlPlayAt(int trackId) {
+    public CommandOpenHomeSeekAbsoluteSecond(int absoluteSeconds) {
         super();
-        this.trackId = trackId;
+        this.absoluteSeconds = absoluteSeconds;
     }
-    public CommandControlPlayAt() {
+    public CommandOpenHomeSeekAbsoluteSecond() {
         super();
-        this.trackId = 0;
+        this.absoluteSeconds = 0;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class CommandControlPlayAt extends Command {
     @Override
     public void execute() {
 
-        ceolManager.sendOpenHomeSeekIdCommand(trackId);
+        ceolManager.sendOpenHomeSeekAbsoluteSecond(absoluteSeconds);
 /*
         switch (ceolModel.inputControl.getSIStatus()) {
             case Unknown:
@@ -71,19 +71,19 @@ public class CommandControlPlayAt extends Command {
 
     @Override
     public String getParameterAsString() {
-        return String.valueOf(trackId);
+        return String.valueOf(absoluteSeconds);
     }
 
     protected void initialize(String valueString) {
         try {
-            trackId = Integer.parseInt(valueString);
+            absoluteSeconds = Integer.parseInt(valueString);
         } catch ( IllegalArgumentException e ) {
-            Log.e(TAG, "initialize: Could not initialize SIStatus with: " + valueString + ": Stack: " + e.getStackTrace() );
+            Log.e(TAG, "initialize: Could not initialize command with: " + valueString + ": Stack: " + e.getStackTrace() );
         }
     }
 
     public String toString() {
-        return this.getClass().getSimpleName() + "(" + trackId+ ")";
+        return this.getClass().getSimpleName() + "(" + absoluteSeconds+ ")";
     }
 
 }

@@ -176,6 +176,12 @@ public class ClingGatherer2 extends GathererBase implements Runnable {
         }
     }
 
+    public void sendOpenHomeSeekSecondAbsolute(int absoluteSeconds) {
+        if ( isOpenHomeRunning()) {
+            openHomeSubscriptionManager.performPlaylistSeekSecondAbsoluteCommand(absoluteSeconds);
+        }
+    }
+
     private void deviceGone() {
         openHomeSubscriptionManager.removeDevice();
 

@@ -143,6 +143,10 @@ public class CeolManager {
         clingGatherer.sendOpenHomeSeekIdCommand(trackId);
     }
 
+    public void sendOpenHomeSeekAbsoluteSecond(int absoluteSeconds) {
+        clingGatherer.sendOpenHomeSeekSecondAbsolute(absoluteSeconds);
+    }
+
     public void sendSpotifyCommand(String commandString) {
         if ( context != null ) {
             if ( commandString.equalsIgnoreCase("PLAY")) {
