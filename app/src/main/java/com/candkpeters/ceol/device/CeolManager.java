@@ -54,7 +54,7 @@ public class CeolManager {
             public void onClingDisconnected() {
                 if ( haveNetwork) {
                     Log.d(TAG, "onClingDisconnected: We were disconnected. Let's connect again.");
-                    startGatherers();
+//                    startGatherers();
                 }
             }
         });

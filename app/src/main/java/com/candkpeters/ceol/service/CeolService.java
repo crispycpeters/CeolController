@@ -144,6 +144,7 @@ public class CeolService extends Service {
 
     @Override
     public void onDestroy() {
+        Log.d(TAG, "onDestroy: Entering");
         ceolWidgetController.destroy();
         ceolManager.stopGatherers();
     }

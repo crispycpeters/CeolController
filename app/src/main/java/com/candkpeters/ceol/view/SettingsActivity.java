@@ -173,6 +173,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_macro2name)));
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_macro1)));
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_macro2)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_openhome_name)));
 //            bindPreferenceSummaryToValue(findPreference("example_list"));
         }
 
@@ -205,6 +206,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
 //            bindPreferenceSummaryToValue(findPreference("pref_debug"));
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_debug_device_server)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_debug_openhome_name)));
 
         }
 

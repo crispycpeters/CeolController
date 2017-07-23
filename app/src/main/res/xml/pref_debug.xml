@@ -19,5 +19,14 @@
         android:title="@string/pref_title_debug_device_server"
         />
 
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_debug_openhome_name"
+        android:key="@string/pref_key_debug_openhome_name"
+        android:summary="@string/pref_summary_debug_openhome_name"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_debug_openhome_name" />
 
 </PreferenceScreen>

@@ -253,7 +253,7 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
 
                     notifyInputControlIsOpenhome();
 
-                    if ( isOperating() ) {
+                    if (isOperating()) {
                         StateVariableValue metadata = values.get("Metadata");
                         Log.d(TAG, "EVENT: GOT metadata=" + metadata);
 //                    ceolDeviceOpenHome.setMetadata((String)(metadata.getValue()));
@@ -284,26 +284,34 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
                 public void ended(GENASubscription sub,
                                   CancelReason reason,
                                   UpnpResponse response) {
-                    Log.d(TAG,"Info subscription ended: "+ reason);
+                    Log.d(TAG, "Info subscription ended: " + reason);
 
-                    switch (reason) {
+                    if (reason == null) {
+                        Log.d(TAG, "ended: Service must have shutdown.");
+                        removeDevice();
+                        if (onSubscriptionListener != null) {
+                            onSubscriptionListener.onDeviceDisconnected();
+                        }
+                    } else {
+                        switch (reason) {
 
-                        case RENEWAL_FAILED:
-                        case EXPIRED:
-                            // TODO - Need to inform manager and go into a retry...
-                            isSubscribed = false;
-                            if ( onSubscriptionListener != null) {
-                                onSubscriptionListener.onSubscriptionDisconnected();
-                            }
-                            break;
-                        case UNSUBSCRIBE_FAILED:
-                            break;
-                        case DEVICE_WAS_REMOVED:
-                            removeDevice();
-                            if ( onSubscriptionListener != null) {
-                                onSubscriptionListener.onDeviceDisconnected();
-                            }
-                            break;
+                            case RENEWAL_FAILED:
+                            case EXPIRED:
+                                // TODO - Need to inform manager and go into a retry...
+                                isSubscribed = false;
+                                if (onSubscriptionListener != null) {
+                                    onSubscriptionListener.onSubscriptionDisconnected();
+                                }
+                                break;
+                            case UNSUBSCRIBE_FAILED:
+                                break;
+                            case DEVICE_WAS_REMOVED:
+                                removeDevice();
+                                if (onSubscriptionListener != null) {
+                                    onSubscriptionListener.onDeviceDisconnected();
+                                }
+                                break;
+                        }
                     }
 
                 }

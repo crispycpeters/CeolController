@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 
 public class ClingGatherer2 extends GathererBase implements Runnable {
     private static final long SEARCH_RETRY_MSECS = 15000;
-    private static String TAG = "ClingGatherer";
+    private static String TAG = "ClingGatherer2";
     //    private BrowserUpnpService browserUpnpService;
     private UpnpService upnpService;
     private BrowseRegistryListener registryListener = new BrowseRegistryListener();
@@ -93,7 +93,7 @@ public class ClingGatherer2 extends GathererBase implements Runnable {
 
             prefs = new Prefs(context);
 
-            upnpService = new UpnpServiceImpl(new AndroidUpnpServiceConfiguration(), registryListener);
+            upnpService = new LocalUpnpServiceImpl(new LocalAndroidUpnpServiceConfiguration(context), registryListener);
 
             isClingServiceBound = true;
 
@@ -139,7 +139,9 @@ public class ClingGatherer2 extends GathererBase implements Runnable {
         if ( isClingServiceBound) {
             try {
                 Log.d(TAG, "unbindFromCling: Shutdown UPnP service");
-                upnpService.shutdown();
+                isClingServiceBound = false;
+//                upnpService.shutdown();
+//                upnpService = null;
             } catch ( Exception exc ) {
                 Log.w(TAG, "unbindFromCling: UPnP service shutdown failed.",exc );
             }

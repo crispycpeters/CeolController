@@ -130,8 +130,13 @@ public class Prefs {
     }
 
     public String getOpenhomeName() {
-        return preferences.getString(context.getResources().getString(R.string.pref_key_openhome_name),
-                context.getResources().getString(R.string.pref_default_openhome_name));
+        if ( getIsDebugMode()) {
+            return preferences.getString(context.getResources().getString(R.string.pref_key_debug_openhome_name),
+                    context.getResources().getString(R.string.pref_default_debug_openhome_name));
+        } else {
+            return preferences.getString(context.getResources().getString(R.string.pref_key_openhome_name),
+                    context.getResources().getString(R.string.pref_default_openhome_name));
+        }
     }
 
 

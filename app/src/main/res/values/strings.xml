@@ -33,6 +33,16 @@
         <string name="pref_summary_device_server">The IP address of the CEOL server</string>
         <string name="pref_default_device_server">192.168.0.3</string>
 
+        <string name="pref_default_openhome_name">Denon CEOL (OpenHome)</string>
+        <string name="pref_summary_openhome_name">Name of OpenHome renderer device</string>
+        <string name="pref_title_openhome_name">CEOL OpenHome name</string>
+        <string name="pref_key_openhome_name">com.candkpeters.ceol.OpenHome_Name</string>
+
+        <string name="pref_default_debug_openhome_name">Media Renderer (DESKTOP-OHHLAB3) (OpenHome)</string>
+        <string name="pref_summary_debug_openhome_name">Name of debug OpenHome renderer device</string>
+        <string name="pref_title_debug_openhome_name">Debug OpenHome name</string>
+        <string name="pref_key_debug_openhome_name">com.candkpeters.ceol.Debug_OpenHome_Name</string>
+
     <!-- Category Macro settings -->
     <string name="pref_category_macro">Macros</string>
     <string name="pref_summary_macro">Enter macro commands</string>
@@ -108,10 +118,6 @@
     <string name="i_button_text">i</string>
 
     <string name="volume_toast">Volume %1$s</string>
-    <string name="pref_default_openhome_name">Denon CEOL (OpenHome)</string>
-    <string name="pref_summary_openhome_name">Name of OpenHome renderer device</string>
-    <string name="pref_title_openhome_name">CEOL OpenHome name</string>
-    <string name="pref_key_openhome_name">com.candkpeters.ceol.OpenHome_Name</string>
     <string name="menu_library">Library</string>
     <string name="action_refresh">Refresh</string>
 </resources>

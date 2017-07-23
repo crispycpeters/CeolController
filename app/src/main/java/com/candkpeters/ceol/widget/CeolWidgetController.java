@@ -153,7 +153,7 @@ public class CeolWidgetController {
                 }
             });
             updateWidgets(command.toString());
-            if ( command instanceof CommandBaseApp) {
+            if ( command instanceof CommandBaseApp && ceolModel.connectionControl.isConnected() ) {
                 Intent i = new Intent();
                 i.setClass(context, MainActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -193,7 +193,8 @@ public class CeolWidgetController {
 
     public void executeScreenOff() {
         stopWidgetUpdates();
-        updateWidgets("Screen off");
+        updateWidgetsOnDestroy();
+//        updateWidgets("Screen off");
     }
 
     public void executeScreenOn() {

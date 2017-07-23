@@ -83,14 +83,14 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<PlaylistRecycl
 
     private PlaylistControlBase getPlaylistControl() {
         if ( controller != null && controller.isBound() ) {
-            if ( controller.isDebugMode()) {
-                if ( testPlaylistControl == null ) {
-                    testPlaylistControl = new TestPlaylistControl(controller.getCeolModel());
-                }
-                return testPlaylistControl;
-            } else {
+//            if ( controller.isDebugMode()) {
+//                if ( testPlaylistControl == null ) {
+//                    testPlaylistControl = new TestPlaylistControl(controller.getCeolModel());
+//                }
+//                return testPlaylistControl;
+//            } else {
                 return controller.getCeolModel().inputControl.playlistControl;
-            }
+//            }
         } else {
             return null;
         }
