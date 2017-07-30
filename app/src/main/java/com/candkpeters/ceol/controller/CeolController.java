@@ -47,9 +47,9 @@ public class CeolController {
             Log.d(TAG, "onServiceConnected: Connected to CeolService");
             CeolServiceBinder binder = (CeolServiceBinder) service;
             CeolService ceolService = binder.getCeolService();
+            bound = true;
             ceolManager = ceolService.getCeolManager();
             ceolManager.ceolModel.register(onControlChangedListener);
-            bound = true;
         }
 
         @Override
@@ -101,7 +101,7 @@ public class CeolController {
     }
 
     public void destroy() {
-        stop();
+//        stop();
         if (bound) {
             Log.d(TAG, "destroy: Unbinding");
             context.unbindService(serviceConnection);

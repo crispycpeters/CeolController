@@ -129,6 +129,7 @@ public class FragmentPlayer extends Fragment {
 
     public void updateTrackViews() {
         if ( ceolController.isBound()) {
+            Log.d(TAG, "updateTrackViews: Is bound");
             CeolModel ceolModel = ceolController.getCeolModel();
             TrackControl trackControl = ceolController.getCeolModel().inputControl.trackControl;
 
@@ -178,6 +179,9 @@ public class FragmentPlayer extends Fragment {
             }
 
 
+        }
+        else {
+            Log.d(TAG, "updateTrackViews: Not bound");
         }
     }
 
