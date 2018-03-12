@@ -67,7 +67,8 @@ public class FragmentLibrary extends Fragment {
                     public void run() {
                         switch (observedControlType) {
 
-                            case None:
+                            case All:
+                                break;
                             case Connection:
                             case Power:
                             case Audio:

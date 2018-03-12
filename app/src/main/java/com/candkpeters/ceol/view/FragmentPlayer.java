@@ -65,12 +65,11 @@ public class FragmentPlayer extends Fragment {
         ceolController.start( new OnControlChangedListener() {
 
             @Override
-            public void onControlChanged(CeolModel ceolModel, final ObservedControlType observedControlType, final ControlBase controlBase) {
+            public void onControlChanged(final CeolModel ceolModel, final ObservedControlType observedControlType, final ControlBase controlBase) {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         switch (observedControlType) {
 
-                            case None:
                             case Connection:
                             case Power:
                             case Audio:
@@ -84,6 +83,9 @@ public class FragmentPlayer extends Fragment {
                             case Progress:
                                 updateProgress((ProgressControl)controlBase);
                                 break;
+                            case All:
+                                updateProgress(ceolModel.progressControl);
+                                updateTrackViews();
                         }
                     }
                 });

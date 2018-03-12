@@ -78,9 +78,9 @@ public class CeolWidgetController {
                 case Audio:
                 case Input:
                 case Track:
+                case All:
                     updateWidgets(null);
                     break;
-                case None:
                 case Navigator:
                 case Playlist:
                     break;

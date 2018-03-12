@@ -70,7 +70,14 @@ public class FragmentPlaylist extends Fragment {
                     public void run() {
                         switch (observedControlType) {
 
-                            case None:
+                            case All:
+                                if ( ceolController.isDebugMode()) {
+                                    playlistRecyclerAdapter.notifyDataSetChanged();
+                                }
+                                scrollPlayListToCurrent();
+                                playlistRecyclerAdapter.notifyDataSetChanged();
+                                break;
+
                             case Connection:
                             case Power:
                             case Audio:

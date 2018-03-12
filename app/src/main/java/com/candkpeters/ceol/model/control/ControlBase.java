@@ -10,7 +10,7 @@ import com.candkpeters.ceol.model.ObservedControlType;
 public abstract class ControlBase  {
     private static final String TAG = "ControlBase";
 
-    private ObservedControlType observedControlType = ObservedControlType.None;
+    private ObservedControlType observedControlType = ObservedControlType.All;
 
     protected ControlBase( ObservedControlType observedControlType) {
         this.observedControlType = observedControlType;

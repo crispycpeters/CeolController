@@ -37,23 +37,12 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
     private static final int BACKGROUNDRATE_MSECS = 1800000;
     private static final int REPEATONCE_MSECS = 500;
     private static final long IMAGE_LOAD_DELAY_MSECS = 1000;
-//    private static final long BACKGROUNDTIMEOUT_MSECS = 10000;
-//    private final int backgroundTimeoutMsecs;
-//    private final int backgroundRateMsecs;
 
     private WebSvcApiService webSvcApiService = null;
     private UIThreadUpdater activeThreadUpdater;
     private final CeolModel ceolModel;
     private URL imageUrl;
     private final Object MUTEX = new Object();
-
-    // Observer
-/*
-    private final Object MUTEX = new Object();
-    private List<OnCeolStatusChangedListener> observers;
-*/
-
-//    OnCeolStatusChangedListener onCeolStatusChangedListener;
 
     private final static String statusQueryString_NetServer = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
             "<tx>\n" +
@@ -112,34 +101,32 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
         trackControlChanged = false;
         audioControlChanged = false;
         ceolNavigatorControlChanged = false;
-//        audioControlUpdate = ceolModel.generateAudioControlUpdate();
-//        inputControlUpdate = ceolModel.generateInputControlUpdate();
-//        trackControlUpdate = ceolModel.generateTrackControlUpdate();
-//        powerControlUpdate = ceolModel.generatePowerControlUpdate();
-//        ceolNavigatorControlUpdate = ceolModel.generateCeolNavigatorControlUpdate();
     }
 
     private void notifyObservers() {
-        if ( powerControlChanged) {
+        ceolModel.notifyObservers(null);
+/*
+        if (powerControlChanged) {
             Log.d(TAG, "notifyObservers: powerControl has changed");
             ceolModel.notifyObservers(ceolModel.powerControl);
         }
-        if ( audioControlChanged) {
+        if (audioControlChanged) {
             Log.d(TAG, "notifyObservers: audioControl has changed");
             ceolModel.notifyObservers(ceolModel.audioControl);
         }
-        if ( inputControlChanged) {
+        if (inputControlChanged) {
             Log.d(TAG, "notifyObservers: inputControl has changed");
             ceolModel.notifyObservers(ceolModel.inputControl);
         }
-        if ( trackControlChanged) {
+        if (trackControlChanged) {
             Log.d(TAG, "notifyObservers: trackControl has changed");
             ceolModel.notifyObservers(ceolModel.inputControl.trackControl);
         }
-        if ( ceolNavigatorControlChanged) {
+        if (ceolNavigatorControlChanged) {
             Log.d(TAG, "notifyObservers: ceolNavigatorControl has changed");
             ceolModel.notifyObservers(ceolModel.inputControl.navigatorControl);
         }
+*/
     }
 
     private void checkPowerControlChanged(boolean powerControlChanged) {
@@ -454,6 +441,7 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
                 }
                 checkTrackControlChanged(ceolModel.inputControl.trackControl.updateAudioItem(audioItem));
             }
+
         } catch (Exception e) {
             Log.w(TAG, "updateDeviceStatus: Exception in web response: " + e.toString());
             e.printStackTrace();

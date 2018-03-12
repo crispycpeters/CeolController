@@ -61,12 +61,11 @@ public class FragmentNavigator extends Fragment {
         ceolController.start(new OnControlChangedListener() {
 
             @Override
-            public void onControlChanged(CeolModel ceolModel, final ObservedControlType observedControlType, final ControlBase controlBase) {
+            public void onControlChanged(final CeolModel ceolModel, final ObservedControlType observedControlType, final ControlBase controlBase) {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         switch (observedControlType) {
 
-                            case None:
                             case Connection:
                             case Power:
                             case Audio:
@@ -74,7 +73,8 @@ public class FragmentNavigator extends Fragment {
                             case Track:
                                 break;
                             case Navigator:
-                                updateNavigation( (CeolNavigatorControl)controlBase);
+                            case All:
+                                updateNavigation( ceolModel.inputControl.navigatorControl);
                                 break;
                             case Playlist:
                             case Progress:

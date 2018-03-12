@@ -355,12 +355,16 @@ public class MainActivity extends AppCompatActivity
         ceolController.start( new OnControlChangedListener() {
 
             @Override
-            public void onControlChanged(CeolModel ceolModel, final ObservedControlType observedControlType, final ControlBase controlBase) {
+            public void onControlChanged(final CeolModel ceolModel, final ObservedControlType observedControlType, final ControlBase controlBase) {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         switch (observedControlType) {
 
-                            case None:
+                            case All:
+                                showConnection( ceolModel.connectionControl.isConnected() ) ;
+                                updatePowerButton( ceolModel.powerControl);
+                                setTextViewText(R.id.volume, ceolModel.audioControl.getMasterVolumeString());
+                                updateSIEntries(ceolModel.inputControl);
                                 break;
                             case Connection:
                                 showConnection( ((ConnectionControl)controlBase).isConnected() ) ;

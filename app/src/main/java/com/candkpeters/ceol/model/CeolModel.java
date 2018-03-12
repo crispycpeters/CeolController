@@ -19,16 +19,6 @@ import java.util.List;
 public class CeolModel implements ControlObserved {
     final private static String TAG = "CeolModel";
 
-//    final private static int NUM_CONTROLS = 6;
-//    final private static int CONNECTION_CONTROL = 0;
-//    final private static int POWER_CONTROL = 1;
-//    final private static int INPUT_CONTROL = 2;
-//    final private static int AUDIO_CONTROL = 3;
-//    final private static int TRACK_CONTROL = 4;
-//    final private static int CEOLNAVIGATOR_CONTROL = 5;
-
-//    final private ControlBase[] controls = new ControlBase[NUM_CONTROLS];
-
     final public ConnectionControl connectionControl = new ConnectionControl();
     final public PowerControl powerControl = new PowerControl();
     final public AudioControl audioControl = new AudioControl();
@@ -104,6 +94,8 @@ public class CeolModel implements ControlObserved {
     private void notifyObserver(OnControlChangedListener obj, ControlBase control) {
         if ( control != null) {
             obj.onControlChanged(this, control.getObservedControlType(), control);
+        } else {
+            obj.onControlChanged(this, ObservedControlType.All, null);
         }
     }
 
