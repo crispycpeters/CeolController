@@ -122,11 +122,12 @@ public class ClingGatherer extends GathererBase implements Runnable {
 
             prefs = new Prefs(context);
 
-            context.bindService(
-                    new Intent(context, AndroidUpnpServiceImpl.class),
-                    serviceConnection,
-                    Context.BIND_AUTO_CREATE
-            );
+            // TODO - Temporarily switch off cling to see whether it helps the CPU usage problem on widgets
+//            context.bindService(
+//                    new Intent(context, AndroidUpnpServiceImpl.class),
+//                    serviceConnection,
+//                    Context.BIND_AUTO_CREATE
+//            );
         }
     }
 

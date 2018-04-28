@@ -49,7 +49,10 @@ public class CeolController {
             CeolService ceolService = binder.getCeolService();
             bound = true;
             ceolManager = ceolService.getCeolManager();
-            ceolManager.ceolModel.register(onControlChangedListener);
+            if ( onControlChangedListener != null) {
+                ceolManager.ceolModel.register(onControlChangedListener);
+            }
+            ceolManager.startGatherers();
         }
 
         @Override
@@ -97,6 +100,7 @@ public class CeolController {
         create();
         if (bound) {
             ceolManager.ceolModel.register(onControlChangedListener);
+            ceolManager.startGatherers();
         }
     }
 

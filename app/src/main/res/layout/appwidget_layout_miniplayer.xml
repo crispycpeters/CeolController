@@ -130,6 +130,7 @@
             android:layout_below="@id/powerB2"
             android:layout_centerHorizontal="true"
             android:layout_margin="8dp"
+            android:visibility="gone"
             android:indeterminate="true" />
     </RelativeLayout>
 

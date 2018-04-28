@@ -35,12 +35,7 @@ public class CeolServiceReceiver extends BroadcastReceiver {
                 i.setAction(CeolService.BOOT_COMPLETED);
                 break;
             case ConnectivityManager.CONNECTIVITY_ACTION:
-
-                if ( CeolService.isOnWifi(context) ) {
-                    i.setAction(CeolService.WIFI_ON);
-                } else {
-                    i.setAction(CeolService.WIFI_OFF);
-                }
+                 i.setAction(CeolService.CONNECTIVITY_ACTION);
                 break;
             default:
                 break;

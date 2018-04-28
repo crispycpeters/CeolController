@@ -58,10 +58,12 @@ public class ClingGatherer2 extends GathererBase implements Runnable {
     @Override
     public void start(Prefs prefs) {
         isPaused = false;
-        if ( !isClingServiceBound) {
-            bindToCling();
-        } else {
-            checkSubscriptions();
+        if ( prefs.getIsOpenhomeEnabled()) {
+            if (!isClingServiceBound) {
+                bindToCling();
+            } else {
+                checkSubscriptions();
+            }
         }
     }
 
@@ -192,6 +194,7 @@ public class ClingGatherer2 extends GathererBase implements Runnable {
 
         ceolModel.inputControl.updateSIStatus(SIStatusType.Unknown);
         ceolModel.notifyObservers(ceolModel.inputControl);
+        unbindFromCling();
     }
 
     private void notifyListeners() {

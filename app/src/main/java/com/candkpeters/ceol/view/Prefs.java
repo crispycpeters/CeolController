@@ -119,14 +119,23 @@ public class Prefs {
                 context.getResources().getBoolean(R.bool.pref_default_debug));
     }
 
+    public boolean getIsOpenhomeEnabled() {
+        return preferences.getBoolean(context.getResources().getString(R.string.pref_key_openhome_enable),
+                context.getResources().getBoolean(R.bool.pref_default_openhome_enable));
+    }
+
     public int getBackgroundTimeoutSecs() {
-        return preferences.getInt(context.getResources().getString(R.string.pref_key_backgroundtimeoutsecs),
-                context.getResources().getInteger(R.integer.pref_default_backgroundtimeoutsecs));
+        String key = context.getResources().getString(R.string.pref_key_backgroundtimeoutsecs);
+        String def = context.getResources().getString(R.string.pref_default_backgroundtimeoutsecs);
+        return Integer.valueOf(preferences.getString(key, def));
+//        return preferences.getInt(context.getResources().getString(R.string.pref_key_backgroundtimeoutsecs),
+//                context.getResources().getInteger(R.integer.pref_default_backgroundtimeoutsecs));
     }
 
     public int getBackgroundRateSecs() {
-        return preferences.getInt(context.getResources().getString(R.string.pref_key_backgroundratesecs),
-                context.getResources().getInteger(R.integer.pref_default_backgroundratesecs));
+        String key = context.getResources().getString(R.string.pref_key_backgroundratesecs);
+        String def = context.getResources().getString(R.string.pref_default_backgroundratesecs);
+        return Integer.valueOf(preferences.getString(key, def));
     }
 
     public String getOpenhomeName() {
@@ -162,6 +171,7 @@ public class Prefs {
             return "http://"+getDefaultDeviceServer()+"/";
         }
     }
+
 
 /*
     public int getWebStatusRepeatRateMsecs() {

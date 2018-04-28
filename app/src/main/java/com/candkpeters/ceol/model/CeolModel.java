@@ -29,6 +29,8 @@ public class CeolModel implements ControlObserved {
     private final Object MUTEX = new Object();
     private final List<OnControlChangedListener> observers;
 
+    public long lastUpdateTimestamp;
+
     public CeolModel() {
         this.observers=new ArrayList<OnControlChangedListener>();
     }

@@ -24,6 +24,13 @@
             android:singleLine="true"
             android:title="@string/pref_title_device_server" />
 
+        <CheckBoxPreference
+            android:key="@string/pref_key_openhome_enable"
+            android:title="@string/pref_title_openhome_enable"
+            android:summary="@string/pref_openhome_enable"
+            android:defaultValue="@bool/pref_default_openhome_enable"
+            />
+
         <EditTextPreference
             android:capitalize="words"
             android:defaultValue="@string/pref_default_openhome_name"
@@ -111,7 +118,7 @@
 
         <EditTextPreference
             android:capitalize="words"
-            android:defaultValue="@integer/pref_default_backgroundtimeoutsecs"
+            android:defaultValue="@string/pref_default_backgroundtimeoutsecs"
             android:inputType="number"
             android:key="@string/pref_key_backgroundtimeoutsecs"
             android:selectAllOnFocus="false"
@@ -120,7 +127,7 @@
 
         <EditTextPreference
             android:capitalize="words"
-            android:defaultValue="@integer/pref_default_backgroundratesecs"
+            android:defaultValue="@string/pref_default_backgroundratesecs"
             android:inputType="number"
             android:key="@string/pref_key_backgroundratesecs"
             android:selectAllOnFocus="false"

@@ -17,7 +17,7 @@ public class UIThreadUpdater {
 
     private Runnable repeatedRunnable;
 //    private Runnable oneoffRunnable;
-    private final int repeatRateMsecs;
+    private int repeatRateMsecs;
     private long lastUpdate = System.currentTimeMillis();
 //    private boolean isRunning = false;
 
@@ -52,6 +52,13 @@ public class UIThreadUpdater {
     }
 
     public synchronized void next() {
+        mHandler.removeCallbacks(repeatedRunnable);
+        // Could make this calculate time when last update was initiated.
+        mHandler.postDelayed(repeatedRunnable, repeatRateMsecs);
+    }
+
+    public synchronized void next(int repeatRateMsecs) {
+        this.repeatRateMsecs = repeatRateMsecs;
         mHandler.removeCallbacks(repeatedRunnable);
         // Could make this calculate time when last update was initiated.
         mHandler.postDelayed(repeatedRunnable, repeatRateMsecs);

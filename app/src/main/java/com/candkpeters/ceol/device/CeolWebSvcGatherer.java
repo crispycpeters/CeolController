@@ -1,7 +1,6 @@
 package com.candkpeters.ceol.device;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.Log;
 
@@ -34,8 +33,8 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
     private static final String TAG = "CeolWebSvcGatherer";
 
     private static final int REPEATRATE_MSECS = 900;
-    private static final int BACKGROUNDRATE_MSECS = 1800000;
-    private static final int REPEATONCE_MSECS = 500;
+//    private static final int BACKGROUNDRATE_MSECS = 1800000;
+    private static final int REPEATONCE_MSECS = 600;
     private static final long IMAGE_LOAD_DELAY_MSECS = 1000;
 
     private WebSvcApiService webSvcApiService = null;
@@ -75,12 +74,15 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
     private boolean trackControlChanged = false;
     private boolean audioControlChanged = false;
     private boolean ceolNavigatorControlChanged = false;
-    private boolean isActive = false;
+    private boolean isStarted = false;
+    private int repeateRateMsecs;
+    private int inactivityTimeoutMsecs;
+    private int inactivityRepeatMsecs;
+    private long lastActiveTimestamp;
 
     CeolWebSvcGatherer(Context context, CeolModel ceolModel) {
         this.ceolModel = ceolModel;
-
-        initiatlizeControls();
+        setActive();
     }
 
     @Override
@@ -171,22 +173,24 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
 //        resetBackgroundCountdown();
     }
 
-    private void startActiveUpdates() {
+    private void initiateImmediateUpdate() {
         if ( activeThreadUpdater == null ) {
-            activeThreadUpdater = new UIThreadUpdater(this, REPEATRATE_MSECS);
+            activeThreadUpdater = new UIThreadUpdater(this, determineRepeateRate());
         }
         activeThreadUpdater.startUpdates();
     }
 
     private void initiateDelayedUpdate() {
-        if ( activeThreadUpdater == null ) {
-            activeThreadUpdater = new UIThreadUpdater(this, REPEATRATE_MSECS);
+        if (activeThreadUpdater == null) {
+            activeThreadUpdater = new UIThreadUpdater(this, determineRepeateRate());
+            activeThreadUpdater.next();
+        } else {
+            activeThreadUpdater.next(determineRepeateRate());
         }
-        activeThreadUpdater.next();
     }
 
     private void stopActiveUpdates() {
-        isActive = false;
+        isStarted = false;
         if (activeThreadUpdater != null) {
             activeThreadUpdater.stopUpdates();
         }
@@ -195,15 +199,20 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
     @Override
     public void start(Prefs prefs) {
         Log.d(TAG, "start: Starting gatherer");
-        isActive = true;
+        isStarted = true;
         recreateService(prefs.getBaseUrl());
-        startActiveUpdates();
+        if (repeateRateMsecs == 0) {
+            repeateRateMsecs = getActiveRepeatRate();
+        }
+        inactivityTimeoutMsecs = prefs.getBackgroundTimeoutSecs() * 1000;
+        inactivityRepeatMsecs = prefs.getBackgroundRateSecs() * 1000;
+        initiateImmediateUpdate();
     }
 
     @Override
     public void stop() {
         Log.d(TAG, "stop: Stopping gatherer");
-        isActive = false;
+        isStarted = false;
         stopActiveUpdates();
     }
 
@@ -219,7 +228,7 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
                 //Log.d(TAG, "success: Got successful response: " + response.getBody());
                 //Log.d(TAG, "success: power: " + webSvcHttpAppCommandResponse.power);
 //                logdTime(TAG, "CEOL StatusLite success: ");
-                if ( isActive) {
+                if (isStarted) {
                     ceolModel.notifyConnectionStatus(true);
                     updateDeviceStatusLite(webSvcHttpStatusLiteResponse);
                     getStatus2_Async();
@@ -230,7 +239,7 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
             public void failure(RetrofitError error) {
                 logdTime(TAG, "CEOL StatusLite failed: " + error);
                 updateDeviceErrorStatus();
-                if ( isActive) {
+                if (isStarted) {
                     initiateDelayedUpdate();
                 }
             }
@@ -245,7 +254,7 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
                 //Log.d(TAG, "success: Got successful response: " + response.getBody());
                 //Log.d(TAG, "success: power: " + webSvcHttpAppCommandResponse.power);
 //                logdTime(TAG, "CEOL AppCommand success: ");
-                if ( isActive) {
+                if (isStarted) {
                     ceolModel.notifyConnectionStatus(true);
                     updateDeviceStatus(webSvcHttpAppCommandResponse);
                     initiateDelayedUpdate();
@@ -256,7 +265,7 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
             public void failure(RetrofitError error) {
                 logdTime(TAG, "CEOL AppCommand error: " + error);
                 updateDeviceErrorStatus();
-                if ( isActive) {
+                if (isStarted) {
                     initiateDelayedUpdate();
                 }
             }
@@ -360,6 +369,7 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
     private void updateDeviceStatus(WebSvcHttpAppCommandResponse webSvcHttpAppCommandResponse) {
 
         AudioStreamItem oldAudioItem = ceolModel.inputControl.trackControl.getAudioItem();
+        ceolModel.lastUpdateTimestamp = System.currentTimeMillis();
 
         try {
 
@@ -485,5 +495,20 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
     }
 
 
+    private int getActiveRepeatRate() {
+        return REPEATRATE_MSECS;
+    }
+
+    public void setActive() {
+        lastActiveTimestamp = System.currentTimeMillis();
+    }
+
+    private int determineRepeateRate() {
+        if (System.currentTimeMillis() >= lastActiveTimestamp + inactivityTimeoutMsecs) {
+            return inactivityRepeatMsecs;
+        } else {
+            return getActiveRepeatRate();
+        }
+    }
 
 }

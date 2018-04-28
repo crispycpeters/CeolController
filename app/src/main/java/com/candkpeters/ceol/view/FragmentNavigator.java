@@ -91,15 +91,16 @@ public class FragmentNavigator extends Fragment {
 
     private void updateNavigation(CeolNavigatorControl navigatorControl) {
 
-        updateNavigationRow( navigatorControl, R.id.textRow0, 0);
-        updateNavigationRow( navigatorControl, R.id.textRow1, 1);
-        updateNavigationRow( navigatorControl, R.id.textRow2, 2);
-        updateNavigationRow( navigatorControl, R.id.textRow3, 3);
-        updateNavigationRow( navigatorControl, R.id.textRow4, 4);
-        updateNavigationRow( navigatorControl, R.id.textRow5, 5);
-        updateNavigationRow( navigatorControl, R.id.textRow6, 6);
-        updateNavigationRow( navigatorControl, R.id.textRow7, 7);
-
+        if ( navigatorControl != null) {
+            updateNavigationRow(navigatorControl, R.id.textRow0, 0);
+            updateNavigationRow(navigatorControl, R.id.textRow1, 1);
+            updateNavigationRow(navigatorControl, R.id.textRow2, 2);
+            updateNavigationRow(navigatorControl, R.id.textRow3, 3);
+            updateNavigationRow(navigatorControl, R.id.textRow4, 4);
+            updateNavigationRow(navigatorControl, R.id.textRow5, 5);
+            updateNavigationRow(navigatorControl, R.id.textRow6, 6);
+            updateNavigationRow(navigatorControl, R.id.textRow7, 7);
+        }
 //        ListView entriesList = (ListView)findViewById(R.id.entriesList);
 //        ListAdapter adapter = entriesList.getAdapter();
 

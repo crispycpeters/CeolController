@@ -296,6 +296,12 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
                         switch (reason) {
 
                             case RENEWAL_FAILED:
+                                removeDevice();
+                                isSubscribed = false;
+                                if (onSubscriptionListener != null) {
+//                                    onSubscriptionListener.onSubscriptionDisconnected();
+                                    onSubscriptionListener.onDeviceDisconnected();
+                                }
                             case EXPIRED:
                                 // TODO - Need to inform manager and go into a retry...
                                 isSubscribed = false;

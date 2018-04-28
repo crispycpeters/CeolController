@@ -31,7 +31,8 @@
         <string name="pref_key_device_server">com.candkpeters.ceol.Device_Server</string>
         <string name="pref_title_device_server">CEOL IP address</string>
         <string name="pref_summary_device_server">The IP address of the CEOL server</string>
-        <string name="pref_default_device_server">192.168.0.3</string>
+    <!--<string name="pref_default_device_server">192.168.0.3</string>-->
+    <string name="pref_default_device_server">10.0.2.2</string>
 
         <string name="pref_default_openhome_name">Denon CEOL (OpenHome)</string>
         <string name="pref_summary_openhome_name">Name of OpenHome renderer device</string>
@@ -63,11 +64,11 @@
         <string name="pref_title_macro3">Macro 3</string>
 
         <string name="pref_key_backgroundtimeoutsecs">com.candkpeters.ceol.Background_Timeout</string>
-        <integer name="pref_default_backgroundtimeoutsecs">30</integer>
-        <string name="pref_title_backgroundtimeoutsecs">Timeout before entering background mode (secs)</string>
+        <string name="pref_default_backgroundtimeoutsecs">30</string>
+        <string name="pref_title_backgroundtimeoutsecs">Timeout before shutting down through inactivity (secs)</string>
 
         <string name="pref_key_backgroundratesecs">com.candkpeters.ceol.Background_Rate</string>
-        <integer name="pref_default_backgroundratesecs">60</integer>
+        <string name="pref_default_backgroundratesecs">60</string>
         <string name="pref_title_backgroundratesecs">Poll rate in background mode (secs)</string>
 
     <string name="pref_category_general">General</string>
@@ -120,4 +121,7 @@
     <string name="volume_toast">Volume %1$s</string>
     <string name="menu_library">Library</string>
     <string name="action_refresh">Refresh</string>
+    <string name="pref_key_openhome_enable">com.candkpeters.ceol.Openhome_Enable</string>
+    <string name="pref_title_openhome_enable">Enable Openhome</string>
+    <string name="pref_openhome_enable">Choose whether to enable Openhome</string>
 </resources>

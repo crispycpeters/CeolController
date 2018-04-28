@@ -101,7 +101,7 @@ public class CeolWidgetController {
 
         this.ceolManager = ceolManager;
         ceolModel = ceolManager.ceolModel;
-        startUpdates();
+//        startUpdates();
     }
 
     private void startWidgetUpdates() {
@@ -120,7 +120,7 @@ public class CeolWidgetController {
         return false;
     }
 
-    private void updateWidgets(String text) {
+    public void updateWidgets(String text) {
         updateString = text==null?updateString:text;
 
         for ( CeolWidgetHelper ceolWidgetHelper : ceolWidgetHelpers) {
@@ -141,8 +141,8 @@ public class CeolWidgetController {
 
         Command command = CeolIntentFactory.newInstance(intent);
         AppWidgetProviderInfo appWidgetProviderInfo = appWidgetMan.getAppWidgetInfo(widgetId);
-        Log.d(TAG, "onStartCommand: Provider: " + appWidgetProviderInfo);
-        Log.d(TAG, "onStartCommand: Provider name: " + appWidgetProviderInfo.provider);
+//        Log.d(TAG, "onStartCommand: Provider: " + appWidgetProviderInfo);
+//        Log.d(TAG, "onStartCommand: Provider name: " + appWidgetProviderInfo.provider);
         if (command != null) {
             commandStarting(widgetId, appWidgetMan);
             ceolManager.execute(command, new OnCeolStatusChangedListener() {
@@ -215,9 +215,13 @@ public class CeolWidgetController {
         startUpdates();
     }
 
+    public void stopUpdates() {
+        stopWidgetUpdates();
+    }
+
     public void startUpdates() {
         if (widgetsExist()) {
-            Log.d(TAG, "startUpdates: Need to start service as widgets exist");
+            Log.d(TAG, "startUpdates: Ensure any widgets can listen to updates");
             startWidgetUpdates();
         }
 /*

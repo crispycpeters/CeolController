@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.candkpeters.ceol.cling.ClingGatherer;
@@ -24,6 +26,7 @@ public class CeolManager {
     private static final String TAG = "CeolManager" ;
     public final CeolModel ceolModel;
     private final Context context;
+    private ConnectivityManager connectivityManager;
     private CeolDeviceWebSvcCommand ceolDeviceWebSvcCommand;
     private boolean isDebugMode;
     private final CeolWebSvcGatherer ceolWebSvcGatherer;
@@ -33,8 +36,6 @@ public class CeolManager {
     private MacroInflater macroInflater;
 
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
-
-    private boolean haveNetwork = true;
 
     public CeolManager(final Context context) {
         this.context = context;
@@ -52,10 +53,10 @@ public class CeolManager {
         clingGatherer = new ClingGatherer2(context, ceolModel, new OnClingListener() {
             @Override
             public void onClingDisconnected() {
-                if ( haveNetwork) {
-                    Log.d(TAG, "onClingDisconnected: We were disconnected. Let's connect again.");
+//                if ( haveNetwork) {
+//                    Log.d(TAG, "onClingDisconnected: We were disconnected. Let's connect again.");
 //                    startGatherers();
-                }
+//                }
             }
         });
         ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(ceolModel);
@@ -76,7 +77,30 @@ public class CeolManager {
             };
             prefs.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
         }
-        startGatherers();
+//        startGatherers();
+    }
+
+    public boolean isOnWifi() {
+        if ( connectivityManager == null ) {
+            connectivityManager =
+                    (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        }
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        if ( isConnected ) {
+            if ( activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                Log.i(TAG, "isOnWifi: WiFi is active");
+                return true;
+            } else {
+                Log.i(TAG, "isOnWifi: On network but not WiFi");
+                return false;
+            }
+        } else {
+            Log.i(TAG, "isOnWifi: No network");
+            return false;
+        }
     }
 
     public ArrayList<Command> getMacro(int macroNumber) {
@@ -109,8 +133,9 @@ public class CeolManager {
 
     public void sendCommand(String commandString) {
         Log.d(TAG, "sendCommand: Sending: " + commandString);
-        if ( commandString!= null && !commandString.isEmpty()) {
+        if ( isOnWifi() && commandString!= null && !commandString.isEmpty()) {
             ceolDeviceWebSvcCommand.sendCeolCommand( commandString, null);   //TODO We need use callback
+            ceolWebSvcGatherer.setActive();
             ceolWebSvcGatherer.getStatusSoon();
         }
     }
@@ -128,8 +153,6 @@ public class CeolManager {
             command.execute(this, onDoneCeolStatusChangedListener);
         }
     }
-
-
 
     public boolean isDebugMode() {
         return isDebugMode;
@@ -193,27 +216,28 @@ public class CeolManager {
     private void restart(Context context) {
         Prefs prefs = new Prefs(context);
         isDebugMode = prefs.getIsDebugMode();
+
 //        inputUpdated(ceolModel.inputControl);
-        ceolWebSvcGatherer.stop();
-        ceolWebSvcGatherer.start(prefs);
-        clingGatherer.stop();
-        clingGatherer.start(prefs);
-        ceolDeviceWebSvcCommand.stop();
-        ceolDeviceWebSvcCommand.start(prefs);
+        stopGatherers();
+        startGatherers();
 
         macroInflater = new MacroInflater(prefs.getMacroNames(), prefs.getMacroValues());
     }
 
     public void startGatherers() {
         Prefs prefs = new Prefs(context);
-        ceolDeviceWebSvcCommand.start(prefs);
-        ceolWebSvcGatherer.start(prefs);
-        clingGatherer.start(prefs);
+        if ( isOnWifi()) {
+            ceolDeviceWebSvcCommand.start(prefs);
+            ceolWebSvcGatherer.start(prefs);
+            clingGatherer.start(prefs);
+        }
     }
 
     public void stopGatherers() {
+        ceolDeviceWebSvcCommand.stop();
         ceolWebSvcGatherer.stop();
         clingGatherer.stop();
+        ceolModel.notifyConnectionStatus(false);
     }
 
     public void pauseGatherers() {
@@ -227,8 +251,8 @@ public class CeolManager {
         ceolModel.notifyAllObservers();
   }
 
+/*
     public void networkBack() {
-        haveNetwork = true;
         Log.d(TAG, "networkBack: ");
         Prefs prefs = new Prefs(context);
         ceolWebSvcGatherer.start(prefs);
@@ -236,15 +260,26 @@ public class CeolManager {
     }
 
     public void networkGone() {
-        haveNetwork = false;
         Log.d(TAG, "networkGone: ");
         ceolWebSvcGatherer.stop();
 //        clingGatherer.stop();
         ceolModel.notifyConnectionStatus(false);
     }
+*/
 
     public void stopCling() {
         clingGatherer.stop();
     }
 
+/*
+    public boolean checkConnectivity() {
+        if ( isOnWifi()) {
+            startGatherers();
+            return true;
+        } else {
+            stopGatherers();
+            return false;
+        }
+    }
+*/
 }
