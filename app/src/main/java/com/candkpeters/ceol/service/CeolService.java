@@ -1,11 +1,11 @@
 package com.candkpeters.ceol.service;
 
+import android.app.Notification;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -60,7 +60,39 @@ public class CeolService extends Service {
     */
     @Override
     public void onCreate() {
-        Log.d(TAG, "onCreate: Entering");
+//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+//        String datestr = df.format(new Date());
+
+//        if ( isExternalStorageWritable() ) {
+
+/*
+            File logFile = new File( ContextCompat.getExternalFilesDirs(this,"logcat")[0], "logcat_" + datestr + ".txt" );
+
+            // clear the previous logcat and then write the new one to the file
+            try {
+                Process process = Runtime.getRuntime().exec("logcat -c");
+                process = Runtime.getRuntime().exec("logcat -f " + logFile);
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+*/
+
+//        } else {
+//            Log.d(TAG, "onCreate: Cannot write logcat to external storage");
+//        }
+
+
+/*
+        File logFile = new File(context.getFilesDir(), "logcat_" + datestr + ".txt");
+        try {
+            FileOutputStream outputStream = openFileOutput("testceol", Context.MODE_PRIVATE);
+            outputStream.write("Hello world!".getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+*/
+        ceolManager.logd(TAG, "onCreate: Entering");
 
         ceolManager.initialize();
         ceolWidgetController.initialize(ceolManager);
@@ -72,13 +104,28 @@ public class CeolService extends Service {
 
     }
 
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
+    }
+
     /*
-    * On starting service
+    * On receiving a command
     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Log.i(TAG, "This is the intent " + intent);
+        ceolManager.logd(TAG, "This is the intent " + intent);
+
+        startForeground(1, new Notification());
 
         if (!ceolManager.isOnWifi()) {
             stopGathering();
@@ -91,9 +138,9 @@ public class CeolService extends Service {
                 if (requestedAction != null) {
                     switch (requestedAction) {
                         case START_SERVICE:
-                            Log.d(TAG, "onStartCommand: START_SERVICE");
+                            ceolManager.logd(TAG, "onStartCommand: START_SERVICE");
                             ceolWidgetController.startUpdates();
-                            ceolManager.startGatherers();
+//                            ceolManager.startGatherers();
                             ceolWidgetController.updateWidgets("Starting");
                             break;
                         case EXECUTE_COMMAND:
@@ -104,32 +151,34 @@ public class CeolService extends Service {
                             ceolWidgetController.startUpdates();
                             break;
                         case SCREEN_OFF:
-                            Log.d(TAG, "onStartCommand: SCREEN_OFF");
+                            ceolManager.logd(TAG, "onStartCommand: SCREEN_OFF");
 //                        ceolManager.pauseGatherers();
                             stopGathering();
                             break;
                         case SCREEN_ON:
-                            Log.d(TAG, "onStartCommand: SCREEN_ON");
+                            ceolManager.logd(TAG, "onStartCommand: SCREEN_ON");
                             startGathering();
                             break;
                         case CONNECTIVITY_ACTION:
-                            Log.d(TAG, "onStartCommand: CONNECTIVITY_ACTION");
-                            startGathering();
+                            ceolManager.logd(TAG, "onStartCommand: CONNECTIVITY_ACTION");
+//                            startGathering();
                             break;
                         case CONFIG_CHANGED:
-                            Log.d(TAG, "onStartCommand: CONFIG_CHANGED");
+                            ceolManager.logd(TAG, "onStartCommand: CONFIG_CHANGED");
                             ceolWidgetController.executeConfigChanged();
+                            stopGathering();
+                            startGathering();
                             break;
                         case BOOT_COMPLETED:
-                            Log.d(TAG, "onStartCommand: BOOT_COMPLETED");
+                            ceolManager.logd(TAG, "onStartCommand: BOOT_COMPLETED");
                             startGathering();
                             break;
                         case STOP_CLING:
-                            Log.d(TAG, "onStartCommand: STOP_CLING");
+                            ceolManager.logd(TAG, "onStartCommand: STOP_CLING");
                             ceolManager.stopCling();
                             break;
                         case START_CLING:
-                            Log.d(TAG, "onStartCommand: START_CLING");
+                            ceolManager.logd(TAG, "onStartCommand: START_CLING");
                             startGathering();
                             break;
                         default:
@@ -138,7 +187,7 @@ public class CeolService extends Service {
                 }
             } else {
                 // Service was restarted
-                Log.d(TAG, "onStartCommand: Restarting service - no Intent");
+                ceolManager.logd(TAG, "onStartCommand: Restarting service - no Intent");
                 startGathering();
             }
             ceolWidgetController.updateWidgets("wifi");
@@ -149,12 +198,12 @@ public class CeolService extends Service {
 
     private void stopGathering() {
 
-        ceolManager.stopGatherers();
+        ceolManager.enginePauseGatherers();
 //        ceolWidgetController.executeScreenOff();
     }
 
     private void startGathering() {
-        ceolManager.startGatherers();
+        ceolManager.engineResumeGatherers();
         ceolWidgetController.executeScreenOn();
     }
 

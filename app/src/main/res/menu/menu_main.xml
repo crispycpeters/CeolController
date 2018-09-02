@@ -21,4 +21,9 @@
         android:title="Openhome Bind"
         android:orderInCategory="100"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_showlog"
+        android:title="Show logs"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
 </menu>

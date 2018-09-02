@@ -151,11 +151,11 @@ public class ClingGatherer2 extends GathererBase implements Runnable {
     }
 
     @Override
-    public void stop() {
+    public void pause() {
         unbindFromCling();
     }
 
-    public void pause() {
+    public void pauseCling() {
         isPaused = true;
     }
 

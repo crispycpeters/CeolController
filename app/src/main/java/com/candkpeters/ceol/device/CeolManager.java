@@ -8,7 +8,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import com.candkpeters.ceol.cling.ClingGatherer;
 import com.candkpeters.ceol.cling.ClingGatherer2;
 import com.candkpeters.ceol.cling.OnClingListener;
 import com.candkpeters.ceol.device.command.Command;
@@ -16,7 +15,10 @@ import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.OnControlChangedListener;
 import com.candkpeters.ceol.view.Prefs;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by crisp on 25/01/2016.
@@ -62,6 +64,25 @@ public class CeolManager {
         ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(ceolModel);
     }
 
+    private static int MAX_LOGSIZE = 5000;
+    private String logMessages[] = new String[MAX_LOGSIZE];
+    private int logPosition = 0;
+
+    public void logd(String tag, String msg) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String datestr = df.format(new Date());
+
+        synchronized (logMessages) {
+            logMessages[logPosition] = String.format("%s D/%s: %s",datestr,tag,msg);
+            logPosition = (logPosition + 1) % MAX_LOGSIZE;
+        }
+        Log.d(tag, msg);
+    }
+
+    public String[] getLogItems() {
+        return logMessages;
+    }
+
     /*
     To be called when config changes or on start
      */
@@ -72,12 +93,12 @@ public class CeolManager {
             onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                    restart(context);
+                    engineRestartGatherers(context);
                 }
             };
             prefs.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
         }
-//        startGatherers();
+        engineResumeGatherers();
     }
 
     public boolean isOnWifi() {
@@ -125,10 +146,10 @@ public class CeolManager {
 /*
         int numRegistered = ceolModel.registerCount();
         if ( numRegistered <= 1) {
-            pause();
+            pauseCling();
         }
 */
-        // TODO: Potentially pause openhome events if nothing is registered to listen
+        // TODO: Potentially pauseCling openhome events if nothing is registered to listen
     }
 
     public void sendCommand(String commandString) {
@@ -136,7 +157,6 @@ public class CeolManager {
         if ( isOnWifi() && commandString!= null && !commandString.isEmpty()) {
             ceolDeviceWebSvcCommand.sendCeolCommand( commandString, null);   //TODO We need use callback
             ceolWebSvcGatherer.setActive();
-            ceolWebSvcGatherer.getStatusSoon();
         }
     }
 
@@ -178,7 +198,7 @@ public class CeolManager {
                      * TODO - Not working yet - it starts then stops
                      */
                     final String CMDTOGGLEPAUSE = "togglepause";
-                    final String CMDPAUSE = "pause";
+                    final String CMDPAUSE = "pauseCling";
                     final String CMDPREVIOUS = "previous";
                     final String CMDNEXT = "next";
                     final String SERVICECMD = "com.android.music.musicservicecommand";
@@ -213,43 +233,38 @@ public class CeolManager {
         }
     }
 
-    private void restart(Context context) {
-        Prefs prefs = new Prefs(context);
-        isDebugMode = prefs.getIsDebugMode();
-
-//        inputUpdated(ceolModel.inputControl);
-        stopGatherers();
-        startGatherers();
-
-        macroInflater = new MacroInflater(prefs.getMacroNames(), prefs.getMacroValues());
-    }
-
-    public void startGatherers() {
+    /**************************
+     * ENGINE
+     */
+    public void engineResumeGatherers()
+    {
         Prefs prefs = new Prefs(context);
         if ( isOnWifi()) {
             ceolDeviceWebSvcCommand.start(prefs);
             ceolWebSvcGatherer.start(prefs);
-            clingGatherer.start(prefs);
+//            clingGatherer.start(prefs);
         }
     }
 
-    public void stopGatherers() {
+    public void enginePauseGatherers()
+    {
         ceolDeviceWebSvcCommand.stop();
-        ceolWebSvcGatherer.stop();
-        clingGatherer.stop();
+        ceolWebSvcGatherer.pause();
+//        clingGatherer.pause();
         ceolModel.notifyConnectionStatus(false);
     }
 
-    public void pauseGatherers() {
+    private void engineRestartGatherers(Context context) {
+        Prefs prefs = new Prefs(context);
+        isDebugMode = prefs.getIsDebugMode();
 
+//        inputUpdated(ceolModel.inputControl);
+        enginePauseGatherers();
+        engineResumeGatherers();
+
+        macroInflater = new MacroInflater(prefs.getMacroNames(), prefs.getMacroValues());
     }
 
-    public void resumeGatherers() {
-        Prefs prefs = new Prefs(context);
-        ceolWebSvcGatherer.start(prefs);
-        clingGatherer.start(prefs);
-        ceolModel.notifyAllObservers();
-  }
 
 /*
     public void networkBack() {
@@ -261,14 +276,22 @@ public class CeolManager {
 
     public void networkGone() {
         Log.d(TAG, "networkGone: ");
-        ceolWebSvcGatherer.stop();
-//        clingGatherer.stop();
+        ceolWebSvcGatherer.pause();
+//        clingGatherer.pause();
         ceolModel.notifyConnectionStatus(false);
     }
 */
 
     public void stopCling() {
-        clingGatherer.stop();
+        clingGatherer.pause();
+    }
+
+    public void nudgeGatherers() {
+        if ( isOnWifi()) {
+            ceolWebSvcGatherer.setActive();
+//            clingGatherer.start(prefs);
+        }
+
     }
 
 /*

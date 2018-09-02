@@ -63,12 +63,11 @@
     <TextView
         android:id="@+id/textUpdate"
         style="@style/AlbumArtText.Small"
-        android:textSize="8sp"
+        android:textSize="10sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="15dp"
         android:background="#00000000"
-        android:visibility="gone"
         />
 
 </LinearLayout>

@@ -42,7 +42,7 @@ public class CeolModel implements ControlObserved {
             hasChangedConnection = connectionControl.updateConnected(connection);
             newIsConnected = connectionControl.isConnected();
         }
-        if ( hasChangedConnection ) {
+//        if ( hasChangedConnection ) {
             if ( newIsConnected) {
                 Log.d(TAG, "notifyConnectionStatus: We are connected. Refresh all observers." );
                 notifyAllObservers();
@@ -50,7 +50,7 @@ public class CeolModel implements ControlObserved {
                 Log.w(TAG, "notifyConnectionStatus: We are no longer connected." );
                 notifyObservers(connectionControl);
             }
-        }
+//        }
     }
 
     // ControlObserved
@@ -102,29 +102,31 @@ public class CeolModel implements ControlObserved {
     }
 
     public void notifyAllObservers() {
-        notifyObservers(connectionControl);
-        notifyObservers(powerControl);
-        notifyObservers(audioControl);
-        notifyObservers(inputControl);
-        notifyObservers(inputControl.trackControl);
-        notifyObservers(inputControl.navigatorControl);
-        notifyObservers(inputControl.playlistControl);
-        notifyObservers(progressControl);
+//        notifyObservers(connectionControl);
+//        notifyObservers(powerControl);
+//        notifyObservers(audioControl);
+//        notifyObservers(inputControl);
+//        notifyObservers(inputControl.trackControl);
+//        notifyObservers(inputControl.navigatorControl);
+//        notifyObservers(inputControl.playlistControl);
+//        notifyObservers(progressControl);
+        notifyObservers(null);
     }
 
     public void refreshObserver( OnControlChangedListener obj) {
-        notifyObserver(obj, connectionControl);
-        notifyObserver(obj, powerControl);
-        notifyObserver(obj, audioControl);
-        notifyObserver(obj, inputControl);
-        notifyObserver(obj, inputControl.trackControl);
-        notifyObserver(obj, inputControl.navigatorControl);
-        notifyObserver(obj, inputControl.playlistControl);
-        notifyObserver(obj, progressControl);
+//        notifyObserver(obj, connectionControl);
+//        notifyObserver(obj, powerControl);
+//        notifyObserver(obj, audioControl);
+//        notifyObserver(obj, inputControl);
+//        notifyObserver(obj, inputControl.trackControl);
+//        notifyObserver(obj, inputControl.navigatorControl);
+//        notifyObserver(obj, inputControl.playlistControl);
+//        notifyObserver(obj, progressControl);
+        notifyObserver(obj, null);
     }
 
 
-    public int registerCount() {
+    public int observerCount() {
         List<OnControlChangedListener> observersLocal = null;
         //synchronization is used to make sure any observer registered after message is received is not notified
         synchronized (MUTEX) {

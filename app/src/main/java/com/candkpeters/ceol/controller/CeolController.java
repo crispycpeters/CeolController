@@ -51,8 +51,9 @@ public class CeolController {
             ceolManager = ceolService.getCeolManager();
             if ( onControlChangedListener != null) {
                 ceolManager.ceolModel.register(onControlChangedListener);
+                ceolManager.nudgeGatherers();
             }
-            ceolManager.startGatherers();
+//            ceolManager.startGatherers();
         }
 
         @Override
@@ -87,7 +88,7 @@ public class CeolController {
     }
 
     public void stop() {
-        Log.d(TAG, "stop: ("+bound+")");
+        Log.d(TAG, "pause: ("+bound+")");
         if ( bound) {
             ceolManager.ceolModel.unregister(onControlChangedListener);
         }
@@ -100,12 +101,13 @@ public class CeolController {
         create();
         if (bound) {
             ceolManager.ceolModel.register(onControlChangedListener);
-            ceolManager.startGatherers();
+            ceolManager.nudgeGatherers();
+//            ceolManager.startGatherers();
         }
     }
 
     public void destroy() {
-//        stop();
+//        pause();
         if (bound) {
             Log.d(TAG, "destroy: Unbinding");
             context.unbindService(serviceConnection);
@@ -130,7 +132,7 @@ public class CeolController {
 
     public void restart() {
         if ( ceolManager != null) {
-            ceolManager.startGatherers();
+//            ceolManager.startGatherers();
         }
     }
 

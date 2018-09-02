@@ -10,5 +10,5 @@ public abstract class GathererBase {
 
     public abstract void start(Prefs prefs);
 
-    public abstract void stop();
+    public abstract void pause();
 }

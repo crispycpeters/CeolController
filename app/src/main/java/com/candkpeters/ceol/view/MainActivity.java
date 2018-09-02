@@ -529,6 +529,10 @@ public class MainActivity extends AppCompatActivity
             startService(intent);
             return true;
         }
+        if (id == R.id.action_showlog) {
+            showLogDialog();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -626,6 +630,12 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fm = getSupportFragmentManager();
         InfoFragment infoFragment = new InfoFragment();
         infoFragment.show(fm,"infoFragment");
+    }
+
+    private void showLogDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        LogFragment logFragment = new LogFragment();
+        logFragment.show(fm,"logFragment");
     }
 
     public CeolController getCeolController() {

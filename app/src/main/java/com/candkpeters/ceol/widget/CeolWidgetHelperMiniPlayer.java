@@ -44,6 +44,7 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
         setOnClickCommandIntent(context, appWidgetId, views, R.id.album_art, new CommandAppBasic());
         setOnClickCommandIntent(context, appWidgetId, views, R.id.siB, new CommandAppSelectSI());
         setOnClickCommandIntent(context, appWidgetId, views, R.id.infoB, new CommandAppInfo());
+        setOnClickCommandIntent(context, appWidgetId, views, R.id.dimV, new CommandAppBasic());
         return views;
     }
 

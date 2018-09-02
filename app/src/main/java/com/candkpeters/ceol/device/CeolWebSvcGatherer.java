@@ -74,15 +74,15 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
     private boolean trackControlChanged = false;
     private boolean audioControlChanged = false;
     private boolean ceolNavigatorControlChanged = false;
-    private boolean isStarted = false;
-    private int repeateRateMsecs;
+//    private boolean isActive = false;
+    private int activeRepeateRateMsecs;
     private int inactivityTimeoutMsecs;
-    private int inactivityRepeatMsecs;
+    private int inactivityRepeatRateMsecs;
     private long lastActiveTimestamp;
 
     CeolWebSvcGatherer(Context context, CeolModel ceolModel) {
         this.ceolModel = ceolModel;
-        setActive();
+        setInactive();
     }
 
     @Override
@@ -129,6 +129,9 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
             ceolModel.notifyObservers(ceolModel.inputControl.navigatorControl);
         }
 */
+        if (ceolModel.observerCount() == 0) {
+            setInactive();
+        }
     }
 
     private void checkPowerControlChanged(boolean powerControlChanged) {
@@ -190,7 +193,7 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
     }
 
     private void stopActiveUpdates() {
-        isStarted = false;
+//        isActive = false;
         if (activeThreadUpdater != null) {
             activeThreadUpdater.stopUpdates();
         }
@@ -199,21 +202,20 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
     @Override
     public void start(Prefs prefs) {
         Log.d(TAG, "start: Starting gatherer");
-        isStarted = true;
+//        isActive = true;
         recreateService(prefs.getBaseUrl());
-        if (repeateRateMsecs == 0) {
-            repeateRateMsecs = getActiveRepeatRate();
-        }
         inactivityTimeoutMsecs = prefs.getBackgroundTimeoutSecs() * 1000;
-        inactivityRepeatMsecs = prefs.getBackgroundRateSecs() * 1000;
+        inactivityRepeatRateMsecs = prefs.getBackgroundRateSecs() * 1000;
+        activeRepeateRateMsecs = getActiveRepeatRate();
         initiateImmediateUpdate();
     }
 
     @Override
-    public void stop() {
-        Log.d(TAG, "stop: Stopping gatherer");
-        isStarted = false;
-        stopActiveUpdates();
+    public void pause() {
+        Log.d(TAG, "pause: Stopping gatherer");
+        setInactive();
+//        isActive = false;
+//        stopActiveUpdates();
     }
 
     private void logdTime( String tag, String msg) {
@@ -228,20 +230,16 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
                 //Log.d(TAG, "success: Got successful response: " + response.getBody());
                 //Log.d(TAG, "success: power: " + webSvcHttpAppCommandResponse.power);
 //                logdTime(TAG, "CEOL StatusLite success: ");
-                if (isStarted) {
-                    ceolModel.notifyConnectionStatus(true);
-                    updateDeviceStatusLite(webSvcHttpStatusLiteResponse);
-                    getStatus2_Async();
-                }
+                ceolModel.notifyConnectionStatus(true);
+                updateDeviceStatusLite(webSvcHttpStatusLiteResponse);
+                getStatus2_Async();
             }
 
             @Override
             public void failure(RetrofitError error) {
                 logdTime(TAG, "CEOL StatusLite failed: " + error);
                 updateDeviceErrorStatus();
-                if (isStarted) {
-                    initiateDelayedUpdate();
-                }
+                initiateDelayedUpdate();
             }
         });
     }
@@ -254,20 +252,16 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
                 //Log.d(TAG, "success: Got successful response: " + response.getBody());
                 //Log.d(TAG, "success: power: " + webSvcHttpAppCommandResponse.power);
 //                logdTime(TAG, "CEOL AppCommand success: ");
-                if (isStarted) {
-                    ceolModel.notifyConnectionStatus(true);
-                    updateDeviceStatus(webSvcHttpAppCommandResponse);
-                    initiateDelayedUpdate();
-                }
+                ceolModel.notifyConnectionStatus(true);
+                updateDeviceStatus(webSvcHttpAppCommandResponse);
+                initiateDelayedUpdate();
             }
 
             @Override
             public void failure(RetrofitError error) {
                 logdTime(TAG, "CEOL AppCommand error: " + error);
                 updateDeviceErrorStatus();
-                if (isStarted) {
-                    initiateDelayedUpdate();
-                }
+                initiateDelayedUpdate();
             }
         });
     }
@@ -501,13 +495,22 @@ class CeolWebSvcGatherer extends GathererBase implements Runnable, ImageDownload
 
     public void setActive() {
         lastActiveTimestamp = System.currentTimeMillis();
+        getStatusSoon();
+    }
+
+    private boolean isActive() {
+        return System.currentTimeMillis() < lastActiveTimestamp + inactivityTimeoutMsecs;
+    }
+
+    private void setInactive() {
+        lastActiveTimestamp = 0;
     }
 
     private int determineRepeateRate() {
-        if (System.currentTimeMillis() >= lastActiveTimestamp + inactivityTimeoutMsecs) {
-            return inactivityRepeatMsecs;
+        if (isActive()) {
+            return activeRepeateRateMsecs;
         } else {
-            return getActiveRepeatRate();
+            return inactivityRepeatRateMsecs;
         }
     }
 
