@@ -4,6 +4,9 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.content.ComponentName;
 
@@ -19,9 +22,40 @@ import com.candkpeters.ceol.view.Prefs;
  */
 public abstract class CeolWidgetHelper /*extends AppWidgetProvider*/ {
 
-    private static final String TAG = "WidgetProvider";
+    private static final String TAG = "WidgetHelper";
     private Prefs prefs;
     boolean isWaiting = false;
+
+    private boolean bound = false;
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            Log.d(TAG, "onServiceConnected: Connected to CeolService");
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            Log.d(TAG, "onServiceDisconnected: Disconnected from CeolService");
+            bound = false;
+        }
+    };
+
+    private boolean isBound() {
+        return bound;
+    }
+
+    public void ensureServiceStarted(Context context) {
+        if (!bound) {
+            Log.d(TAG, "create: Binding");
+            Intent intent = new Intent(context, CeolService.class);
+            context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        }
+    }
 
     // On creation of first widget
 /*
@@ -45,9 +79,14 @@ public abstract class CeolWidgetHelper /*extends AppWidgetProvider*/ {
 */
 
     protected PendingIntent createPendingIntent(Context context, int appWidgetId, Intent intent) {
-        intent.setClass(context, CeolService.class);
+        //intent.setClass(context, CeolService.class);
+        intent.setClass(context, CeolWidgetProviderMiniPlayer.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        return PendingIntent.getService(context, 0, intent, 0);
+
+        // TODO: Test with local intent first
+        return PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+//        return PendingIntent.getService(context, 0, intent, 0);
     }
 
     protected void setOnClickCommandIntent(Context context, int appWidgetId, RemoteViews views, int resId, Command command) {
@@ -60,8 +99,8 @@ public abstract class CeolWidgetHelper /*extends AppWidgetProvider*/ {
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        MainActivity a = new MainActivity();
-        ComponentName cn = new ComponentName(context, MainActivity.class);
+//        MainActivity a = new MainActivity();
+        ComponentName cn = new ComponentName(context, CeolService.class);
         intent.setComponent(cn);
 
         PendingIntent clickPendingIntent = createPendingIntent(context, appWidgetId, intent);

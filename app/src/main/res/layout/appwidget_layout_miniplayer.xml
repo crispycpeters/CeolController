@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="fill_vertical"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/glayout3"
         >
-        <include layout="@layout/appwidget_power_volume"  />
+        <include layout="@layout/appwidget_power_volume" />
     </FrameLayout>
 
     <LinearLayout
@@ -37,7 +38,6 @@
             style="@style/DarkRectangleButton"
             android:layout_width="@dimen/av_button_size_standard"
             android:layout_height="wrap_content"
-            android:onClick="buttonClick"
             />
 
         <ImageButton
@@ -46,7 +46,6 @@
             style="@style/DarkRectangleButton"
             android:layout_width="@dimen/av_button_size_standard"
             android:layout_height="wrap_content"
-            android:onClick="buttonClick"
             />
 
         <ImageButton
@@ -55,7 +54,6 @@
             style="@style/DarkRectangleButton"
             android:layout_width="@dimen/av_button_size_standard"
             android:layout_height="wrap_content"
-            android:onClick="buttonClick"
             />
 
         <ImageButton
@@ -64,7 +62,6 @@
             style="@style/DarkRectangleButton"
             android:layout_width="@dimen/av_button_size_standard"
             android:layout_height="wrap_content"
-            android:onClick="buttonClick"
             />
 
         <TextView
@@ -111,7 +108,6 @@
             android:layout_centerInParent="true"
             android:contentDescription="@string/power_toggle"
             android:visibility="invisible"
-            android:onClick="buttonClick"
             android:src="@drawable/ic_av_power" />
 
         <TextView

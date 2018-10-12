@@ -6,16 +6,19 @@ package com.candkpeters.ceol.view;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.candkpeters.ceol.controller.CeolController;
+import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.ObservedControlType;
@@ -29,7 +32,7 @@ import com.candkpeters.chris.ceol.R;
 /**
  * Section 1 - Ceol player control.
  */
-public class FragmentPlayer extends Fragment {
+public class FragmentPlayer extends Fragment implements View.OnClickListener {
     private static final String TAG="FragmentPlayer";
     CeolController ceolController;
 
@@ -44,6 +47,10 @@ public class FragmentPlayer extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tablayout_player, container, false);
+
+        Button infoB = rootView.findViewById(R.id.infoB);
+        infoB.setOnClickListener(this);
+
         return rootView;
     }
 
@@ -231,6 +238,22 @@ public class FragmentPlayer extends Fragment {
         }  else {
 
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.d(TAG, "buttonClick: " + v.getId());
+
+        switch( v.getId()) {
+            case R.id.infoB:
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                InfoFragment infoFragment = new InfoFragment();
+                infoFragment.show(fm,"infoFragment");
+                break;
+            default:
+                break;
+        }
+
     }
 
 

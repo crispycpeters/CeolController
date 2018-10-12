@@ -68,33 +68,35 @@ public class FragmentPlaylist extends Fragment {
             public void onControlChanged(CeolModel ceolModel, final ObservedControlType observedControlType, final ControlBase controlBase) {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
-                        switch (observedControlType) {
+                        if ( playlistRecyclerAdapter != null ) {
+                            switch (observedControlType) {
 
-                            case All:
-                                if ( ceolController.isDebugMode()) {
+                                case All:
+                                    if (ceolController.isDebugMode()) {
+                                        playlistRecyclerAdapter.notifyDataSetChanged();
+                                    }
+                                    scrollPlayListToCurrent();
                                     playlistRecyclerAdapter.notifyDataSetChanged();
-                                }
-                                scrollPlayListToCurrent();
-                                playlistRecyclerAdapter.notifyDataSetChanged();
-                                break;
+                                    break;
 
-                            case Connection:
-                            case Power:
-                            case Audio:
-                            case Input:
-                            case Progress:
-                            case Navigator:
-                                break;
+                                case Connection:
+                                case Power:
+                                case Audio:
+                                case Input:
+                                case Progress:
+                                case Navigator:
+                                    break;
 
-                            case Track:
-                                if ( ceolController.isDebugMode()) {
+                                case Track:
+                                    if (ceolController.isDebugMode()) {
+                                        playlistRecyclerAdapter.notifyDataSetChanged();
+                                    }
+                                    scrollPlayListToCurrent();
+                                    break;
+                                case Playlist:
                                     playlistRecyclerAdapter.notifyDataSetChanged();
-                                }
-                                scrollPlayListToCurrent();
-                                break;
-                            case Playlist:
-                                playlistRecyclerAdapter.notifyDataSetChanged();
-                                break;
+                                    break;
+                            }
                         }
                     }
                 });

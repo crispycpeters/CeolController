@@ -1,5 +1,9 @@
 package com.candkpeters.ceol.widget;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
 import com.candkpeters.ceol.widget.CeolWidgetHelperMiniPlayer;
 import com.candkpeters.ceol.widget.CeolWidgetProvider;
 
@@ -13,5 +17,10 @@ public class CeolWidgetProviderMiniPlayer extends CeolWidgetProvider {
     public CeolWidgetProviderMiniPlayer() {
         super(new CeolWidgetHelperMiniPlayer());
     }
+
+//    @Override
+//    public void onReceive(Context context, Intent intent) {
+//        super.onReceive(context, intent);
+//    }
 
 }

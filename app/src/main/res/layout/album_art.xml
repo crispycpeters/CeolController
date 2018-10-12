@@ -144,7 +144,6 @@
             android:layout_width="@dimen/av_button_size_small"
             android:layout_margin="@dimen/av_button_margin_standard"
             style="@style/InfoCircleButton"
-            android:onClick="buttonClick"
             android:layout_alignParentEnd="true"
             android:layout_above="@id/playStatus"
             android:text="@string/i_button_text"

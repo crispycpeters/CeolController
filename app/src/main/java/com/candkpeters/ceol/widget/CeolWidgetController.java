@@ -24,6 +24,8 @@ import com.candkpeters.ceol.view.Prefs;
  */
 public class CeolWidgetController {
     private static final String TAG = "WidgetController";
+
+
     CeolWidgetHelper[] ceolWidgetHelpers = {
             new CeolWidgetHelperMiniPlayer()
     };

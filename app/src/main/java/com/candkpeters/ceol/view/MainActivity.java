@@ -467,9 +467,9 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             // Other
-            case R.id.infoB:
-                showInfo();
-                break;
+//            case R.id.infoB:
+//                showInfo();
+//                break;
         }
         return command;
     }
