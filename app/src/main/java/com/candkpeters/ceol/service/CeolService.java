@@ -94,6 +94,12 @@ public class CeolService extends Service {
 */
         ceolManager.logd(TAG, "onCreate: Entering");
 
+        prefs = new Prefs(context);
+        if ( prefs.getIsForegroundEnabled()) {
+            ceolManager.logd(TAG, "onCreate: Starting in foreground");
+            startForeground(1, new Notification());
+        }
+
         ceolManager.initialize();
         ceolWidgetController.initialize(ceolManager);
 //        ceolManager.startGatherers();
@@ -124,8 +130,6 @@ public class CeolService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         ceolManager.logd(TAG, "This is the intent " + intent);
-
-        startForeground(1, new Notification());
 
         if (!ceolManager.isOnWifi()) {
             stopGathering();

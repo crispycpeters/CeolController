@@ -31,6 +31,13 @@
             android:defaultValue="@bool/pref_default_openhome_enable"
             />
 
+        <CheckBoxPreference
+            android:key="@string/pref_key_foreground_enable"
+            android:title="@string/pref_title_foreground_enable"
+            android:summary="@string/pref_foreground_enable"
+            android:defaultValue="@bool/pref_default_foreground_enable"
+            />
+
         <EditTextPreference
             android:capitalize="words"
             android:defaultValue="@string/pref_default_openhome_name"
