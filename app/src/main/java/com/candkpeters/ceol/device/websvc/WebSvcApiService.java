@@ -1,4 +1,7 @@
-package com.candkpeters.ceol.device;
+package com.candkpeters.ceol.device.websvc;
+
+import com.candkpeters.ceol.device.websvc.WebSvcHttpAppCommandResponse;
+import com.candkpeters.ceol.device.websvc.WebSvcHttpStatusLiteResponse;
 
 import retrofit.Callback;
 import retrofit.client.Response;

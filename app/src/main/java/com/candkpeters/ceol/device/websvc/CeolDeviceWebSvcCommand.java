@@ -1,7 +1,9 @@
-package com.candkpeters.ceol.device;
+package com.candkpeters.ceol.device.websvc;
 
 import android.util.Log;
 
+import com.candkpeters.ceol.device.websvc.WebSvcApiService;
+import com.candkpeters.ceol.device.websvc.WebSvcGenerator;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.view.Prefs;
 

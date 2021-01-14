@@ -23,16 +23,13 @@ import java.util.Date;
 /**
  * Created by crisp on 25/01/2016.
  */
-public class CeolManager {
+public abstract class CeolManager {
 
     private static final String TAG = "CeolManager" ;
     public final CeolModel ceolModel;
     private final Context context;
     private ConnectivityManager connectivityManager;
-    private CeolDeviceWebSvcCommand ceolDeviceWebSvcCommand;
     private boolean isDebugMode;
-    private final CeolWebSvcGatherer ceolWebSvcGatherer;
-//    private final ClingGatherer clingGatherer;
     private final ClingGatherer2 clingGatherer;
 
     private MacroInflater macroInflater;
@@ -41,27 +38,16 @@ public class CeolManager {
 
     public CeolManager(final Context context) {
         this.context = context;
-        ceolModel = new CeolModel();
-        ceolWebSvcGatherer = new CeolWebSvcGatherer(context, ceolModel);
-//        clingGatherer = new ClingGatherer(context, ceolModel, new OnClingListener() {
-//                @Override
-//                public void onClingDisconnected() {
-//                    if ( haveNetwork) {
-//                        Log.d(TAG, "onClingDisconnected: We were disconnected. Let's connect again.");
-//                        startGatherers();
-//                    }
-//                }
-//            });
+        this.ceolModel = new CeolModel();
         clingGatherer = new ClingGatherer2(context, ceolModel, new OnClingListener() {
-            @Override
-            public void onClingDisconnected() {
+                @Override
+                public void onClingDisconnected() {
 //                if ( haveNetwork) {
 //                    Log.d(TAG, "onClingDisconnected: We were disconnected. Let's connect again.");
 //                    startGatherers();
 //                }
             }
         });
-        ceolDeviceWebSvcCommand = new CeolDeviceWebSvcCommand(ceolModel);
     }
 
     private static int MAX_LOGSIZE = 5000;
@@ -152,14 +138,6 @@ public class CeolManager {
         // TODO: Potentially pauseCling openhome events if nothing is registered to listen
     }
 
-    public void sendCommand(String commandString) {
-        Log.d(TAG, "sendCommand: Sending: " + commandString);
-        if ( isOnWifi() && commandString!= null && !commandString.isEmpty()) {
-            ceolDeviceWebSvcCommand.sendCeolCommand( commandString, null);   //TODO We need use callback
-            ceolWebSvcGatherer.setActive();
-        }
-    }
-
     public void execute(Command command) {
         if ( command!= null ) {
 //            command.execute(this);
@@ -176,6 +154,11 @@ public class CeolManager {
 
     public boolean isDebugMode() {
         return isDebugMode;
+    }
+
+    protected Prefs getPrefs() {
+        Prefs prefs = new Prefs(context);
+        return prefs;
     }
 
     public void sendOpenHomeCommand(String commandString) {
@@ -236,23 +219,11 @@ public class CeolManager {
     /**************************
      * ENGINE
      */
-    public void engineResumeGatherers()
-    {
-        Prefs prefs = new Prefs(context);
-        if ( isOnWifi()) {
-            ceolDeviceWebSvcCommand.start(prefs);
-            ceolWebSvcGatherer.start(prefs);
-//            clingGatherer.start(prefs);
-        }
-    }
+    public abstract void engineResumeGatherers();
 
-    public void enginePauseGatherers()
-    {
-        ceolDeviceWebSvcCommand.stop();
-        ceolWebSvcGatherer.pause();
-//        clingGatherer.pause();
-        ceolModel.notifyConnectionStatus(false);
-    }
+    public abstract void enginePauseGatherers();
+
+    public abstract void sendCommand(String commandString);
 
     private void engineRestartGatherers(Context context) {
         Prefs prefs = new Prefs(context);
@@ -265,34 +236,11 @@ public class CeolManager {
         macroInflater = new MacroInflater(prefs.getMacroNames(), prefs.getMacroValues());
     }
 
-
-/*
-    public void networkBack() {
-        Log.d(TAG, "networkBack: ");
-        Prefs prefs = new Prefs(context);
-        ceolWebSvcGatherer.start(prefs);
-        clingGatherer.start(prefs);
-    }
-
-    public void networkGone() {
-        Log.d(TAG, "networkGone: ");
-        ceolWebSvcGatherer.pause();
-//        clingGatherer.pause();
-        ceolModel.notifyConnectionStatus(false);
-    }
-*/
-
     public void stopCling() {
         clingGatherer.pause();
     }
 
-    public void nudgeGatherers() {
-        if ( isOnWifi()) {
-            ceolWebSvcGatherer.setActive();
-//            clingGatherer.start(prefs);
-        }
-
-    }
+    public abstract void nudgeGatherers();
 
 /*
     public boolean checkConnectivity() {

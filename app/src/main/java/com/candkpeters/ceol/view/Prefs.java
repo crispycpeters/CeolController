@@ -64,6 +64,11 @@ public class Prefs {
                 context.getResources().getString(R.string.pref_default_device_server));
     }
 
+    public String getWssServer() {
+        return preferences.getString(context.getResources().getString(R.string.pref_key_wss_server),
+                context.getResources().getString(R.string.pref_default_wss_server));
+    }
+
     public String[] getMacroNames() {
         String[] macroNames = new String[MACRO_COUNT];
         macroNames[0] = getMacro1Name();

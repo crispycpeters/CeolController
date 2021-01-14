@@ -1,4 +1,4 @@
-package com.candkpeters.ceol.device;
+package com.candkpeters.ceol.device.websvc;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Root;

@@ -142,8 +142,8 @@ public class InputControl extends ControlBase {
         SIStatusType siStatusNew;
 
         if (source != null && !source.isEmpty()) {
-            switch (source) {
-                case "Music Server":
+            switch (source.toUpperCase()) {
+                case "MUSIC SERVER":
                     siStatusNew = SIStatusType.NetServer;
 //                    if ( openHome.isOperating() ) {
 //                        siStatusNew = SIStatusType.OpenHome;
@@ -155,7 +155,7 @@ public class InputControl extends ControlBase {
                 case "CD":
                     siStatusNew = SIStatusType.CD;
                     break;
-                case "Internet Radio":
+                case "INTERNET RADIO":
                     siStatusNew = SIStatusType.IRadio;
                     break;
                 case "USB":
@@ -173,7 +173,7 @@ public class InputControl extends ControlBase {
                 case "BLUETOOTH":
                     siStatusNew = SIStatusType.Bluetooth;
                     break;
-                case "SpotifyConnect":
+                case "SPOTIFYCONNECT":
                     siStatusNew = SIStatusType.Spotify;
                     break;
                 default:

@@ -1,9 +1,17 @@
-package com.candkpeters.ceol.device;
+package com.candkpeters.ceol.device.websvc;
 
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
+import com.candkpeters.ceol.device.GathererBase;
+import com.candkpeters.ceol.device.ImageDownloaderResult;
+import com.candkpeters.ceol.device.ImageDownloaderTask;
+import com.candkpeters.ceol.device.websvc.WebSvcApiService;
+import com.candkpeters.ceol.device.websvc.WebSvcGenerator;
+import com.candkpeters.ceol.device.websvc.WebSvcHttpAppCommandResponse;
+import com.candkpeters.ceol.device.websvc.WebSvcHttpResponseText;
+import com.candkpeters.ceol.device.websvc.WebSvcHttpStatusLiteResponse;
 import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.control.CeolNavigatorControl;

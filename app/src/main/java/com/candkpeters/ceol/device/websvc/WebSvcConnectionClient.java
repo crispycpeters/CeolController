@@ -1,4 +1,4 @@
-package com.candkpeters.ceol.device;
+package com.candkpeters.ceol.device.websvc;
 
 import retrofit.client.Request;
 import retrofit.client.UrlConnectionClient;

@@ -1,4 +1,4 @@
-package com.candkpeters.ceol.device;
+package com.candkpeters.ceol.device.websvc;
 
 import com.mobprofs.retrofit.converters.SimpleXmlConverter;
 import retrofit.RestAdapter;

@@ -32,6 +32,11 @@
     <string name="pref_title_device_server">CEOL IP address</string>
     <string name="pref_summary_device_server">The IP address of the CEOL server</string>
     <string name="pref_default_device_server">192.168.0.3</string>
+
+    <string name="pref_key_wss_server">com.candkpeters.ceol.Wss_Server</string>
+    <string name="pref_title_wss_server">CEOL WSS IP address</string>
+    <string name="pref_summary_wss_server">The IP-address:port of the WSS server</string>
+    <string name="pref_default_wss_server">192.168.0.4:1812</string>
     <!--<string name="pref_default_device_server">10.0.2.2</string>-->
 
     <string name="pref_default_openhome_name">Denon CEOL (OpenHome)</string>

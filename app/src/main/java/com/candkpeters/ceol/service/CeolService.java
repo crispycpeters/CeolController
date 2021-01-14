@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.candkpeters.ceol.device.CeolManager;
+import com.candkpeters.ceol.device.websvc.CeolManagerWebSvc;
+import com.candkpeters.ceol.device.wss.CeolManagerWss;
 import com.candkpeters.ceol.widget.CeolWidgetController;
 import com.candkpeters.ceol.view.Prefs;
 
@@ -38,7 +40,8 @@ public class CeolService extends Service {
     private CeolManager ceolManager;
 
     public CeolService() {
-        ceolManager = new CeolManager(context);
+//        ceolManager = new CeolManagerWebSvc(context);
+        ceolManager = new CeolManagerWss(context);
         ceolWidgetController = new CeolWidgetController(this);
     }
 

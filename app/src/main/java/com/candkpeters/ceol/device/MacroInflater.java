@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by crisp on 12/03/2016.
  */
-class MacroInflater {
+public class MacroInflater {
 
     private final static int MACRO_COUNT = 8;
     private static final String TAG = "MacroInflater";

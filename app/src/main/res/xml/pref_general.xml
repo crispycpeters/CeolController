@@ -24,6 +24,19 @@
             android:singleLine="true"
             android:title="@string/pref_title_device_server" />
 
+        <EditTextPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:capitalize="words"
+            android:defaultValue="false"
+            android:inputType="textCapWords"
+            android:key="@string/pref_key_wss_server"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/pref_summary_wss_server"
+            android:title="@string/pref_title_wss_server" />
+
         <CheckBoxPreference
             android:key="@string/pref_key_openhome_enable"
             android:title="@string/pref_title_openhome_enable"

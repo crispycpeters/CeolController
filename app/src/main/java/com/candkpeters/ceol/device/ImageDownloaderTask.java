@@ -67,7 +67,7 @@ public class ImageDownloaderTask extends AsyncTask<AudioStreamItem, Void, AudioS
         return item;
     }
 
-    boolean isRunning() {
+    public boolean isRunning() {
         return (this.getStatus() == Status.RUNNING);
     }
 
