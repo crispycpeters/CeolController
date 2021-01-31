@@ -221,7 +221,7 @@ public abstract class CeolManager {
      */
     public abstract void engineResumeGatherers();
 
-    public abstract void enginePauseGatherers();
+    public abstract void engineStopGatherers();
 
     public abstract void sendCommand(String commandString);
 
@@ -230,7 +230,7 @@ public abstract class CeolManager {
         isDebugMode = prefs.getIsDebugMode();
 
 //        inputUpdated(ceolModel.inputControl);
-        enginePauseGatherers();
+//        engineStopGatherers();
         engineResumeGatherers();
 
         macroInflater = new MacroInflater(prefs.getMacroNames(), prefs.getMacroValues());

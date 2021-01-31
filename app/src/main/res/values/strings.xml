@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Ceol controller</string>
+    <string name="app_name">Ceol</string>
     <string name="label_settings_activity">Settings</string>
 
     <string name="action_settings">Settings</string>

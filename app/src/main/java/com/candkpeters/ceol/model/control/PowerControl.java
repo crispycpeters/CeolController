@@ -52,20 +52,21 @@ public class PowerControl extends ControlBase {
                 case Connecting:
                     // We don't know how long the device has been on, just assume long enough
                     updateDeviceStatus(DeviceStatusType.On);
-                    deviceOnTimeMsecs = now - wakeUpPeriodMsecs;
+//                    deviceOnTimeMsecs = now - wakeUpPeriodMsecs;
                     hasChanged = true;
                     break;
                 case Standby:
-                    // We are switching on. Start a timer before we try to communicate
-                    deviceOnTimeMsecs = now;
-                    updateDeviceStatus(Starting);
+//                     We are switching on. Start a timer before we try to communicate
+//                    deviceOnTimeMsecs = now;
+                    updateDeviceStatus(DeviceStatusType.On);
+//                    updateDeviceStatus(Starting);
                     hasChanged = true;
                     break;
                 case Starting:
-                    if ((now - deviceOnTimeMsecs) > wakeUpPeriodMsecs) {
+//                    if ((now - deviceOnTimeMsecs) > wakeUpPeriodMsecs) {
                         updateDeviceStatus(DeviceStatusType.On);
                         hasChanged = true;
-                    }
+//                    }
                     break;
                 case On:
                     break;

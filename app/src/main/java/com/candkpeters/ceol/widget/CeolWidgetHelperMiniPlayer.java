@@ -142,7 +142,7 @@ public class CeolWidgetHelperMiniPlayer extends CeolWidgetHelper {
 
 
         } else {
-            views.setViewVisibility(R.id.dimV, View.VISIBLE);
+//            views.setViewVisibility(R.id.dimV, View.VISIBLE);
             views.setTextViewText(R.id.siB, context.getString(R.string.not_connected_short));
 
             views.setViewVisibility(R.id.waitingPB, View.GONE);

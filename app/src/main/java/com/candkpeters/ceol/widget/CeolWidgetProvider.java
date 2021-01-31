@@ -2,18 +2,13 @@ package com.candkpeters.ceol.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Build;
-import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
 
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.ceol.view.Prefs;
-import com.candkpeters.ceol.widget.CeolWidgetHelper;
 
 /**
  * Created by crisp on 22/03/2016.

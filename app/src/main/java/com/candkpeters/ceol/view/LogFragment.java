@@ -3,20 +3,16 @@ package com.candkpeters.ceol.view;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.candkpeters.ceol.controller.CeolController;
 import com.candkpeters.ceol.device.CeolManager;
-import com.candkpeters.ceol.model.AudioStreamItem;
-import com.candkpeters.ceol.model.CeolModel;
-import com.candkpeters.ceol.model.control.TrackControl;
 import com.candkpeters.chris.ceol.R;
 
 public class LogFragment extends DialogFragment implements View.OnClickListener{

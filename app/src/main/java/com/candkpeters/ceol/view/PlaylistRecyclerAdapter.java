@@ -1,8 +1,8 @@
 package com.candkpeters.ceol.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.candkpeters.ceol.controller.CeolController;
-import com.candkpeters.ceol.device.ImageDownloaderResult;
 import com.candkpeters.ceol.model.AudioStreamItem;
 import com.candkpeters.ceol.model.control.PlaylistControlBase;
 import com.candkpeters.ceol.model.control.TestPlaylistControl;

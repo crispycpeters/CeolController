@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.util.Log;
 
 import com.candkpeters.ceol.service.CeolService;
@@ -20,27 +21,34 @@ public class CeolServiceReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent i = new Intent(context, CeolService.class);
+        Intent intentForService = new Intent(context, CeolService.class);
         switch ( intent.getAction()) {
             case Intent.ACTION_SCREEN_OFF:
-                i.setAction(CeolService.SCREEN_OFF);
+                intentForService.setAction(CeolService.SCREEN_OFF);
                 break;
             case Intent.ACTION_SCREEN_ON:
-                i.setAction(CeolService.SCREEN_ON);
+                intentForService.setAction(CeolService.SCREEN_ON);
                 break;
             case Intent.ACTION_CONFIGURATION_CHANGED:
-                i.setAction(CeolService.CONFIG_CHANGED);
+                intentForService.setAction(CeolService.CONFIG_CHANGED);
                 break;
             case Intent.ACTION_BOOT_COMPLETED:
-                i.setAction(CeolService.BOOT_COMPLETED);
+                intentForService.setAction(CeolService.BOOT_COMPLETED);
                 break;
             case ConnectivityManager.CONNECTIVITY_ACTION:
-                 i.setAction(CeolService.CONNECTIVITY_ACTION);
+                 intentForService.setAction(CeolService.CONNECTIVITY_ACTION);
                 break;
             default:
+                // Pass through whatever we have - it will likely be a command
+                intentForService = intent;
+                intentForService.setClass(context, CeolService.class);
                 break;
         }
-        context.startService(i);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intentForService);
+        } else {
+            context.startService(intentForService);
+        }
     }
 
     public IntentFilter createIntentFilter() {
