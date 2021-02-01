@@ -33,8 +33,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_refresh" />
-                            <entry key="sourceFile" value="C:\dev\AndroidStudioProjects\Ceol\assets\ic_ceol_navigation.svg" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="ic_av_pause" />
+                            <entry key="sourceFile" value="C:\dev\AndroidStudioProjects\Ceol\assets\ic_av_pause.svg" />
                           </map>
                         </option>
                       </PersistentState>

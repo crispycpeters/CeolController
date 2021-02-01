@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -14,7 +12,7 @@
    viewBox="0 0 160 160"
    id="svg3386"
    version="1.1"
-   inkscape:version="0.92.1 r15371"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)"
    sodipodi:docname="ic_av_pause.svg">
   <defs
      id="defs3388" />
@@ -32,11 +30,12 @@
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1057"
+     inkscape:window-height="1027"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     units="px" />
+     units="px"
+     inkscape:document-rotation="0" />
   <metadata
      id="metadata3391">
     <rdf:RDF>
@@ -45,7 +44,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -55,20 +54,20 @@
      id="layer1"
      transform="translate(0,-892.36217)">
     <rect
-       style="opacity:1;fill:#000000"
+       style="opacity:1;fill:#000000;stroke-width:2.14926"
        id="rect4857"
-       width="13.214286"
-       height="51.389999"
-       x="-96.273903"
-       y="946.22443"
+       width="29.688517"
+       height="105.66074"
+       x="-118.77391"
+       y="919.0816"
        transform="scale(-1,1)" />
     <rect
-       style="opacity:1;fill:#000000"
+       style="opacity:1;fill:#000000;stroke-width:2.14926"
        id="rect4857-5"
-       width="13.214286"
-       height="51.389999"
-       x="-73.392853"
-       y="946.23859"
+       width="29.688517"
+       height="105.66074"
+       x="-67.367081"
+       y="919.11066"
        transform="scale(-1,1)" />
   </g>
 </svg>
