@@ -12,7 +12,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.os.Environment;
 import android.os.IBinder;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -67,7 +66,6 @@ public class CeolService extends Service {
     public static final String CONNECTIVITY_ACTION = "ConnectivityAction";
     public static final String STOP_CLING = "StopCling";
     public static final String START_CLING = "StartCling";
-    private static final String CHANNEL_DEFAULT_IMPORTANCE = "Music";
     private static final String CHANNEL_ID = "CeolServiceChannel";
     enum NotificationType {
         Minimal,
@@ -76,15 +74,13 @@ public class CeolService extends Service {
         NavigationPlaying
     }
 
-    private Prefs prefs;
     final Context context = this;
 
     CeolWidgetController ceolWidgetController;
-    private CeolManager ceolManager;
+    private final CeolManager ceolManager;
     private Notification notification;
-    private NotificationCompat notificationCompat;
     private NotificationManagerCompat notificationManagerCompat;
-    private int notifyId = 1;
+    private final int notifyId = 1;
 
     public CeolService() {
 //        ceolManager = new CeolManagerWebSvc(context);
@@ -119,7 +115,6 @@ public class CeolService extends Service {
         notificationManagerCompat = NotificationManagerCompat.from(this);
         notificationManagerCompat.notify(notifyId,notification);
 
-        prefs = new Prefs(context);
         ceolManager.logd(TAG, "onCreate: Starting in foreground");
         startForeground(1, notification);
 
@@ -144,12 +139,6 @@ public class CeolService extends Service {
         notificationManagerCompat.notify(notifyId,notification);
     }
 
-    SpannableString makeBold( String str) {
-        SpannableString ss = new SpannableString(str);
-        ss.setSpan(new StyleSpan(Typeface.BOLD), 0, str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return ss;
-    }
-
     SpannableString makeStandby( String str) {
         SpannableString ss = new SpannableString(str);
         ss.setSpan(new StyleSpan(Typeface.BOLD), 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -168,7 +157,7 @@ public class CeolService extends Service {
 
     Notification buildNotification( CeolModel ceolModel) {
 
-        SpannableString line1 = null;
+        SpannableString line1;
         SpannableString line2 = null;
         SpannableString line3 = null;
         int colour = ContextCompat.getColor(context, R.color.colorPrimary);
@@ -185,12 +174,6 @@ public class CeolService extends Service {
             line1 = makeOn(" " + ceolModel.powerControl.getDeviceStatus().name() + " - " + ceolModel.inputControl.getSIStatus().name() + " ");
         }
         switch ( ceolModel.inputControl.getSIStatus()) {
-            case Tuner:
-                line2 = new SpannableString(ceolModel.inputControl.trackControl.getAudioItem().getTitle());
-                line3 = new SpannableString( ceolModel.inputControl.trackControl.getAudioItem().getFrequency() +
-                        ceolModel.inputControl.trackControl.getAudioItem().getUnits() + " " + ceolModel.inputControl.trackControl.getAudioItem().getBand() );
-                notificationType = NotificationType.NonServer;
-                break;
             case Spotify:
             case NetServer:
             case Bluetooth:
@@ -199,6 +182,15 @@ public class CeolService extends Service {
                 bitmap = ceolModel.inputControl.trackControl.getAudioItem().getImageBitmap();
                 notificationType = ceolModel.inputControl.trackControl.getPlayStatus()== PlayStatusType.Playing ?
                         NotificationType.NavigationPlaying : NotificationType.NavigationPaused;
+                break;
+            case Tuner:
+                line2 = new SpannableString(ceolModel.inputControl.trackControl.getAudioItem().getTitle());
+                line3 = new SpannableString( ceolModel.inputControl.trackControl.getAudioItem().getFrequency() +
+                        ceolModel.inputControl.trackControl.getAudioItem().getUnits() + " " + ceolModel.inputControl.trackControl.getAudioItem().getBand() );
+                notificationType = NotificationType.NonServer;
+                break;
+            default:
+                notificationType = NotificationType.NonServer;
                 break;
         }
         return buildNotification2(line1, line2, line3, bitmap,
@@ -212,8 +204,7 @@ public class CeolService extends Service {
         intent.setClass(this,CeolServiceReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
                 intent, 0);
-        NotificationCompat.Action action = new NotificationCompat.Action.Builder(res, title, pendingIntent).build();
-        return action;
+        return new NotificationCompat.Action.Builder(res, title, pendingIntent).build();
     }
 
     Notification buildNotification2(
@@ -232,17 +223,23 @@ public class CeolService extends Service {
         NotificationCompat.Action skipForwardAction = createCommandAction(new CommandSkipForward(), R.drawable.ic_av_skip_forward, "Skip" );
 
         Intent stopIntent = new Intent(this, CeolService.class);
-        stopIntent.setClass(this, CeolServiceReceiver.class);
+//        stopIntent.setClass(this, CeolServiceReceiver.class);
         stopIntent.setAction(CeolService.STOP_SERVICE);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, stopIntent, 0);
         NotificationCompat.Action exitAction = new NotificationCompat.Action.Builder(R.drawable.ic_exit, "Exit", stopPendingIntent).build();
+
+        Intent refreshIntent = new Intent(this, CeolServiceReceiver.class);
+//        refreshIntent.setClass(this, CeolServiceReceiver.class);
+        refreshIntent.setAction(CeolService.BOOT_COMPLETED);
+        PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(this, 0, refreshIntent, 0);
+        NotificationCompat.Action refreshAction = new NotificationCompat.Action.Builder(R.drawable.ic_refresh, "Refresh", refreshPendingIntent).build();
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
         builder.setSubText(line1)
             .setContentTitle(line2)
             .setContentText(line3)
             .setSmallIcon(R.drawable.ic_ceol_navigation)                         // Icon to use
-            .setPriority(PRIORITY_DEFAULT)           // Only relevant for 7.1 or earlier
+            .setPriority(PRIORITY_LOW)           // Only relevant for 7.1 or earlier
             .setContentIntent(notificationPendingIntent)                            // What to send if notification is clicked
             .setDeleteIntent(stopPendingIntent)
             .setColor(colour)
@@ -254,6 +251,7 @@ public class CeolService extends Service {
             case Minimal:
                 builder
                         .addAction(exitAction)
+                        .addAction(refreshAction)
                         .setStyle( new MediaStyle()
                              .setShowActionsInCompactView(0));
                 break;
@@ -288,9 +286,7 @@ public class CeolService extends Service {
                 break;
         }
 
-        Notification notification = builder.build();
-
-        return notification;
+        return builder.build();
     }
 
     private void createNotificationChannel() {
@@ -298,7 +294,7 @@ public class CeolService extends Service {
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
                     "Foreground Service Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT                  // Priority for 26+
+                    NotificationManager.IMPORTANCE_LOW                  // Priority for 26+
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);
@@ -306,17 +302,17 @@ public class CeolService extends Service {
     }
 
     /* Checks if external storage is available for read and write */
-    public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        return Environment.MEDIA_MOUNTED.equals(state);
-    }
+//    public boolean isExternalStorageWritable() {
+//        String state = Environment.getExternalStorageState();
+//        return Environment.MEDIA_MOUNTED.equals(state);
+//    }
 
     /* Checks if external storage is available to at least read */
-    public boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        return Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
-    }
+//    public boolean isExternalStorageReadable() {
+//        String state = Environment.getExternalStorageState();
+//        return Environment.MEDIA_MOUNTED.equals(state) ||
+//                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
+//    }
 
     /*
     * On receiving a command

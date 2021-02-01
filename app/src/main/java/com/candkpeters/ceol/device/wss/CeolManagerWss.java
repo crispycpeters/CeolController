@@ -1,13 +1,11 @@
 package com.candkpeters.ceol.device.wss;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.util.Log;
 
 import com.candkpeters.ceol.device.CeolManager;
-import com.candkpeters.ceol.device.MacroInflater;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
 
@@ -51,16 +49,24 @@ public class CeolManagerWss extends CeolManager {
     {
         connectionStateMonitor.enable(context, new ConnectivityManager.NetworkCallback() {
             @Override
-            public void onAvailable(Network network) {
+            public void onAvailable( Network network) {
                 Log.d(TAG, "WIFI is connected");
                 // Restart for quicker detection
-                wssClient.start( getPrefs().getWssServer() );
+                if ( isOnWifi()) {
+                    wssClient.start(getPrefs().getWssServer());
+                } else {
+                    ceolModel.notifyConnectionStatus(false);
+                }
             }
 
             @Override
             public void onLost(Network network) {
                 Log.d(TAG, "WIFI is disconnected");
-                ceolModel.notifyConnectionStatus(false);
+                if ( isOnWifi()) {
+                    wssClient.start(getPrefs().getWssServer());
+                } else {
+                    ceolModel.notifyConnectionStatus(false);
+                }
             }
         });
         wssClient.start( getPrefs().getWssServer() );

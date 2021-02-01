@@ -12,7 +12,7 @@ public class ConnectionStateMonitor  {
 
     public ConnectionStateMonitor() {
         networkRequest = new NetworkRequest.Builder()
-//                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .build();
     }

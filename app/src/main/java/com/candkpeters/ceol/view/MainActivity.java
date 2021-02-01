@@ -65,6 +65,8 @@ import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.chris.ceol.R;
 
+import static com.candkpeters.chris.ceol.R.*;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
@@ -72,8 +74,6 @@ public class MainActivity extends AppCompatActivity
     private static final float TRANSPARENT = 0;
     ProgressDialog waitingDialog;
 //    PlaylistRecyclerAdapter playlistRecyclerAdapter = new PlaylistRecyclerAdapter(getContext(), ((MainActivity)getActivity()).getCeolController());
-
-    private Prefs prefs = null;
 
     /**
      * The {@link PagerAdapter} that will provide
@@ -95,13 +95,13 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: Entering");
-        setContentView(R.layout.drawer_layout);
+        setContentView(layout.drawer_layout);
 
         ceolController = new CeolController(this);
 
         setupWaitingDialog();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(id.toolbar);
         setSupportActionBar(toolbar);
 
 //        prefs = new Prefs(this);
@@ -109,12 +109,12 @@ public class MainActivity extends AppCompatActivity
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         // Set up the ViewPager with the sections adapter.
-        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
+        ViewPager viewPager = findViewById(id.container);
         if ( viewPager != null) {
             isLargeDevice=false;
             SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
             viewPager.setAdapter(sectionsPagerAdapter);
-            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+            TabLayout tabLayout = findViewById(id.tabs);
             tabLayout.setupWithViewPager(viewPager);
 
         } else {
@@ -134,13 +134,13 @@ public class MainActivity extends AppCompatActivity
 */
 
         // Menu item
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, string.navigation_drawer_open, string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         powerAnimation = new AlphaAnimation(1,0);
@@ -188,21 +188,13 @@ public class MainActivity extends AppCompatActivity
         waitingDialog.setCancelable(false);
     }
 
-    private void showWaitingDialog() {
-        waitingDialog.show();
-    }
-
-    private void hideWaitingDialog() {
-        waitingDialog.hide();
-    }
-
     private void setTextViewText(int tunerName2, String name) {
-        TextView tunerName = (TextView) findViewById(tunerName2);
+        TextView tunerName = findViewById(tunerName2);
         if (tunerName != null) tunerName.setText(name);
     }
 
     private void updateSIEntries(InputControl inputControl) {
-        Button siB = (Button) findViewById(R.id.siB);
+        Button siB = findViewById(id.siB);
         if (siB != null) {
             if ( getCeolController().isConnected() ) {
                 siB.setText(inputControl.getSIStatus().name);
@@ -243,7 +235,7 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
         if ( id != 0 ) {
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            NavigationView navigationView = findViewById(R.id.nav_view);
             MenuItem item = navigationView.getMenu().findItem(id);
             if (item != null) {
                 item.setChecked(true);
@@ -256,24 +248,24 @@ public class MainActivity extends AppCompatActivity
 
         Menu menu = navigationView.getMenu();
 
-        menu.findItem(R.id.nav_tuner).setTitle(SIStatusType.Tuner.name);
-        menu.findItem(R.id.nav_server).setTitle(SIStatusType.NetServer.name);
-        menu.findItem(R.id.nav_bluetooth).setTitle(SIStatusType.Bluetooth.name);
-        menu.findItem(R.id.nav_iradio).setTitle(SIStatusType.IRadio.name);
-        menu.findItem(R.id.nav_usb).setTitle(SIStatusType.Ipod.name);
-        menu.findItem(R.id.nav_analog).setTitle(SIStatusType.AnalogIn.name);
-        menu.findItem(R.id.nav_cd).setTitle(SIStatusType.CD.name);
-        menu.findItem(R.id.nav_digital1).setTitle(SIStatusType.DigitalIn1.name);
-        menu.findItem(R.id.nav_digital2).setTitle(SIStatusType.DigitalIn2.name);
+        menu.findItem(id.nav_tuner).setTitle(SIStatusType.Tuner.name);
+        menu.findItem(id.nav_server).setTitle(SIStatusType.NetServer.name);
+        menu.findItem(id.nav_bluetooth).setTitle(SIStatusType.Bluetooth.name);
+        menu.findItem(id.nav_iradio).setTitle(SIStatusType.IRadio.name);
+        menu.findItem(id.nav_usb).setTitle(SIStatusType.Ipod.name);
+        menu.findItem(id.nav_analog).setTitle(SIStatusType.AnalogIn.name);
+        menu.findItem(id.nav_cd).setTitle(SIStatusType.CD.name);
+        menu.findItem(id.nav_digital1).setTitle(SIStatusType.DigitalIn1.name);
+        menu.findItem(id.nav_digital2).setTitle(SIStatusType.DigitalIn2.name);
 
-        menu.findItem(R.id.nav_macro1).setTitle(prefs.getMacro1Name());
-        menu.findItem(R.id.nav_macro2).setTitle(prefs.getMacro2Name());
-        menu.findItem(R.id.nav_macro3).setTitle(prefs.getMacro3Name());
+        menu.findItem(id.nav_macro1).setTitle(prefs.getMacro1Name());
+        menu.findItem(id.nav_macro2).setTitle(prefs.getMacro2Name());
+        menu.findItem(id.nav_macro3).setTitle(prefs.getMacro3Name());
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -282,7 +274,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void openDrawer() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(id.drawer_layout);
         if (!drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.openDrawer(GravityCompat.START);
         }
@@ -291,7 +283,7 @@ public class MainActivity extends AppCompatActivity
     private boolean isPowerAnimating = false;
 
     private void updatePowerButton(PowerControl powerControl) {
-        ImageButton powerB = (ImageButton)findViewById(R.id.powerB);
+        ImageButton powerB = findViewById(id.powerB);
 
         if (powerB != null) {
 
@@ -303,11 +295,11 @@ public class MainActivity extends AppCompatActivity
                         powerB.clearAnimation();
                         isPowerAnimating = false;
                     }
-                    powerB.setImageResource(R.drawable.ic_av_power_off);
+                    powerB.setImageResource(drawable.ic_av_power_off);
                     break;
                 case Starting:
                     if ( !isPowerAnimating ) {
-                        powerB.setImageResource(R.drawable.ic_av_power );
+                        powerB.setImageResource(drawable.ic_av_power );
                         powerB.startAnimation(powerAnimation);
                         isPowerAnimating = true;
                     }
@@ -317,7 +309,7 @@ public class MainActivity extends AppCompatActivity
                         powerB.clearAnimation();
                         isPowerAnimating = false;
                     }
-                    powerB.setImageResource(R.drawable.ic_av_power );
+                    powerB.setImageResource(drawable.ic_av_power );
                     break;
             }
         }
@@ -363,7 +355,7 @@ public class MainActivity extends AppCompatActivity
                             case All:
                                 showConnection( ceolModel.connectionControl.isConnected() ) ;
                                 updatePowerButton( ceolModel.powerControl);
-                                setTextViewText(R.id.volume, ceolModel.audioControl.getMasterVolumeString());
+                                setTextViewText(id.volume, ceolModel.audioControl.getMasterVolumeString());
                                 updateSIEntries(ceolModel.inputControl);
                                 break;
                             case Connection:
@@ -373,7 +365,7 @@ public class MainActivity extends AppCompatActivity
                                 updatePowerButton((PowerControl)controlBase);
                                 break;
                             case Audio:
-                                setTextViewText(R.id.volume, ((AudioControl)controlBase).getMasterVolumeString());
+                                setTextViewText(id.volume, ((AudioControl)controlBase).getMasterVolumeString());
                                 break;
                             case Input:
                                 updateSIEntries((InputControl)controlBase);
@@ -474,12 +466,6 @@ public class MainActivity extends AppCompatActivity
         return command;
     }
 
-    private void showVolumeChangeTemporarily(int delta) {
-        int newVolume = ceolController.getCeolModel().audioControl.getMasterVolume() + delta;
-
-        setTextViewText(R.id.volume, Integer.toString(newVolume));
-    }
-
     private void showInfo() {
         showInfoDialog();
     }
@@ -506,7 +492,6 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent intent = new Intent(getApplicationContext(),SettingsActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
@@ -539,7 +524,7 @@ public class MainActivity extends AppCompatActivity
 
     public void siBClick(View view) {
         // Open menu
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(id.drawer_layout);
         drawer.openDrawer(GravityCompat.START);
     }
 
@@ -598,7 +583,7 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
         if (siStatusType != SIStatusType.Unknown) {
@@ -616,11 +601,11 @@ public class MainActivity extends AppCompatActivity
 
     private void showLibrary() {
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragmentLibrary = fm.findFragmentById(R.id.library_fragment);
+        Fragment fragmentLibrary = fm.findFragmentById(id.library_fragment);
         if ( fragmentLibrary == null) {
             fragmentLibrary = new FragmentLibrary();
             fm.beginTransaction()
-                    .replace(R.id.library_fragment, fragmentLibrary)
+                    .replace(id.library_fragment, fragmentLibrary)
                     .commit();
         }
 
@@ -691,14 +676,14 @@ public class MainActivity extends AppCompatActivity
 
     public void showConnection( boolean isConnected) {
 
-        View rootView = findViewById(R.id.dimV);
+        View rootView = findViewById(id.dimV);
         if (rootView == null) return;
 
-        Button siB = (Button) findViewById(R.id.siB);
+        Button siB = findViewById(id.siB);
         rootView.setVisibility(View.GONE);
         if (siB != null) {
             if (!isConnected) {
-                siB.setText(getString(R.string.not_connected_short));
+                siB.setText(getString(string.not_connected_short));
             } else {
                 siB.setText(ceolController.getCeolModel().inputControl.getSIStatus().name);
             }
@@ -757,13 +742,13 @@ public class MainActivity extends AppCompatActivity
         @Override
         public int getCount() {
             // Show 3 total pages.
-            String[] section_title = getResources().getStringArray(R.array.section_page_title);
+            String[] section_title = getResources().getStringArray(array.section_page_title);
             return section_title.length;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            String[] section_title = getResources().getStringArray(R.array.section_page_title);
+            String[] section_title = getResources().getStringArray(array.section_page_title);
             if ( position >= 0 && position < section_title.length ) {
                 return section_title[position];
             } else {
@@ -795,7 +780,7 @@ public class MainActivity extends AppCompatActivity
     private void doVolumeControl( DirectionType direction) {
         Command command = new CommandMasterVolume(direction);
         ceolController.performCommand(command);
-        String text = String.format(getResources().getString(R.string.volume_toast),direction.toString());
+        String text = String.format(getResources().getString(string.volume_toast),direction.toString());
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(getApplicationContext(), text, duration );
