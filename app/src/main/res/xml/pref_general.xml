@@ -69,7 +69,6 @@
         >
 
         <EditTextPreference
-            android:capitalize="words"
             android:defaultValue="@string/pref_default_macro1name"
             android:inputType="textCapWords"
             android:key="@string/pref_key_macro1name"
@@ -79,7 +78,6 @@
             android:title="@string/pref_title_macro1name" />
 
         <EditTextPreference
-            android:capitalize="words"
             android:defaultValue="@string/pref_default_macro1"
             android:inputType="textMultiLine"
             android:key="@string/pref_key_macro1"
@@ -91,7 +89,6 @@
             android:title="@string/pref_title_macro1" />
 
         <EditTextPreference
-            android:capitalize="words"
             android:defaultValue="@string/pref_default_macro2name"
             android:inputType="textCapWords"
             android:key="@string/pref_key_macro2name"
@@ -101,7 +98,6 @@
             android:title="@string/pref_title_macro2name" />
 
         <EditTextPreference
-            android:capitalize="words"
             android:defaultValue="@string/pref_default_macro2"
             android:inputType="textCapWords"
             android:key="@string/pref_key_macro2"
@@ -111,7 +107,6 @@
             android:title="@string/pref_title_macro2" />
 
         <EditTextPreference
-            android:capitalize="words"
             android:defaultValue="@string/pref_default_macro3name"
             android:inputType="textCapWords"
             android:key="@string/pref_key_macro3name"
@@ -121,7 +116,6 @@
             android:title="@string/pref_title_macro3name" />
 
         <EditTextPreference
-            android:capitalize="words"
             android:defaultValue="@string/pref_default_macro3"
             android:inputType="textCapWords"
             android:key="@string/pref_key_macro3"
@@ -137,7 +131,6 @@
         >
 
         <EditTextPreference
-            android:capitalize="words"
             android:defaultValue="@string/pref_default_backgroundtimeoutsecs"
             android:inputType="number"
             android:key="@string/pref_key_backgroundtimeoutsecs"
@@ -146,7 +139,6 @@
             android:title="@string/pref_title_backgroundtimeoutsecs" />
 
         <EditTextPreference
-            android:capitalize="words"
             android:defaultValue="@string/pref_default_backgroundratesecs"
             android:inputType="number"
             android:key="@string/pref_key_backgroundratesecs"
@@ -155,19 +147,5 @@
             android:title="@string/pref_title_backgroundratesecs" />
 
     </PreferenceCategory>
-
-    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
-         dismiss it. -->
-    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
-<!--
-    <ListPreference
-        android:defaultValue="-1"
-        android:entries="@array/pref_example_list_titles"
-        android:entryValues="@array/pref_example_list_values"
-        android:key="example_list"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:titleView="@string/pref_title_add_friends_to_messages" />
--->
 
 </PreferenceScreen>

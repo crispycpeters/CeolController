@@ -32,7 +32,7 @@ public class CeolBrowseEntries {
     }
     public static final int MAX_LINES = 7;
 
-    private CeolBrowseEntry[] browseChunk = new CeolBrowseEntry[MAX_LINES];
+    private final CeolBrowseEntry[] browseChunk = new CeolBrowseEntry[MAX_LINES];
 
     public CeolBrowseEntries() {
         title = "";

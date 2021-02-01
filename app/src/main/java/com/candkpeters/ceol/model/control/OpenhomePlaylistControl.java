@@ -47,11 +47,7 @@ public class OpenhomePlaylistControl extends PlaylistControlBase {
     }
 
     public boolean isOperating( ) {
-        if (totalTrackCount > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return totalTrackCount > 0;
     }
 
     public void setTotalTrackCount(long totalTrackCount) {
@@ -95,10 +91,9 @@ public class OpenhomePlaylistControl extends PlaylistControlBase {
         if ( playlistIds != null ) {
             int arrayLen = playlistIds.length;
 
-            for (int index = 0; index < arrayLen; index++) {
-                int id = playlistIds[index];
+            for (int id : playlistIds) {
                 AudioStreamItem audioItem = findAudioItemById(id);
-                if ( audioItem==null || !audioItem.isPoopulated() ) {
+                if (audioItem == null || !audioItem.isPoopulated()) {
                     // We need the audio information for this ID
 //                    Log.d(TAG, "setPlaylist: Need info for: " + id);
                     missingIdsList.push(id);

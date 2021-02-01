@@ -13,9 +13,9 @@ import android.os.Looper;
  */
 public class UIThreadUpdater {
     // Create a Handler that uses the Main Looper to run in
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private Runnable repeatedRunnable;
+    private final Runnable repeatedRunnable;
 //    private Runnable oneoffRunnable;
     private int repeatRateMsecs;
     private long lastUpdate = System.currentTimeMillis();

@@ -50,8 +50,8 @@ public abstract class CeolManager {
         });
     }
 
-    private static int MAX_LOGSIZE = 5000;
-    private String logMessages[] = new String[MAX_LOGSIZE];
+    private static final int MAX_LOGSIZE = 5000;
+    private final String[] logMessages = new String[MAX_LOGSIZE];
     private int logPosition = 0;
 
     public void logd(String tag, String msg) {
@@ -157,8 +157,7 @@ public abstract class CeolManager {
     }
 
     protected Prefs getPrefs() {
-        Prefs prefs = new Prefs(context);
-        return prefs;
+        return new Prefs(context);
     }
 
     public void sendOpenHomeCommand(String commandString) {

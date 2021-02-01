@@ -21,19 +21,17 @@ public class LogFragment extends DialogFragment implements View.OnClickListener{
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "3";
-    private CeolController ceolController;
-    private CeolManager ceolManager;
 
     public LogFragment() {
     }
 
     private void setTextViewText(View parentView, int tunerName2, String name) {
-        TextView textView = (TextView) parentView.findViewById(tunerName2);
+        TextView textView = parentView.findViewById(tunerName2);
         if (textView != null) textView.setText(name);
     }
 
     private String getTextViewText( int tunerName2) {
-        TextView textView = (TextView) getView().findViewById(tunerName2);
+        TextView textView = getView().findViewById(tunerName2);
         if (textView != null) {
             return textView.getText().toString();
         } else {
@@ -45,11 +43,11 @@ public class LogFragment extends DialogFragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.log_fragment, container, false);
-        ceolController = ((MainActivity)getActivity()).getCeolController();
-        ceolManager = ceolController.getCeolManager();
+        CeolController ceolController = ((MainActivity) getActivity()).getCeolController();
+        CeolManager ceolManager = ceolController.getCeolManager();
 
-        ListView logListView = (ListView)rootView.findViewById(R.id.logListView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),R.layout.logview_item,R.id.logRow,ceolManager.getLogItems());
+        ListView logListView = rootView.findViewById(R.id.logListView);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),R.layout.logview_item,R.id.logRow, ceolManager.getLogItems());
 
         logListView.setAdapter(adapter);
 

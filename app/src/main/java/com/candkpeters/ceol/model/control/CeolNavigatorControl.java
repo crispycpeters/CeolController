@@ -32,7 +32,7 @@ public class CeolNavigatorControl extends NavigatorControlBase {
     protected boolean isBrowsing = false;
 
     // Browsing mode
-    protected CeolBrowseEntries entries = new CeolBrowseEntries();
+    protected final CeolBrowseEntries entries = new CeolBrowseEntries();
 
     // Playing mode
 //    private String track;

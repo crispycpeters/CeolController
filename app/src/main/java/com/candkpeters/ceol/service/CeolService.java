@@ -44,7 +44,6 @@ import com.candkpeters.ceol.model.control.ControlBase;
 import com.candkpeters.ceol.view.CeolIntentFactory;
 import com.candkpeters.ceol.view.MainActivity;
 import com.candkpeters.ceol.widget.CeolWidgetController;
-import com.candkpeters.ceol.view.Prefs;
 import com.candkpeters.chris.ceol.R;
 
 import static android.app.Notification.*;
@@ -76,7 +75,7 @@ public class CeolService extends Service {
 
     final Context context = this;
 
-    CeolWidgetController ceolWidgetController;
+    final CeolWidgetController ceolWidgetController;
     private final CeolManager ceolManager;
     private Notification notification;
     private NotificationManagerCompat notificationManagerCompat;
@@ -186,7 +185,7 @@ public class CeolService extends Service {
             case Tuner:
                 line2 = new SpannableString(ceolModel.inputControl.trackControl.getAudioItem().getTitle());
                 line3 = new SpannableString( ceolModel.inputControl.trackControl.getAudioItem().getFrequency() +
-                        ceolModel.inputControl.trackControl.getAudioItem().getUnits() + " " + ceolModel.inputControl.trackControl.getAudioItem().getBand() );
+                        " " + ceolModel.inputControl.trackControl.getAudioItem().getUnits() + " " + ceolModel.inputControl.trackControl.getAudioItem().getBand() );
                 notificationType = NotificationType.NonServer;
                 break;
             default:

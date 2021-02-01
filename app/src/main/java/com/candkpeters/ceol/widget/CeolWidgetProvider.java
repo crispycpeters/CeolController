@@ -17,7 +17,7 @@ public abstract class CeolWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "WidgetProvider";
     private Prefs prefs;
-    protected CeolWidgetHelper ceolWidgetHelper;
+    protected final CeolWidgetHelper ceolWidgetHelper;
 
 
 

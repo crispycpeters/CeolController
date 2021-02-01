@@ -93,8 +93,7 @@ public class ContentRecyclerAdapter extends RecyclerView.Adapter<ContentRecycler
     public int getItemCount() {
         PlaylistControlBase playlistControl = getPlaylistControl();
         if ( getPlaylistControl() != null ) {
-            int len = playlistControl.getPlaylistLen();
-            return len;
+            return playlistControl.getPlaylistLen();
         } else {
             return 0;
         }
@@ -102,11 +101,11 @@ public class ContentRecyclerAdapter extends RecyclerView.Adapter<ContentRecycler
 
 
     class AudioItemViewHolder extends RecyclerView.ViewHolder {
-        private View itemView;
-        private ImageView thumbnailView;
-        private TextView titleView;
-        private TextView artistView;
-        private ImageView playstateView;
+        private final View itemView;
+        private final ImageView thumbnailView;
+        private final TextView titleView;
+        private final TextView artistView;
+        private final ImageView playstateView;
         private AudioStreamItem audioItem;
         private boolean isCurrentTrack;
 
@@ -114,10 +113,10 @@ public class ContentRecyclerAdapter extends RecyclerView.Adapter<ContentRecycler
             super(view);
             this.itemView = view;
 //            Log.d(TAG, "AudioItemViewHolder: Created");
-            this.thumbnailView = (ImageView) view.findViewById(R.id.thumbnail);
-            this.titleView = (TextView) view.findViewById(R.id.title);
-            this.artistView = (TextView) view.findViewById(R.id.artist);
-            this.playstateView = (ImageView) view.findViewById(R.id.playstate);
+            this.thumbnailView = view.findViewById(R.id.thumbnail);
+            this.titleView = view.findViewById(R.id.title);
+            this.artistView = view.findViewById(R.id.artist);
+            this.playstateView = view.findViewById(R.id.playstate);
         }
 
         void setAudioItem(AudioStreamItem audioItem) {

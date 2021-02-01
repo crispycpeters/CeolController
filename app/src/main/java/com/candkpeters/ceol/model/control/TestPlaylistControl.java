@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class TestPlaylistControl extends PlaylistControlBase {
 
-    private CeolModel ceolModel;
+    private final CeolModel ceolModel;
     Random r = new Random();
 
     public TestPlaylistControl( CeolModel ceolModel) {

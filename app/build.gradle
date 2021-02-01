@@ -46,27 +46,22 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.1'
 
-    androidTestImplementation('junit:junit:4.12') {
+    androidTestImplementation('junit:junit:4.13.1') {
         exclude group: 'org.hamcrest'
     }
     androidTestImplementation 'org.hamcrest:hamcrest-all:1.3'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-//    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
-//    implementation 'com.squareup.retrofit:retrofit:1.9.0'
-//    implementation 'com.mobprofs:retrofit-simplexmlconverter:1.1'
     implementation 'org.simpleframework:simple-xml:2.7.1'
-    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'commons-net:commons-net:3.4'
     implementation 'com.squareup.picasso:picasso:2.5.2'
 
-    //    compile 'org.seamless:seamless-util:1.1.2'
-//    compile 'org.seamless:seamless-http:1.1.2'
     implementation group: 'org.eclipse.jetty', name: 'jetty-server', version:'8.1.18.v20150929'
     implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version:'8.1.18.v20150929'
     implementation group: 'org.eclipse.jetty', name: 'jetty-client', version:'8.1.18.v20150929'

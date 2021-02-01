@@ -1,11 +1,7 @@
 package com.candkpeters.ceol.cling;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
 
 import com.candkpeters.ceol.device.GathererBase;
@@ -14,10 +10,6 @@ import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.view.Prefs;
 
 import org.fourthline.cling.UpnpService;
-import org.fourthline.cling.UpnpServiceImpl;
-import org.fourthline.cling.android.AndroidUpnpService;
-import org.fourthline.cling.android.AndroidUpnpServiceConfiguration;
-import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import org.fourthline.cling.android.FixedAndroidLogHandler;
 import org.fourthline.cling.model.meta.Device;
 import org.fourthline.cling.model.meta.LocalDevice;
@@ -34,10 +26,10 @@ import java.util.logging.Logger;
 
 public class ClingGatherer2 extends GathererBase implements Runnable {
     private static final long SEARCH_RETRY_MSECS = 15000;
-    private static String TAG = "ClingGatherer2";
+    private static final String TAG = "ClingGatherer2";
     //    private BrowserUpnpService browserUpnpService;
     private UpnpService upnpService;
-    private BrowseRegistryListener registryListener = new BrowseRegistryListener();
+    private final BrowseRegistryListener registryListener = new BrowseRegistryListener();
     private final Context context;
     private Prefs prefs;
     private boolean isClingServiceBound = false;

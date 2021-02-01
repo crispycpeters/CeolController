@@ -1,9 +1,5 @@
 package com.candkpeters.ceol.widget;
 
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-
 import com.candkpeters.ceol.widget.CeolWidgetHelperMiniPlayer;
 import com.candkpeters.ceol.widget.CeolWidgetProvider;
 

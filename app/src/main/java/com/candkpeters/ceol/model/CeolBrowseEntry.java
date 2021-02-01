@@ -54,8 +54,7 @@ public class CeolBrowseEntry {
             if (Text.equals(ceolBrowseEntry.Text) &&
                     isDirectory == ceolBrowseEntry.isDirectory &&
                     isPlayable == ceolBrowseEntry.isPlayable &&
-                    isSelected == ceolBrowseEntry.isSelected &&
-                    isDirectory == ceolBrowseEntry.isDirectory)
+                    isSelected == ceolBrowseEntry.isSelected )
                 isEqual = true;
         }
         return isEqual;

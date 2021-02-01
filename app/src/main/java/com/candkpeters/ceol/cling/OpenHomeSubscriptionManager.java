@@ -1,7 +1,6 @@
 package com.candkpeters.ceol.cling;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.candkpeters.ceol.device.ImageDownloaderResult;
@@ -20,7 +19,6 @@ import com.candkpeters.ceol.model.TrackList;
 import com.candkpeters.ceol.model.TrackListEntry;
 
 import org.fourthline.cling.UpnpService;
-import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.controlpoint.ActionCallback;
 import org.fourthline.cling.controlpoint.SubscriptionCallback;
 import org.fourthline.cling.model.action.ActionArgumentValue;
@@ -66,10 +64,10 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
     private boolean isSubscribed;
     private Device device;
     private UpnpService upnpService;
-    private ServiceId infoServiceId = new ServiceId("av-openhome-org","Info");
-    private ServiceId timeServiceId = new ServiceId("av-openhome-org","Time");
-    private ServiceId playlistServiceId = new ServiceId("av-openhome-org","Playlist");
-    private ServiceId volumeServiceId = new ServiceId("av-openhome-org","Volume");
+    private final ServiceId infoServiceId = new ServiceId("av-openhome-org","Info");
+    private final ServiceId timeServiceId = new ServiceId("av-openhome-org","Time");
+    private final ServiceId playlistServiceId = new ServiceId("av-openhome-org","Playlist");
+    private final ServiceId volumeServiceId = new ServiceId("av-openhome-org","Volume");
     private Service timeService;
     private Service infoService;
     private Service playlistService;

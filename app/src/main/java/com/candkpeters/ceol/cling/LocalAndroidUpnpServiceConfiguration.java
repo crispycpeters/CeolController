@@ -10,7 +10,7 @@ import org.fourthline.cling.android.AndroidUpnpServiceConfiguration;
 
 public class LocalAndroidUpnpServiceConfiguration extends AndroidUpnpServiceConfiguration {
 
-    public Context context;
+    public final Context context;
 
     public LocalAndroidUpnpServiceConfiguration( Context context) {
         this.context = context;

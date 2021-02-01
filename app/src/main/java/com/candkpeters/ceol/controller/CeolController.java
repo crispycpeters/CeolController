@@ -27,7 +27,7 @@ public class CeolController {
     private static final String TAG = "CeolController";
 
 //    Prefs prefs;
-    private Context context;
+    private final Context context;
     private CeolManager ceolManager;
 
     private boolean bound = false;
@@ -38,7 +38,7 @@ public class CeolController {
         this.context = context;
     }
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,

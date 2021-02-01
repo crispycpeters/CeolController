@@ -17,7 +17,7 @@ class CommandBrowseInto extends CommandBaseString {
     private int startPosition;
     private boolean isFound;
     private int targetPosition;
-    private boolean playFirstEntry;
+    private final boolean playFirstEntry;
 
     private enum SearchSteps {
         NotStarted,

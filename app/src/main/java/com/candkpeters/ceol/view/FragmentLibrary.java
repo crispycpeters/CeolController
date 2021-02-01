@@ -30,7 +30,6 @@ public class FragmentLibrary extends Fragment {
      * fragment.
      */
     CeolController ceolController;
-    private ContentRecyclerAdapter contentRecyclerAdapter;
     private RecyclerView recyclerView;
 
     public FragmentLibrary() {
@@ -41,7 +40,7 @@ public class FragmentLibrary extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.layout_library, container, false);
 
-        recyclerView = (RecyclerView)rootView.findViewById(R.id.recycler_library_view);
+        recyclerView = rootView.findViewById(R.id.recycler_library_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return rootView;
     }
@@ -90,7 +89,7 @@ public class FragmentLibrary extends Fragment {
         }
         );
 
-        contentRecyclerAdapter = new ContentRecyclerAdapter(getContext(), ceolController, new OnAudioItemClickListener() {
+        ContentRecyclerAdapter contentRecyclerAdapter = new ContentRecyclerAdapter(getContext(), ceolController, new OnAudioItemClickListener() {
             @Override
             public void onAudioItemClick(AudioStreamItem item, boolean isCurrentTrack) {
                 Log.d(TAG, "onAudioItemClick: Got a click");
@@ -98,7 +97,7 @@ public class FragmentLibrary extends Fragment {
                 ceolController.togglePlaylistItem(item, isCurrentTrack);
             }
         });
-        recyclerView.setAdapter( contentRecyclerAdapter) ;
+        recyclerView.setAdapter(contentRecyclerAdapter) ;
 
     }
 

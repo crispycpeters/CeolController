@@ -1,7 +1,5 @@
 package com.candkpeters.ceol.device;
 
-import android.graphics.Bitmap;
-
 import com.candkpeters.ceol.model.AudioStreamItem;
 
 /**

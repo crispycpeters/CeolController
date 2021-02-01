@@ -5,6 +5,7 @@ import android.util.Log;
 import com.candkpeters.ceol.device.command.Command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by crisp on 12/03/2016.
@@ -13,16 +14,13 @@ public class MacroInflater {
 
     private final static int MACRO_COUNT = 8;
     private static final String TAG = "MacroInflater";
-    private ArrayList<ArrayList<Command>> macroValues;
+    private final ArrayList<ArrayList<Command>> macroValues;
 
     MacroInflater(String[] macroStringNames, String[] macroStringValues) {
 
         ArrayList<String> macroNames = new ArrayList<String>(MACRO_COUNT);
         this.macroValues = new ArrayList<ArrayList<Command>>(MACRO_COUNT);
-        for (String name :
-                macroStringNames) {
-            macroNames.add(name);
-        }
+        macroNames.addAll(Arrays.asList(macroStringNames));
         for (String value :
                 macroStringValues) {
             macroValues.add(parseMacroCommands(value));

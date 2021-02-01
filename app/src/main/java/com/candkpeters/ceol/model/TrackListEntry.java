@@ -4,8 +4,6 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.util.Entry;
 
-import java.util.List;
-
 /**
  * Created by crisp on 23/04/2017.
  */

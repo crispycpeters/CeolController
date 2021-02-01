@@ -100,7 +100,7 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener {
         }
         );
 
-        SeekBar seekBar = (SeekBar) (getView().findViewById(R.id.trackSeekBar));
+        SeekBar seekBar = getView().findViewById(R.id.trackSeekBar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -194,7 +194,7 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener {
     }
 
     private void setImage(AudioStreamItem audioStreamItem) {
-        ImageView imageV = (ImageView) (getView().findViewById(R.id.imageTrack));
+        ImageView imageV = getView().findViewById(R.id.imageTrack);
         if (imageV != null) {
 
 /*
@@ -209,7 +209,7 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener {
     }
 
     private void setTextViewText(int tunerName2, String name) {
-        TextView tunerName = (TextView) (getView().findViewById(tunerName2));
+        TextView tunerName = getView().findViewById(tunerName2);
         if (tunerName != null) tunerName.setText(name);
     }
 
@@ -220,13 +220,13 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener {
 
     private void updateSeekbar(CeolModel ceolModel) {
 
-        SeekBar seekBar = (SeekBar) (getView().findViewById(R.id.trackSeekBar));
-        TextView progressT = (TextView)(getView().findViewById(R.id.trackProgressT));
-        TextView reverseProgressT = (TextView)(getView().findViewById(R.id.trackReverseProgressT));
+        SeekBar seekBar = getView().findViewById(R.id.trackSeekBar);
+        TextView progressT = getView().findViewById(R.id.trackProgressT);
+        TextView reverseProgressT = getView().findViewById(R.id.trackReverseProgressT);
 
         if ( ceolModel.inputControl.getStreamingStatus() == StreamingStatus.OPENHOME ) {
-            int progressSize = (int)ceolModel.inputControl.trackControl.getAudioItem().getDuration();
-            int progress = (int)ceolModel.progressControl.getProgress();
+            int progressSize = ceolModel.inputControl.trackControl.getAudioItem().getDuration();
+            int progress = ceolModel.progressControl.getProgress();
 
             progressT.setText(DateUtils.formatElapsedTime(progress));
             reverseProgressT.setText(DateUtils.formatElapsedTime(progressSize-progress));
@@ -243,14 +243,10 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         Log.d(TAG, "buttonClick: " + v.getId());
 
-        switch( v.getId()) {
-            case R.id.infoB:
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                InfoFragment infoFragment = new InfoFragment();
-                infoFragment.show(fm,"infoFragment");
-                break;
-            default:
-                break;
+        if (v.getId() == R.id.infoB) {
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            InfoFragment infoFragment = new InfoFragment();
+            infoFragment.show(fm, "infoFragment");
         }
 
     }

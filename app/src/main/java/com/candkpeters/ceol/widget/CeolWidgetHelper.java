@@ -14,7 +14,6 @@ import com.candkpeters.ceol.device.CeolManager;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.service.CeolService;
 import com.candkpeters.ceol.view.CeolIntentFactory;
-import com.candkpeters.ceol.view.MainActivity;
 import com.candkpeters.ceol.view.Prefs;
 
 /**
@@ -28,7 +27,7 @@ public abstract class CeolWidgetHelper /*extends AppWidgetProvider*/ {
 
     private boolean bound = false;
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,

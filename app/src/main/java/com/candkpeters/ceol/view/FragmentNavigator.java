@@ -107,7 +107,7 @@ public class FragmentNavigator extends Fragment {
     }
 
     private void updateNavigationRow(CeolNavigatorControl navigatorControl, int rowResId, int rowIndex) {
-        TextView textV = (TextView)(getView().findViewById(rowResId));
+        TextView textV = getView().findViewById(rowResId);
         if ( textV != null) {
             if ( navigatorControl.isBrowsing() ) {
                 SpannableString s = new SpannableString(navigatorControl.getEntries().getBrowseLineText(rowIndex));

@@ -19,7 +19,7 @@ public class CeolManagerWss extends CeolManager {
     private final Context context;
     private ConnectivityManager connectivityManager;
     private boolean isDebugMode;
-    private WssClient wssClient;
+    private final WssClient wssClient;
     private boolean isStarted = false;
 
     public CeolManagerWss(final Context context) {

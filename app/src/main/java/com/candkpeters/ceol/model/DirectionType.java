@@ -14,8 +14,8 @@ public enum DirectionType {
     Left    (4, false)
     ;
 
-    public boolean isPositiveDirection;
-    public int directionType;
+    public final boolean isPositiveDirection;
+    public final int directionType;
 
     DirectionType(int directionType, boolean isPositiveDirection) {
         this.directionType = directionType;

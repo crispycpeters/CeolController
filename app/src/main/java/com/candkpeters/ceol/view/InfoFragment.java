@@ -21,7 +21,6 @@ public class InfoFragment extends DialogFragment implements View.OnClickListener
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "3";
-    private CeolController ceolController;
     CeolModel ceolModel ;
     TrackControl trackControl ;
 
@@ -29,12 +28,12 @@ public class InfoFragment extends DialogFragment implements View.OnClickListener
     }
 
     private void setTextViewText(View parentView, int tunerName2, String name) {
-        TextView textView = (TextView) parentView.findViewById(tunerName2);
+        TextView textView = parentView.findViewById(tunerName2);
         if (textView != null) textView.setText(name);
     }
 
     private String getTextViewText( int tunerName2) {
-        TextView textView = (TextView) getView().findViewById(tunerName2);
+        TextView textView = getView().findViewById(tunerName2);
         if (textView != null) {
             return textView.getText().toString();
         } else {
@@ -46,7 +45,7 @@ public class InfoFragment extends DialogFragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.info_fragment, container, false);
-        ceolController = ((MainActivity)getActivity()).getCeolController();
+        CeolController ceolController = ((MainActivity) getActivity()).getCeolController();
         ceolModel = ceolController.getCeolModel();
         trackControl = ceolModel.inputControl.trackControl;
 

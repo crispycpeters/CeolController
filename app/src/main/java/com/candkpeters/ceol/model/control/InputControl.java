@@ -16,7 +16,7 @@ public class InputControl extends ControlBase {
     protected StreamingStatus streamingStatus = StreamingStatus.CEOL;
     final public TrackControl trackControl = new TrackControl();
 
-    public PlaylistControlBase playlistControl = new OpenhomePlaylistControl();
+    public final PlaylistControlBase playlistControl = new OpenhomePlaylistControl();
 
     public CeolNavigatorControl navigatorControl;   // TODO - Will need to be refactored for other navigators
 

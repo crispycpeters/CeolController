@@ -28,11 +28,10 @@ public class CommandCursorDown extends CommandCursor {
             return true;
         } else {
             Log.d(TAG, "isSuccessful: scrid="+ceolModel.inputControl.navigatorControl.getScridValue() + " currentLevel="+currentLevel );
-            boolean result = (
+            return (
                     ceolModel.inputControl.getSIStatus() == SIStatusType.NetServer &&
                             !ceolModel.inputControl.navigatorControl.getScridValue().equals(currentLevel) &&
                             ceolModel.inputControl.navigatorControl.isBrowsing() );
-            return result;
         }
     }
 

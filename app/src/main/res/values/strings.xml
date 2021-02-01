@@ -112,8 +112,8 @@
     <string name="si_digital2">Digital In 2</string>
     <string name="macros">Macros</string>
     <string name="pref_default_macro1">CommandSetPower:true\nCommandSetSI:Music Server\nCommandBrowseToRoot\nCommandBrowseInto:naspeters2 FLAC\nBrowseInto:7 Playlists\nBrowseIntoAndPlay:Random Pop 1</string>
-    <string name="pref_default_macro2"></string>
-    <string name="pref_default_macro3"></string>
+    <string name="pref_default_macro2" />
+    <string name="pref_default_macro3" />
     <string name="artist_label">Artist:</string>
     <string name="album_label">Album:</string>
     <string name="track_label">Track:</string>

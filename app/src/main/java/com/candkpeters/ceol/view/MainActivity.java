@@ -86,8 +86,6 @@ public class MainActivity extends AppCompatActivity
     private CeolController ceolController;
 
     private Animation powerAnimation;
-    private boolean isLargeDevice;
-    private boolean isSelectSIStart = false;
     private String action = null;
 
 
@@ -111,27 +109,11 @@ public class MainActivity extends AppCompatActivity
         // Set up the ViewPager with the sections adapter.
         ViewPager viewPager = findViewById(id.container);
         if ( viewPager != null) {
-            isLargeDevice=false;
             SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
             viewPager.setAdapter(sectionsPagerAdapter);
             TabLayout tabLayout = findViewById(id.tabs);
             tabLayout.setupWithViewPager(viewPager);
-
-        } else {
-            isLargeDevice=true;
         }
-
-/*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                ceolController.volumeDown();
-            }
-        });
-*/
 
         // Menu item
         DrawerLayout drawer = findViewById(id.drawer_layout);
@@ -406,8 +388,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         Bundle b = intent.getExtras();
-        if (b != null ) {
+        if (b != null) {
             action = b.getString(CeolService.START_ACTIVITY_ACTION);
         }
     }

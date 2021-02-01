@@ -2,7 +2,6 @@ package com.candkpeters.ceol.cling;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
@@ -14,7 +13,6 @@ import com.candkpeters.ceol.model.SIStatusType;
 import com.candkpeters.ceol.view.Prefs;
 
 import org.fourthline.cling.android.AndroidUpnpService;
-import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import org.fourthline.cling.android.FixedAndroidLogHandler;
 import org.fourthline.cling.model.meta.Device;
 import org.fourthline.cling.model.meta.LocalDevice;
@@ -31,10 +29,10 @@ import java.util.logging.Logger;
 
 public class ClingGatherer extends GathererBase implements Runnable {
     private static final long SEARCH_RETRY_MSECS = 15000;
-    private static String TAG = "ClingGatherer";
+    private static final String TAG = "ClingGatherer";
     //    private BrowserUpnpService browserUpnpService;
     private AndroidUpnpService upnpService;
-    private BrowseRegistryListener registryListener = new BrowseRegistryListener();
+    private final BrowseRegistryListener registryListener = new BrowseRegistryListener();
     private final Context context;
     private Prefs prefs;
     private boolean isClingServiceBound = false;
@@ -43,7 +41,7 @@ public class ClingGatherer extends GathererBase implements Runnable {
     private final CeolModel ceolModel;
     private boolean isPaused = false;
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             Log.d(TAG, "onServiceConnected: Cling service connected");
             isClingServiceBound = true;

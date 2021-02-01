@@ -9,7 +9,7 @@ import android.os.Binder;
 
 public class CeolServiceBinder extends Binder {
 
-    private CeolService ceolService;
+    private final CeolService ceolService;
 
     public CeolServiceBinder( CeolService ceolService) {
         super();

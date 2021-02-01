@@ -44,7 +44,7 @@ public class FragmentPlaylist extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tablayout_playlist, container, false);
 
-        recyclerView = (RecyclerView)rootView.findViewById(R.id.recycler_view);
+        recyclerView = rootView.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return rootView;
     }

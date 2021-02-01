@@ -1,7 +1,5 @@
 package com.candkpeters.ceol.model.control;
 
-import android.util.Log;
-
 import com.candkpeters.ceol.model.ObservedControlType;
 
 /**

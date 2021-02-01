@@ -26,7 +26,7 @@ public class CeolWidgetController {
     private static final String TAG = "WidgetController";
 
 
-    CeolWidgetHelper[] ceolWidgetHelpers = {
+    final CeolWidgetHelper[] ceolWidgetHelpers = {
             new CeolWidgetHelperMiniPlayer()
     };
 
@@ -34,7 +34,7 @@ public class CeolWidgetController {
     public CeolManager ceolManager = null;
     CeolModel ceolModel = null;
 
-    OnControlChangedListener onControlChangedListener = new OnControlChangedListener() {
+    final OnControlChangedListener onControlChangedListener = new OnControlChangedListener() {
 /*
         @Override
         public void onAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {

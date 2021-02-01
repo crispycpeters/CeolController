@@ -51,10 +51,8 @@ public class AudioStreamItem {
 
         if ( !this.title.equals(title)) {
             this.title = title;
-            return true;
-        } else {
-            return true;
         }
+        return true;
     }
 
     public boolean isPoopulated() {
@@ -242,8 +240,8 @@ public class AudioStreamItem {
     }
 
     public String getKey() {
-        return imageBitmapUrl != null ? imageBitmapUrl.toString() : ""
-                + title != null ? title : ""
-                + album != null ? album : "";
+        return ( imageBitmapUrl != null ? imageBitmapUrl.toString() : "" )
+                + ( title != null ? title : "" )
+                + ( album != null ? album : "" );
     }
 }

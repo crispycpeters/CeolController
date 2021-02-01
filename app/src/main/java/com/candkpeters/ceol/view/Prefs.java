@@ -22,7 +22,7 @@ public class Prefs {
 //    private static final String PREF_WEB_STATUS_REPEAT_RATE_MSECS = "com.candkpeters.ceol.Web_Status_Repeat_Rate_Msecs";
 //    private static final String PREF_END_MSECS = "com.candkpeters.ceol.End_Msecs";
 
-    SharedPreferences preferences;
+    final SharedPreferences preferences;
 
     public Prefs(Context contextToUse)  {
         context = contextToUse;
