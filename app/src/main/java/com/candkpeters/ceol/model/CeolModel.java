@@ -36,21 +36,18 @@ public class CeolModel implements ControlObserved {
     }
 
     public void notifyConnectionStatus(boolean connection) {
-        boolean hasChangedConnection = false;
         boolean newIsConnected = false;
         synchronized (MUTEX) {
-            hasChangedConnection = connectionControl.updateConnected(connection);
+            connectionControl.updateConnected(connection);
             newIsConnected = connectionControl.isConnected();
         }
-//        if ( hasChangedConnection ) {
-            if ( newIsConnected) {
-                Log.d(TAG, "notifyConnectionStatus: We are connected. Refresh all observers." );
-                notifyAllObservers();
-            } else {
-                Log.w(TAG, "notifyConnectionStatus: We are no longer connected." );
-                notifyObservers(connectionControl);
-            }
-//        }
+        if ( newIsConnected) {
+            Log.d(TAG, "notifyConnectionStatus: We are connected. Refresh all observers." );
+            notifyAllObservers();
+        } else {
+            Log.w(TAG, "notifyConnectionStatus: We are no longer connected." );
+            notifyObservers(connectionControl);
+        }
     }
 
     // ControlObserved

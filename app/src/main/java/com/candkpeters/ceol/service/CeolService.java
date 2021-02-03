@@ -221,7 +221,7 @@ public class CeolService extends Service {
         NotificationCompat.Action pauseAction = createCommandAction(new CommandControlPause(), R.drawable.ic_av_pause, "Pause" );
         NotificationCompat.Action skipForwardAction = createCommandAction(new CommandSkipForward(), R.drawable.ic_av_skip_forward, "Skip" );
 
-        Intent stopIntent = new Intent(this, CeolService.class);
+        Intent stopIntent = new Intent(this, CeolServiceReceiver.class);
 //        stopIntent.setClass(this, CeolServiceReceiver.class);
         stopIntent.setAction(CeolService.STOP_SERVICE);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, stopIntent, 0);

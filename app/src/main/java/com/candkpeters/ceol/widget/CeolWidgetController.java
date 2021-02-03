@@ -35,41 +35,6 @@ public class CeolWidgetController {
     CeolModel ceolModel = null;
 
     final OnControlChangedListener onControlChangedListener = new OnControlChangedListener() {
-/*
-        @Override
-        public void onAudioControlChanged(CeolModel ceolModel, AudioControl audioControl) {
-            updateWidgets(null);
-        }
-
-        @Override
-        public void onConnectionControlChanged(CeolModel ceolModel, ConnectionControl connectionControl) {
-            updateWidgets(null);
-        }
-
-        @Override
-        public void onCeolNavigatorControlChanged(CeolModel ceolModel, CeolNavigatorControl ceolNavigatorControl) {
-        }
-
-        @Override
-        public void onInputControlChanged(CeolModel ceolModel, InputControl inputControl) {
-            updateWidgets(null);
-        }
-
-        @Override
-        public void onPowerControlChanged(CeolModel ceolModel, PowerControl powerControl) {
-            updateWidgets(null);
-        }
-
-        @Override
-        public void onTrackControlChanged(CeolModel ceolModel, TrackControl trackControl) {
-            updateWidgets(null);
-        }
-
-        @Override
-        public void onPlaylistControlChanged(CeolModel ceolModel, PlaylistControlBase playlistControlBase) {
-
-        }
-*/
 
         @Override
         public void onControlChanged(CeolModel ceolModel, ObservedControlType observedControlType, ControlBase controlBase) {

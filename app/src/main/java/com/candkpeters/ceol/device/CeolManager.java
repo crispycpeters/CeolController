@@ -50,24 +50,24 @@ public abstract class CeolManager {
         });
     }
 
-    private static final int MAX_LOGSIZE = 5000;
-    private final String[] logMessages = new String[MAX_LOGSIZE];
-    private int logPosition = 0;
+//    private static final int MAX_LOGSIZE = 5000;
+//    private final String[] logMessages = new String[MAX_LOGSIZE];
+//    private int logPosition = 0;
 
     public void logd(String tag, String msg) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-        String datestr = df.format(new Date());
+//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+//        String datestr = df.format(new Date());
 
-        synchronized (logMessages) {
-            logMessages[logPosition] = String.format("%s D/%s: %s",datestr,tag,msg);
-            logPosition = (logPosition + 1) % MAX_LOGSIZE;
-        }
+//        synchronized (logMessages) {
+//            logMessages[logPosition] = String.format("%s D/%s: %s",datestr,tag,msg);
+//            logPosition = (logPosition + 1) % MAX_LOGSIZE;
+//        }
         Log.d(tag, msg);
     }
 
-    public String[] getLogItems() {
-        return logMessages;
-    }
+//    public String[] getLogItems() {
+//        return logMessages;
+//    }
 
     /*
     To be called when config changes or on start
