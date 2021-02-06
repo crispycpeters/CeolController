@@ -1,5 +1,6 @@
 package com.candkpeters.ceol.view;
 
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import androidx.annotation.NonNull;
@@ -497,8 +498,8 @@ public class MainActivity extends AppCompatActivity
             startService(intent);
             return true;
         }
-        if (id == R.id.action_showlog) {
-            showLogDialog();
+        if (id == R.id.action_exit) {
+            exitCompletely();
             return true;
         }
 
@@ -600,10 +601,14 @@ public class MainActivity extends AppCompatActivity
         infoFragment.show(fm,"infoFragment");
     }
 
-    private void showLogDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        LogFragment logFragment = new LogFragment();
-        logFragment.show(fm,"logFragment");
+    private void exitCompletely() {
+//        FragmentManager fm = getSupportFragmentManager();
+//        LogFragment logFragment = new LogFragment();
+//        logFragment.show(fm,"logFragment");
+        ceolController.stop();
+        Intent intent = new Intent(this, CeolService.class);
+        stopService(intent);
+        System.exit(0);
     }
 
     public CeolController getCeolController() {

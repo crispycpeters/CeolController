@@ -68,6 +68,7 @@ public class CeolService extends Service {
     private static final String CHANNEL_ID = "CeolServiceChannel";
     enum NotificationType {
         Minimal,
+        StandBy,
         NonServer,
         NavigationPaused,
         NavigationPlaying
@@ -94,6 +95,16 @@ public class CeolService extends Service {
 //        initializeService();
         return new CeolServiceBinder(this);
     }
+
+//    @Nullable
+//    @Override
+//    public boolean onUnbind(Intent intent) {
+//        Log.d(TAG, "onUnbind: Entering");
+//        if ( ceolManager.ceolModel.registerCount() <= 1) {
+//
+//        }
+//        return false;
+//    }
 
     public CeolManager getCeolManager() {
         return ceolManager;
@@ -167,10 +178,12 @@ public class CeolService extends Service {
             line1 = makeStandby(" Not Connected " );
             return buildNotification2(line1, null, null, bitmap, Color.argb(0, 0x40, 0, 0), notificationType);
         }
+        String titleStr = " " + ceolModel.powerControl.getDeviceStatus().name() + " - " +
+                ceolModel.inputControl.getSIStatus().name() + " - Vol: " + ceolModel.audioControl.getMasterVolumeString() + " ";
         if ( ceolModel.powerControl.getDeviceStatus()==DeviceStatusType.Standby ) {
-            line1 = makeStandby(" " + ceolModel.powerControl.getDeviceStatus().name() + " - " + ceolModel.inputControl.getSIStatus().name() + " ");
+            line1 = makeStandby(titleStr);
         } else {
-            line1 = makeOn(" " + ceolModel.powerControl.getDeviceStatus().name() + " - " + ceolModel.inputControl.getSIStatus().name() + " ");
+            line1 = makeOn(titleStr);
         }
         switch ( ceolModel.inputControl.getSIStatus()) {
             case Spotify:
@@ -191,6 +204,9 @@ public class CeolService extends Service {
             default:
                 notificationType = NotificationType.NonServer;
                 break;
+        }
+        if ( ceolModel.powerControl.getDeviceStatus()==DeviceStatusType.Standby ) {
+            notificationType = NotificationType.StandBy;
         }
         return buildNotification2(line1, line2, line3, bitmap,
                 colour, notificationType);
@@ -254,6 +270,13 @@ public class CeolService extends Service {
                         .setStyle( new MediaStyle()
                              .setShowActionsInCompactView(0));
                 break;
+            case StandBy:
+                builder
+                        .addAction(powerAction)
+                        .addAction(exitAction)
+                        .setStyle( new MediaStyle()
+                                .setShowActionsInCompactView(0,1));
+                break;
             case NonServer:
                 builder
                         .addAction(powerAction)
@@ -266,22 +289,22 @@ public class CeolService extends Service {
             case NavigationPaused:
                 builder
                         .addAction(powerAction)
-                        .addAction(skipForwardAction)
                         .addAction(volumeDownAction)
+                        .addAction(volumeUpAction)
+                        .addAction(skipForwardAction)
                         .addAction(playAction)
-                        .addAction(exitAction)
                         .setStyle( new MediaStyle()
-                                .setShowActionsInCompactView(0,1,3));
+                                .setShowActionsInCompactView(0,3,4));
                 break;
             case NavigationPlaying:
                 builder
                         .addAction(powerAction)
-                        .addAction(skipForwardAction)
                         .addAction(volumeDownAction)
+                        .addAction(volumeUpAction)
+                        .addAction(skipForwardAction)
                         .addAction(pauseAction)
-                        .addAction(exitAction)
                         .setStyle( new MediaStyle()
-                                .setShowActionsInCompactView(0,1,3));
+                                .setShowActionsInCompactView(0,3,4));
                 break;
         }
 
@@ -377,6 +400,8 @@ public class CeolService extends Service {
                             break;
                         case STOP_SERVICE:
                             ceolManager.logd(TAG, "onStartCommand: STOP_SERVICE");
+                            ceolWidgetController.stopUpdates();
+                            ceolWidgetController.updateWidgets("Stopped");
                             stopGathering();
                             stopForeground(true);
                             stopSelf();
@@ -390,7 +415,7 @@ public class CeolService extends Service {
                 ceolManager.logd(TAG, "onStartCommand: Restarting service - no Intent");
                 startGathering();
             }
-            ceolWidgetController.updateWidgets("wifi");
+//            ceolWidgetController.updateWidgets("wifi");
 
             return START_STICKY;    // Try to restart if service has to be destroyed
 //        }

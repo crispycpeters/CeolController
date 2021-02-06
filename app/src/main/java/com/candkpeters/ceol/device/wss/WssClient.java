@@ -65,8 +65,8 @@ public class WssClient implements ImageDownloaderResult {
                 Log.i("WebSocket", "Session is starting");
 //                resetBackOffCounters();
                 ceolModel.notifyConnectionStatus(true);
-                nudge();
-//                webSocketClient.send("Hello World!");
+//                nudge();
+                webSocketClient.send(UPDATE_REQUEST);
             }
 
             @Override
@@ -121,7 +121,7 @@ public class WssClient implements ImageDownloaderResult {
             ceolModel.notifyConnectionStatus(true);
 
             ceolModel.inputControl.updateSIStatus(ceolData.source);
-            if ( ceolModel.powerControl.getDeviceStatus() == DeviceStatusType.Starting && ceolData.power.equals("ON") ) {
+            if ( ceolModel.powerControl.getDeviceStatus() != DeviceStatusType.On && ceolData.power.equals("ON") ) {
                 // We're switching on CEOL - need to reload any images
                 Log.i( TAG, "Power on - reload images");
                 prevImageTimeStamp = -1;
@@ -242,11 +242,11 @@ public class WssClient implements ImageDownloaderResult {
         }
     }
 
-    public void nudge() {
-        if ( webSocketClient != null ) {
-            webSocketClient.send(UPDATE_REQUEST);
-        }
-    }
+//    public void nudge() {
+//        if ( webSocketClient != null ) {
+//            webSocketClient.send(UPDATE_REQUEST);
+//        }
+//    }
 
     private void setPlayStatus(String playStatusString) {
         if ( playStatusString != null) {

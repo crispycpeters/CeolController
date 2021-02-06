@@ -52,7 +52,7 @@ public class CeolManagerWss extends CeolManager {
             public void onAvailable( Network network) {
                 Log.d(TAG, "WIFI is connected");
                 // Restart for quicker detection
-                if ( isOnWifi()) {
+                if ( isOnWifi() ) {
                     wssClient.start(getPrefs().getWssServer());
                 } else {
                     ceolModel.notifyConnectionStatus(false);
@@ -69,7 +69,7 @@ public class CeolManagerWss extends CeolManager {
                 }
             }
         });
-        wssClient.start( getPrefs().getWssServer() );
+//        wssClient.start( getPrefs().getWssServer() );
         isStarted = true;
     }
 
@@ -81,7 +81,8 @@ public class CeolManagerWss extends CeolManager {
     }
 
     public void nudgeGatherers() {
-        wssClient.nudge();
+        // Just send existing data to all observers
+        ceolModel.notifyAllObservers();
     }
 
 }
