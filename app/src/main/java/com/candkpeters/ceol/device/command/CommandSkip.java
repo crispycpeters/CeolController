@@ -32,6 +32,7 @@ public class CommandSkip extends CommandBaseDirection {
                 break;
             case IRadio:
                 break;
+            case OpenHome:
             case NetServer:
                 commandString = getDirectionType().isPositiveDirection ? "NS9D" : "NS9E";
                 ceolManager.sendCommand(commandString);
@@ -41,10 +42,6 @@ public class CommandSkip extends CommandBaseDirection {
             case Spotify:
                 commandString = getDirectionType().isPositiveDirection ? "NEXT" : "PREVIOUS";
                 ceolManager.sendSpotifyCommand(commandString);
-                break;
-            case OpenHome:
-                commandString = getDirectionType().isPositiveDirection ? "Next" : "Previous";
-                ceolManager.sendOpenHomeCommand(commandString);
                 break;
         }
     }

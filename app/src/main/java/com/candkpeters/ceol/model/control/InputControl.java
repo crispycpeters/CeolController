@@ -173,6 +173,9 @@ public class InputControl extends ControlBase {
                 case "BLUETOOTH":
                     siStatusNew = SIStatusType.Bluetooth;
                     break;
+                case "OPENHOME":
+                    siStatusNew = SIStatusType.OpenHome;
+                    break;
                 case "SPOTIFYCONNECT":
                     siStatusNew = SIStatusType.Spotify;
                     break;

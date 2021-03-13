@@ -113,6 +113,7 @@ public class CeolData {
         public String playcontents;
         public String shuffle;
         public String repeat;
+        public int duration = 0;
     }
     public static class CeolDataTuner {
         public String name;

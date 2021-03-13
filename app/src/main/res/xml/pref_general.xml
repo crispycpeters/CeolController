@@ -14,7 +14,6 @@
         android:title="@string/pref_category_server"
         >
         <EditTextPreference
-            android:capitalize="words"
             android:defaultValue="@string/pref_default_device_server"
             android:inputType="textCapWords"
             android:key="@string/pref_key_device_server"
@@ -27,8 +26,7 @@
         <EditTextPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:capitalize="words"
-            android:defaultValue="false"
+            android:defaultValue="@string/pref_default_wss_server"
             android:inputType="textCapWords"
             android:key="@string/pref_key_wss_server"
             android:maxLines="1"
@@ -52,7 +50,6 @@
             />
 
         <EditTextPreference
-            android:capitalize="words"
             android:defaultValue="@string/pref_default_openhome_name"
             android:key="@string/pref_key_openhome_name"
             android:summary="@string/pref_summary_openhome_name"

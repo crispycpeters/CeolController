@@ -34,7 +34,6 @@ import com.candkpeters.ceol.device.command.CommandMasterVolumeDown;
 import com.candkpeters.ceol.device.command.CommandMasterVolumeUp;
 import com.candkpeters.ceol.device.command.CommandSetPowerToggle;
 import com.candkpeters.ceol.device.command.CommandSkipForward;
-import com.candkpeters.ceol.device.wss.CeolManagerWss;
 import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.DeviceStatusType;
 import com.candkpeters.ceol.model.ObservedControlType;
@@ -84,7 +83,7 @@ public class CeolService extends Service {
 
     public CeolService() {
 //        ceolManager = new CeolManagerWebSvc(context);
-        ceolManager = new CeolManagerWss(context);
+        ceolManager = new CeolManager(context);
         ceolWidgetController = new CeolWidgetController(this);
     }
 
@@ -392,7 +391,7 @@ public class CeolService extends Service {
                             break;
                         case STOP_CLING:
                             ceolManager.logd(TAG, "onStartCommand: STOP_CLING");
-                            ceolManager.stopCling();
+//                            ceolManager.stopCling();
                             break;
                         case START_CLING:
                             ceolManager.logd(TAG, "onStartCommand: START_CLING");

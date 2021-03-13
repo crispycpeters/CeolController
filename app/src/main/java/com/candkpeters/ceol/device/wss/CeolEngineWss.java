@@ -3,50 +3,42 @@ package com.candkpeters.ceol.device.wss;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
+import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.candkpeters.ceol.device.CeolEngine;
 import com.candkpeters.ceol.device.CeolManager;
 import com.candkpeters.ceol.device.OnCeolStatusChangedListener;
 import com.candkpeters.ceol.device.command.Command;
+import com.candkpeters.ceol.model.CeolModel;
 
 /**
  * Created by crisp on 25/01/2016.
  */
-public class CeolManagerWss extends CeolManager {
+public class CeolEngineWss extends CeolEngine {
 
     private static final String TAG = "CeolManager" ;
     private final ConnectionStateMonitor connectionStateMonitor;
-    private final Context context;
     private ConnectivityManager connectivityManager;
     private boolean isDebugMode;
     private final WssClient wssClient;
     private boolean isStarted = false;
 
-    public CeolManagerWss(final Context context) {
-        super(context);
-        this.context = context;
+    public CeolEngineWss(final Context context, final CeolModel ceolModel) {
+        super(context, ceolModel);
         wssClient = new WssClient(ceolModel);
         connectionStateMonitor = new ConnectionStateMonitor();
     }
 
     public void sendCommand(String commandString) {
-        Log.d(TAG, "sendCommand: Sending: " + commandString);
-        if ( commandString!= null && !commandString.isEmpty()) {
-            wssClient.sendCommand(commandString);
-        }
-    }
-
-    public void execute(Command command, OnCeolStatusChangedListener onDoneCeolStatusChangedListener) {
-        if ( command!= null ) {
-            command.execute(this, onDoneCeolStatusChangedListener);
-        }
     }
 
     /**************************
      * ENGINE
      */
-    public void engineResumeGatherers()
-    {
+    @Override
+    public void start() {
+
         connectionStateMonitor.enable(context, new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable( Network network) {
@@ -71,18 +63,63 @@ public class CeolManagerWss extends CeolManager {
         });
 //        wssClient.start( getPrefs().getWssServer() );
         isStarted = true;
+
     }
 
-    public void engineStopGatherers()
-    {
+    private boolean isOnWifi() {
+        if ( connectivityManager == null ) {
+            connectivityManager =
+                    (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        }
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        if ( isConnected ) {
+            if ( activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                Log.i(TAG, "isOnWifi: WiFi is active");
+                return true;
+            } else {
+                Log.i(TAG, "isOnWifi: On network but not WiFi");
+                return false;
+            }
+        } else {
+            Log.i(TAG, "isOnWifi: No network");
+            return false;
+        }
+    }
+
+
+    @Override
+    public void stop() {
         wssClient.stop();
         ceolModel.notifyConnectionStatus(false);
         isStarted = false;
     }
 
-    public void nudgeGatherers() {
-        // Just send existing data to all observers
+    @Override
+    public void nudge() {
         ceolModel.notifyAllObservers();
     }
 
+    @Override
+    public void sendCommandStr(String commandString) {
+        Log.d(TAG, "sendCommandStr: Sending: " + commandString);
+        if ( commandString!= null && !commandString.isEmpty()) {
+            wssClient.sendCommand(commandString);
+        }
+
+    }
+
+    @Override
+    public void sendCommandSeekTrack(int trackId) {
+        Log.d(TAG, "sendCommandSeekTrack: Sending: " + trackId);
+        wssClient.sendCommand("OHCMD_SEEKID:" + trackId);
+    }
+
+    @Override
+    public void sendCommandSeekAbsoluteSecond(int absoluteSeconds) {
+        Log.d(TAG, "sendCommandSeekAbsoluteSecond: Sending: " + absoluteSeconds);
+        wssClient.sendCommand("OHCMD_SEEK:" + absoluteSeconds);
+    }
 }

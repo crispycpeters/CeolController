@@ -28,7 +28,6 @@ public class CeolManager {
     private final CeolEngineWss ceolEngineWss;
     private ConnectivityManager connectivityManager;
     private boolean isDebugMode;
-    private final ClingEngine clingEngine;
     private MacroInflater macroInflater;
 
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
@@ -37,7 +36,7 @@ public class CeolManager {
         this.context = context;
         this.ceolModel = new CeolModel();
         this.ceolEngineWss = new CeolEngineWss(context,ceolModel);
-        this.clingEngine = new ClingEngine(context,ceolModel);
+//        this.clingEngine = new ClingEngine(context,ceolModel);
 
     }
 
@@ -128,18 +127,6 @@ public class CeolManager {
         return new Prefs(context);
     }
 
-    public void sendOpenHomeCommand(String commandString) {
-        clingEngine.sendCommandStr(commandString);
-    }
-
-    public void sendOpenHomeSeekIdCommand(int trackId) {
-        clingEngine.sendCommandSeekTrack(trackId);
-    }
-
-    public void sendOpenHomeSeekAbsoluteSecond(int absoluteSeconds) {
-        clingEngine.sendCommandSeekAbsoluteSecond(absoluteSeconds);
-    }
-
     public void sendSpotifyCommand(String commandString) {
         if ( context != null ) {
             if ( commandString.equalsIgnoreCase("PLAY")) {
@@ -188,12 +175,10 @@ public class CeolManager {
      */
     public void engineResumeGatherers() {
         ceolEngineWss.start();
-        clingEngine.start();
     };
 
     public void engineStopGatherers() {
         ceolEngineWss.stop();
-        clingEngine.stop();
     };
 
     public void sendCommand(String commandString) {
@@ -201,9 +186,13 @@ public class CeolManager {
         ceolEngineWss.sendCommandStr(commandString);
     };
 
+    public void sendOpenHomeSeekIdCommand(int id) {
+        // TODO decide where to send command
+        ceolEngineWss.sendCommandSeekTrack( id);
+    };
+
     public void nudgeGatherers() {
         ceolEngineWss.nudge();
-        clingEngine.nudge();
     };
 
     private void engineRestartGatherers(Context context) {
@@ -215,10 +204,6 @@ public class CeolManager {
         engineResumeGatherers();
 
         macroInflater = new MacroInflater(prefs.getMacroNames(), prefs.getMacroValues());
-    }
-
-    public void stopCling() {
-        clingEngine.stop();
     }
 
     protected boolean isOnWifi() {

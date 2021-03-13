@@ -9,6 +9,8 @@ import com.candkpeters.ceol.model.CeolModel;
 import com.candkpeters.ceol.model.DeviceStatusType;
 import com.candkpeters.ceol.model.PlayStatusType;
 import com.candkpeters.ceol.model.control.CeolNavigatorControl;
+import com.candkpeters.ceol.model.control.OpenhomePlaylistControl;
+import com.candkpeters.ceol.model.control.PlaylistControlBase;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
@@ -86,7 +88,7 @@ public class WssClient implements ImageDownloaderResult {
             }
             @Override
             public void onException(Exception e) {
-                Log.w("onException", e.getMessage());
+                Log.e("WebSocket", e.getMessage());
                 if ( e instanceof ConnectException) {
                     ceolModel.notifyConnectionStatus(false);
 //                    if ( shouldBackOff() ) {
@@ -108,76 +110,56 @@ public class WssClient implements ImageDownloaderResult {
         webSocketClient.connect();
     }
 
-    private void updateCeolModel(String s) {
-        final String message = s;
+    private StringBuilder fullmessage = null;
+
+    private void updateCeolModel(String fulls) {
+            if ( fulls==null || fulls.length() ==0 ) {
+            return;
+        }
+        final char prefix = fulls.charAt(0);
+        final String messageChunk = fulls.substring(1);
+        boolean messageComplete = false;
+        switch ( prefix ) {
+            case '=':
+                // Data is in one line
+                fullmessage = new StringBuilder(messageChunk);
+                messageComplete = true;
+                break;
+            case '<':
+                // Start of data on multiple messages
+                fullmessage = new StringBuilder(messageChunk);
+                messageComplete = false;
+                break;
+            case '>':
+                messageComplete = true;
+                break;
+            case '-':
+                fullmessage.append(messageChunk);
+                messageComplete = false;
+                break;
+        }
+        if ( !messageComplete ) {
+//            Log.i("webSocket", "We have partial message: " + messageChunk);
+            return;
+        }
         Moshi moshi = new Moshi.Builder().build();
-        JsonAdapter<CeolData> jsonAdapter = moshi.adapter(CeolData.class);
+        JsonAdapter<CeolDataRoot> jsonAdapter = moshi.adapter(CeolDataRoot.class);
         try {
-            CeolData ceolData = jsonAdapter.fromJson(message);
-            Log.i("webSocket", "Got volume: " + ceolData.volume);
+            CeolDataRoot ceolDataRoot = jsonAdapter.fromJson(fullmessage.toString());
+            if (ceolDataRoot.ceolData != null) {
+                CeolData ceolData = ceolDataRoot.ceolData;
+                Log.i("webSocket", "Got CeolData volume: " + ceolData.volume);
 
-            AudioStreamItem audioItem = new AudioStreamItem();
+                populateCeolData(ceolData);
 
-            ceolModel.notifyConnectionStatus(true);
-
-            ceolModel.inputControl.updateSIStatus(ceolData.source);
-            if ( ceolModel.powerControl.getDeviceStatus() != DeviceStatusType.On && ceolData.power.equals("ON") ) {
-                // We're switching on CEOL - need to reload any images
-                Log.i( TAG, "Power on - reload images");
-                prevImageTimeStamp = -1;
-            };
-            ceolModel.powerControl.updateDeviceStatus(ceolData.power);
-            ceolModel.audioControl.updateMasterVolume(ceolData.volume);
-
-            switch ( ceolData.source) {
-                case "ANALOGIN":
-                case "BLUETOOTH":
-                case "DIGITALIN1":
-                case "DIGITALIN2":
-                case "CD":
-                    break;
-                case "TUNER":
-                    audioItem.setBand(ceolData.tuner.band);
-                    audioItem.setFrequency(ceolData.tuner.frequency);
-                    audioItem.setTitle(ceolData.tuner.name);
-                    ceolModel.inputControl.updateSIStatus(ceolData.input);
-                    break;
-                case "MUSIC SERVER":
-                case "SPOTIFYCONNECT":
-                case "INTERNET RADIO":
-
-                    CeolNavigatorControl newCeolNavigatorControl = new CeolNavigatorControl();
-
-                    newCeolNavigatorControl.setIsBrowsing(ceolData.type.compareTo("browse")==0);
-
-                    newCeolNavigatorControl.initialiseChunk(
-                            ceolData.browse.title, ceolData.browse.scridValue,
-                            ceolData.browse.scrid, ceolData.browse.listmax, ceolData.browse.listposition);
-                    for (int i = 0; i < ceolData.browse.items.length; i++) {
-                        CeolData.CeolDataBrowseItem item = ceolData.browse.items[i];
-                        if ( item.title != null ) {
-                            newCeolNavigatorControl.setChunkLine(i, item.title, item.desc + (item.current?"s":""));
-                        }
-                    }
-                    ceolModel.inputControl.navigatorControl = newCeolNavigatorControl;
-
-                    audioItem.setTitle(ceolData.net.track);
-                    audioItem.setArtist(ceolData.net.artist);
-                    audioItem.setAlbum(ceolData.net.album);
-                    audioItem.setBitrate(ceolData.net.bitrate);
-                    audioItem.setFormat(ceolData.net.format);
-                    audioItem.setImageBitmapUrl(imageUrl);
-
-                    setPlayStatus(ceolData.net.playstatus);
-                    break;
             }
-            ceolModel.inputControl.trackControl.updateAudioItem(audioItem);
+            if (ceolDataRoot.ohPlaylist != null) {
+                OhPlaylist ohPlaylist = ceolDataRoot.ohPlaylist;
+                Log.i("webSocket", "Got OhPlaylist Id: " + ohPlaylist.Id);
 
-            if ( prevImageTimeStamp == -1 || ceolData.imageTimeStamp != prevImageTimeStamp ) {
-                prevImageTimeStamp = ceolData.imageTimeStamp;
-                getImage(ceolModel.inputControl.trackControl.getAudioItem());
+                populateOhPlaylist( ceolModel.inputControl.playlistControl, ohPlaylist);
+
             }
-
         }
         catch (Exception e){
             e.printStackTrace();
@@ -201,6 +183,123 @@ public class WssClient implements ImageDownloaderResult {
 //                    }
 //                });
     }
+
+    private void populateCeolData(CeolData ceolData) {
+        AudioStreamItem audioItem = new AudioStreamItem();
+
+        ceolModel.notifyConnectionStatus(true);
+
+        ceolModel.inputControl.updateSIStatus(ceolData.source);
+        if (ceolModel.powerControl.getDeviceStatus() != DeviceStatusType.On && ceolData.power.equals("ON")) {
+            // We're switching on CEOL - need to reload any images
+            Log.i(TAG, "Power on - reload images");
+            prevImageTimeStamp = -1;
+        }
+        ;
+        ceolModel.powerControl.updateDeviceStatus(ceolData.power);
+        ceolModel.audioControl.updateMasterVolume(ceolData.volume);
+
+        switch (ceolData.source) {
+            case "ANALOGIN":
+            case "BLUETOOTH":
+            case "DIGITALIN1":
+            case "DIGITALIN2":
+            case "CD":
+                break;
+            case "TUNER":
+                audioItem.setBand(ceolData.tuner.band);
+                audioItem.setFrequency(ceolData.tuner.frequency);
+                audioItem.setTitle(ceolData.tuner.name);
+                ceolModel.inputControl.updateSIStatus(ceolData.input);
+                break;
+            case "MUSIC SERVER":
+            case "SPOTIFYCONNECT":
+            case "INTERNET RADIO":
+            case "OPENHOME":
+                CeolNavigatorControl newCeolNavigatorControl = new CeolNavigatorControl();
+
+                newCeolNavigatorControl.setIsBrowsing(ceolData.type.compareTo("browse") == 0);
+
+                newCeolNavigatorControl.initialiseChunk(
+                        ceolData.browse.title, ceolData.browse.scridValue,
+                        ceolData.browse.scrid, ceolData.browse.listmax, ceolData.browse.listposition);
+                for (int i = 0; i < ceolData.browse.items.length; i++) {
+                    CeolData.CeolDataBrowseItem item = ceolData.browse.items[i];
+                    if (item.title != null) {
+                        newCeolNavigatorControl.setChunkLine(i, item.title, item.desc + (item.current ? "s" : ""));
+                    }
+                }
+                ceolModel.inputControl.navigatorControl = newCeolNavigatorControl;
+
+                audioItem.setTitle(ceolData.net.track);
+                audioItem.setArtist(ceolData.net.artist);
+                audioItem.setAlbum(ceolData.net.album);
+                audioItem.setBitrate(ceolData.net.bitrate);
+                audioItem.setFormat(ceolData.net.format);
+                audioItem.setImageBitmapUrl(imageUrl);
+                audioItem.setDuration(ceolData.net.duration);
+
+                setPlayStatus(ceolData.net.playstatus);
+                break;
+        }
+        ceolModel.inputControl.trackControl.updateAudioItem(audioItem);
+
+        if ( prevImageTimeStamp == -1 || ceolData.imageTimeStamp != prevImageTimeStamp ) {
+            prevImageTimeStamp = ceolData.imageTimeStamp;
+            getImage(ceolModel.inputControl.trackControl.getAudioItem());
+        }
+    }
+
+    private void populateOhPlaylist(PlaylistControlBase playlistControl, OhPlaylist ohPlaylist) {
+        OpenhomePlaylistControl openhomePlaylistControl = (OpenhomePlaylistControl)playlistControl;
+
+        try {
+            openhomePlaylistControl.setCurrentTrackId(Integer.parseInt(ohPlaylist.Id));
+
+            if ( ohPlaylist.entries != null && ohPlaylist.entries.length > 0) {
+                int[] idArray = new int[ohPlaylist.entries.length];
+
+                for ( int i=0; i<ohPlaylist.entries.length; i++ ) {
+                    OhPlaylist.OhEntry entry = ohPlaylist.entries[i];
+                    int id = Integer.parseInt(entry.Id);
+                    idArray[i] = id;
+
+                    AudioStreamItem audioStreamItem = new AudioStreamItem();
+                    audioStreamItem.setTitle(entry.title);
+                    audioStreamItem.setAlbum(entry.album);
+                    audioStreamItem.setArtist(entry.artist);
+                    audioStreamItem.setAudioUrl(entry.Url);
+                    audioStreamItem.setBitrate(entry.bitrate);
+                    audioStreamItem.setId(id);
+                    if (entry.Url != null) audioStreamItem.setAudioUrl(entry.Url);
+                    if (entry.albumArtUri != null) audioStreamItem.setImageBitmapUrl(new URL(entry.albumArtUri));
+                    audioStreamItem.setDuration(parseDuration(entry.duration));
+                    openhomePlaylistControl.putItem(id,audioStreamItem);
+                }
+                openhomePlaylistControl.setPlaylist(idArray);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int parseDuration(String durationString) {
+        //String source = "00:10:17.x";
+        try {
+            String[] tokens = durationString.split(":");
+
+            float seconds = Float.parseFloat(tokens[2]);
+            int secondsToSeconds = Math.round(seconds);
+            int minutesToSeconds = Integer.parseInt(tokens[1]) * 60;
+            int hoursToSeconds = Integer.parseInt(tokens[0]) * 3600;
+            return secondsToSeconds + minutesToSeconds + hoursToSeconds;
+        } catch (Exception e) {
+            Log.e(TAG, "setDuration: Formatting error for: "+durationString, e );
+            return 0;
+        }
+    }
+
 
 //    private void resetBackOffCounters() {
 //        backOffTimeoutStarted = false;

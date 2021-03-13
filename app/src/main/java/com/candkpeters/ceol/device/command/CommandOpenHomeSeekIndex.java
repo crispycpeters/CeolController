@@ -30,6 +30,7 @@ public class CommandOpenHomeSeekIndex extends Command {
     @Override
     public void execute() {
 
+        // TODO Need to send to WSS
         ceolManager.sendOpenHomeSeekIdCommand(trackId);
 /*
         switch (ceolModel.inputControl.getSIStatus()) {

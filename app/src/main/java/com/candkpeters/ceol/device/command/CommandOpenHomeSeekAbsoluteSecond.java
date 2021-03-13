@@ -30,27 +30,9 @@ public class CommandOpenHomeSeekAbsoluteSecond extends Command {
     @Override
     public void execute() {
 
-        ceolManager.sendOpenHomeSeekAbsoluteSecond(absoluteSeconds);
-/*
-        switch (ceolModel.inputControl.getSIStatus()) {
-            case Unknown:
-                break;
-            case CD:
-                // TODO
-                break;
-            case Tuner:
-                break;
-            case NetServer:
-            case IRadio:
-            case Ipod:
-            case Spotify:
-                break;
-            case OpenHome:
-                break;
-            case AnalogIn:
-                break;
-        }
-*/
+        // TODO send to WSS
+        ceolManager.sendCommand("OHCMD_SEEK:" + absoluteSeconds);
+//        ceolManager.sendOpenHomeSeekAbsoluteSecond(absoluteSeconds);
     }
 
     private PlayStatusType toggleCurrentStatus() {

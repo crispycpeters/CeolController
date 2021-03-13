@@ -43,6 +43,7 @@ class CommandControl extends Command {
         switch (ceolModel.inputControl.getStreamingStatus()) {
 
             case CEOL:
+            case OPENHOME:
                 switch (playStatusType) {
                     case Unknown:
                         break;
@@ -59,22 +60,6 @@ class CommandControl extends Command {
                 ceolManager.sendCommand(commandString);
                 break;
             case DLNA:
-                break;
-            case OPENHOME:
-                switch (playStatusType) {
-                    case Unknown:
-                        break;
-                    case Playing:
-                        commandString = "Play";
-                        break;
-                    case Paused:
-                        commandString = "Pause";
-                        break;
-                    case Stopped:
-                        commandString = "Stop";
-                        break;
-                }
-                ceolManager.sendOpenHomeCommand(commandString);
                 break;
             case NONE:
                 break;

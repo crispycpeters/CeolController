@@ -54,23 +54,22 @@
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.5" level="project" />
     <orderEntry type="library" name="Gradle: commons-net:commons-net:3.4" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.picasso:picasso:2.5.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-servlet:8.1.18.v20150929" level="project" />
-    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-security:8.1.18.v20150929" level="project" />
-    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-server:8.1.18.v20150929" level="project" />
+    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-servlet:9.0.7.v20131107" level="project" />
+    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-security:9.0.7.v20131107" level="project" />
+    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-server:9.0.7.v20131107" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.jetty.orbit:javax.servlet:3.0.0.v201112011016" level="project" />
-    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-continuation:8.1.18.v20150929" level="project" />
-    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-client:8.1.18.v20150929" level="project" />
-    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-http:8.1.18.v20150929" level="project" />
-    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-io:8.1.18.v20150929" level="project" />
-    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-util:8.1.18.v20150929" level="project" />
+    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-client:9.0.7.v20131107" level="project" />
+    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-http:9.0.7.v20131107" level="project" />
+    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-io:9.0.7.v20131107" level="project" />
+    <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-util:9.0.7.v20131107" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-jdk14:1.7.14" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.14" level="project" />
-    <orderEntry type="library" name="Gradle: org.fourthline.cling:cling-support:2.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.fourthline.cling:cling-core:2.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.seamless:seamless-http:1.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.seamless:seamless-util:1.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.seamless:seamless-xml:1.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.seamless:seamless-swing:1.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.fourthline.cling:cling-support:2.1.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.fourthline.cling:cling-core:2.1.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.seamless:seamless-http:1.1.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.seamless:seamless-util:1.1.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.seamless:seamless-xml:1.1.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.seamless:seamless-swing:1.1.2" level="project" />
     <orderEntry type="library" name="Gradle: tech.gusavila92:java-android-websocket-client:1.2.2" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.moshi:moshi:1.11.0" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:1.17.5" level="project" />
