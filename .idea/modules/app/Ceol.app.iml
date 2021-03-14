@@ -64,13 +64,7 @@
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-util:9.0.7.v20131107" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-jdk14:1.7.14" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.14" level="project" />
-    <orderEntry type="library" name="Gradle: org.fourthline.cling:cling-support:2.1.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.fourthline.cling:cling-core:2.1.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.seamless:seamless-http:1.1.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.seamless:seamless-util:1.1.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.seamless:seamless-xml:1.1.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.seamless:seamless-swing:1.1.2" level="project" />
-    <orderEntry type="library" name="Gradle: tech.gusavila92:java-android-websocket-client:1.2.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.neovisionaries:nv-websocket-client:2.13" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.moshi:moshi:1.11.0" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:1.17.5" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.material:material:1.2.1@aar" level="project" />
