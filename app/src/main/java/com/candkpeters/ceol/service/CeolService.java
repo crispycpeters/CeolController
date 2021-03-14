@@ -188,6 +188,7 @@ public class CeolService extends Service {
             case Spotify:
             case NetServer:
             case Bluetooth:
+            case OpenHome:
                 line2 = new SpannableString( ceolModel.inputControl.trackControl.getAudioItem().getTitle() );
                 line3 = new SpannableString( ceolModel.inputControl.trackControl.getAudioItem().getArtist() );
                 bitmap = ceolModel.inputControl.trackControl.getAudioItem().getImageBitmap();
