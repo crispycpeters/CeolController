@@ -1,6 +1,9 @@
 package com.candkpeters.ceol.device.wss;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.candkpeters.ceol.device.ImageDownloaderResult;
 import com.candkpeters.ceol.device.ImageDownloaderTask;
@@ -11,26 +14,35 @@ import com.candkpeters.ceol.model.PlayStatusType;
 import com.candkpeters.ceol.model.control.CeolNavigatorControl;
 import com.candkpeters.ceol.model.control.OpenhomePlaylistControl;
 import com.candkpeters.ceol.model.control.PlaylistControlBase;
+import com.neovisionaries.ws.client.WebSocket;
+import com.neovisionaries.ws.client.WebSocketAdapter;
+import com.neovisionaries.ws.client.WebSocketException;
+import com.neovisionaries.ws.client.WebSocketFactory;
+import com.neovisionaries.ws.client.WebSocketFrame;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
+import java.io.IOException;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
-import tech.gusavila92.websocketclient.WebSocketClient;
 
 public class WssClient implements ImageDownloaderResult {
 
     private static final String TAG = "WssClient";
 
+    private static final int CONNECTION_RETRY_MSECS = 10000;
     private static final String UPDATE_REQUEST = "{\"type\":\"UPDATE\",\"body\":\"\"}";
     private static final long BACKOFF_TIMEOUT_MSECS = 30000;
     private static final long BACKOFF_RECONNECT_WAITTIME = 300000;
     private final CeolModel ceolModel;
-    private WebSocketClient webSocketClient;
+    private WebSocket webSocket;
+    private WebSocketFactory webSocketFactory;
     private ImageDownloaderTask imageDownloaderTask;
     private static final long IMAGE_LOAD_DELAY_MSECS = 10;
     private static final String IMAGEURLSPEC = "/image";
@@ -41,12 +53,90 @@ public class WssClient implements ImageDownloaderResult {
 
     WssClient(CeolModel ceolModel) {
         this.ceolModel = ceolModel;
+        // Create a WebSocketFactory instance.
+        webSocketFactory = new WebSocketFactory();
+        webSocketFactory.setConnectionTimeout(5000);
+        Handler handler = new Handler(Looper.getMainLooper());
+    }
+
+    private void connectToWebSocket( URI uri ) {
+        final URI furi = uri;
+        try {
+            webSocket = webSocketFactory.createSocket(uri);
+            Log.i("WebSocket", "Socket created");
+
+            // Register a listener to receive WebSocket events.
+            webSocket.addListener(new WebSocketAdapter() {
+                @Override
+                public void onTextMessage(WebSocket websocket, String message) {
+                    Log.i("WebSocket", "Message received: " + message);
+                    updateCeolModel(message);
+                }
+
+                @Override
+                public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
+//                    super.onConnected(websocket, headers);
+
+                    Log.i("WebSocket", "Session is starting");
+                    ceolModel.notifyConnectionStatus(true);
+                    websocket.sendText(UPDATE_REQUEST);
+                }
+
+                @Override
+                public void onConnectError(WebSocket websocket, WebSocketException exception) throws Exception {
+//                    super.onConnectError(websocket, exception);
+                    Log.w("WebSocket", "Connection error. Retry after " + CONNECTION_RETRY_MSECS + " msecs");
+                    webSocket = null;
+                    ceolModel.notifyConnectionStatus(false);
+
+//                    retryConnectToWebSocket(furi);
+                }
+
+                @Override
+                public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
+//                    super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
+                    Log.i("WebSocket", "Disconnected");
+                    webSocket = null;
+                    ceolModel.notifyConnectionStatus(false);
+//                    retryConnectToWebSocket(furi);
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Connect
+        if ( webSocket != null) {
+            try {
+                // Connect to the server and perform an opening handshake.
+                // This method blocks until the opening handshake is finished.
+                webSocket.connect();
+                Log.i("WebSocket", "Connected to server");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void retryConnectToWebSocket(URI uri) {
+        final URI furi = uri;
+        Handler handler = new Handler(Looper.getMainLooper());
+        final Runnable r = new Runnable() {
+            public void run() {
+                connectToWebSocket(furi);
+                //do your stuff here after DELAY milliseconds
+            }
+        };
+        handler.postDelayed(r, CONNECTION_RETRY_MSECS);
     }
 
     private void startWebSocketClient(String server) {
-        if ( webSocketClient != null ) {
+        if ( webSocket != null ) {
             try {
-                webSocketClient.close();
+                webSocket.disconnect();
+                Log.i(TAG, "Socket disconnect performed");
             } catch ( Exception e) {
                 Log.i(TAG, "startWebSocketClient: Closing any existing connection");
             }
@@ -61,53 +151,55 @@ public class WssClient implements ImageDownloaderResult {
             e.printStackTrace();
             return;
         }
-        webSocketClient = new WebSocketClient(uri) {
-            @Override
-            public void onOpen() {
-                Log.i("WebSocket", "Session is starting");
-//                resetBackOffCounters();
-                ceolModel.notifyConnectionStatus(true);
-//                nudge();
-                webSocketClient.send(UPDATE_REQUEST);
-            }
+        connectToWebSocket(uri);
 
-            @Override
-            public void onTextReceived(String s) {
-                Log.i("WebSocket", "Message received: " + s);
-
-                updateCeolModel(s);
-            }
-            @Override
-            public void onBinaryReceived(byte[] data) {
-            }
-            @Override
-            public void onPingReceived(byte[] data) {
-            }
-            @Override
-            public void onPongReceived(byte[] data) {
-            }
-            @Override
-            public void onException(Exception e) {
-                Log.e("WebSocket", e.getMessage());
-                if ( e instanceof ConnectException) {
-                    ceolModel.notifyConnectionStatus(false);
-//                    if ( shouldBackOff() ) {
-//                        webSocketClient.enableAutomaticReconnection(BACKOFF_RECONNECT_WAITTIME);
-//                    };
-                }
-            }
-            @Override
-            public void onCloseReceived() {
-                Log.i("WebSocket", "Closed ");
-                System.out.println("onCloseReceived");
-                ceolModel.notifyConnectionStatus(false);
-                webSocketClient = null;
-            }
-        };
-        webSocketClient.setConnectTimeout(3000);
-        webSocketClient.setReadTimeout(0);
-        webSocketClient.enableAutomaticReconnection(BACKOFF_RECONNECT_WAITTIME);
-        webSocketClient.connect();
+//        webSocketClient = new WebSocketClient(uri) {
+//            @Override
+//            public void onOpen() {
+//                Log.i("WebSocket", "Session is starting");
+////                resetBackOffCounters();
+//                ceolModel.notifyConnectionStatus(true);
+////                nudge();
+//                webSocketClient.send(UPDATE_REQUEST);
+//            }
+//
+//            @Override
+//            public void onTextReceived(String s) {
+//                Log.i("WebSocket", "Message received: " + s);
+//
+//                updateCeolModel(s);
+//            }
+//            @Override
+//            public void onBinaryReceived(byte[] data) {
+//            }
+//            @Override
+//            public void onPingReceived(byte[] data) {
+//            }
+//            @Override
+//            public void onPongReceived(byte[] data) {
+//            }
+//            @Override
+//            public void onException(Exception e) {
+//                Log.e("WebSocket", e.getMessage());
+//                if ( e instanceof ConnectException) {
+//                    ceolModel.notifyConnectionStatus(false);
+////                    if ( shouldBackOff() ) {
+////                        webSocketClient.enableAutomaticReconnection(BACKOFF_RECONNECT_WAITTIME);
+////                    };
+//                }
+//            }
+//            @Override
+//            public void onCloseReceived() {
+//                Log.i("WebSocket", "Closed ");
+//                System.out.println("onCloseReceived");
+//                ceolModel.notifyConnectionStatus(false);
+//                webSocketClient = null;
+//            }
+//        };
+//        webSocketClient.setConnectTimeout(3000);
+//        webSocketClient.setReadTimeout(0);
+//        webSocketClient.enableAutomaticReconnection(BACKOFF_RECONNECT_WAITTIME);
+//        webSocketClient.connect();
     }
 
     private StringBuilder fullmessage = null;
@@ -328,16 +420,16 @@ public class WssClient implements ImageDownloaderResult {
     }
 
     public void stop() {
-//        if (webSocketClient != null) {
-//            webSocketClient.close();
-//        }
+        if (webSocket != null) {
+            webSocket.disconnect();
+        }
     }
 
     public void sendCommand(String commandString) {
         String wssCommand = "{\"type\":\"CMD\",\"body\":\"" + commandString + "\"}";
         Log.i("sendCommand", wssCommand);
-        if ( webSocketClient != null) {
-            webSocketClient.send( wssCommand);
+        if ( webSocket != null) {
+            webSocket.sendText( wssCommand);
         }
     }
 

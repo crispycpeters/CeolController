@@ -53,7 +53,7 @@ public class CeolServiceReceiver extends BroadcastReceiver {
         // register receiver that handles screen on and screen off logic
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
+//        filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
         filter.addAction(Intent.ACTION_BOOT_COMPLETED);
         return filter;
     }

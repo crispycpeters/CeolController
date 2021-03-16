@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.candkpeters.ceol.model.AudioStreamItem;
 
-import org.fourthline.cling.support.model.DIDLContent;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -23,7 +22,6 @@ public class OpenhomePlaylistControl extends PlaylistControlBase {
     private long seconds;
     private String audioUri;
     private String metadataString;
-    private DIDLContent didlContent;
     private int[] playlistIds;
     private int[] TESTPLAYLIST = {
             1,2,3,4

@@ -26,6 +26,7 @@ public class CeolEngineWss extends CeolEngine {
 
     public CeolEngineWss(final Context context, final CeolModel ceolModel) {
         super(context, ceolModel);
+        Log.d(TAG, "CeolEngineWss: Creating WssClient");
         wssClient = new WssClient(ceolModel);
         connectionStateMonitor = new ConnectionStateMonitor();
     }
@@ -47,6 +48,7 @@ public class CeolEngineWss extends CeolEngine {
                 if ( isOnWifi() ) {
                     wssClient.start(getPrefs().getWssServer());
                 } else {
+                    wssClient.stop();
                     ceolModel.notifyConnectionStatus(false);
                 }
             }
@@ -57,6 +59,7 @@ public class CeolEngineWss extends CeolEngine {
                 if ( isOnWifi()) {
                     wssClient.start(getPrefs().getWssServer());
                 } else {
+                    wssClient.stop();
                     ceolModel.notifyConnectionStatus(false);
                 }
             }

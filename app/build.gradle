@@ -66,12 +66,13 @@ dependencies {
     implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version:'9.0.7.v20131107'
     implementation group: 'org.eclipse.jetty', name: 'jetty-client', version:'9.0.7.v20131107'
     implementation group: 'org.slf4j', name: 'slf4j-jdk14', version:'1.7.14'
-    implementation group: 'org.fourthline.cling', name: 'cling-core', version:'2.1.2'
-    implementation group: 'org.fourthline.cling', name: 'cling-support', version:'2.1.2'
+//    implementation group: 'org.fourthline.cling', name: 'cling-core', version:'2.1.2'
+//    implementation group: 'org.fourthline.cling', name: 'cling-support', version:'2.1.2'
 //    implementation group: 'org.jupnp', name: 'org.jupnp', version:'2.5.2'
 //    implementation group: 'org.jupnp', name: 'org.jupnp.support', version:'2.5.2'
 
-    implementation 'tech.gusavila92:java-android-websocket-client:1.2.2'
-    implementation("com.squareup.moshi:moshi:1.11.0")
+//    implementation 'tech.gusavila92:java-android-websocket-client:1.2.2'
+    implementation 'com.neovisionaries:nv-websocket-client:2.13'
+    implementation "com.squareup.moshi:moshi:1.11.0"
 
 }

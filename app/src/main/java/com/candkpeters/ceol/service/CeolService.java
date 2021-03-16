@@ -108,7 +108,7 @@ public class CeolService extends Service {
     public CeolManager getCeolManager() {
         return ceolManager;
     }
-
+    CeolServiceReceiver mReceiver;
     /*
     * On first creation
     * Start up the service in background mode
@@ -137,7 +137,7 @@ public class CeolService extends Service {
         });
 
         // register receiver that handles various events
-        CeolServiceReceiver mReceiver = new CeolServiceReceiver();
+        mReceiver = new CeolServiceReceiver();
         registerReceiver(mReceiver, mReceiver.createIntentFilter());
 
     }
@@ -435,6 +435,7 @@ public class CeolService extends Service {
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy: Entering");
+        if ( mReceiver != null) unregisterReceiver(mReceiver);
         stopGathering();
         ceolWidgetController.destroy();
     }
