@@ -36,7 +36,7 @@ public class WssClient implements ImageDownloaderResult {
 
     private static final String TAG = "WssClient";
 
-    private static final int CONNECTION_RETRY_MSECS = 10000;
+    private static final int CONNECTION_RETRY_MSECS = 60000;
     private static final String UPDATE_REQUEST = "{\"type\":\"UPDATE\",\"body\":\"\"}";
     private static final long BACKOFF_TIMEOUT_MSECS = 30000;
     private static final long BACKOFF_RECONNECT_WAITTIME = 300000;
@@ -98,7 +98,7 @@ public class WssClient implements ImageDownloaderResult {
                     Log.i("WebSocket", "Disconnected");
                     webSocket = null;
                     ceolModel.notifyConnectionStatus(false);
-//                    retryConnectToWebSocket(furi);
+                    retryConnectToWebSocket(furi);
                 }
             });
 
@@ -126,7 +126,6 @@ public class WssClient implements ImageDownloaderResult {
         final Runnable r = new Runnable() {
             public void run() {
                 connectToWebSocket(furi);
-                //do your stuff here after DELAY milliseconds
             }
         };
         handler.postDelayed(r, CONNECTION_RETRY_MSECS);
@@ -347,29 +346,28 @@ public class WssClient implements ImageDownloaderResult {
 
         try {
             openhomePlaylistControl.setCurrentTrackId(Integer.parseInt(ohPlaylist.Id));
+            int arrlen = ohPlaylist.entries != null ? ohPlaylist.entries.length : 0;
 
-            if ( ohPlaylist.entries != null && ohPlaylist.entries.length > 0) {
-                int[] idArray = new int[ohPlaylist.entries.length];
+            int[] idArray = new int[arrlen];
 
-                for ( int i=0; i<ohPlaylist.entries.length; i++ ) {
-                    OhPlaylist.OhEntry entry = ohPlaylist.entries[i];
-                    int id = Integer.parseInt(entry.Id);
-                    idArray[i] = id;
+            for ( int i=0; i<arrlen; i++ ) {
+                OhPlaylist.OhEntry entry = ohPlaylist.entries[i];
+                int id = Integer.parseInt(entry.Id);
+                idArray[i] = id;
 
-                    AudioStreamItem audioStreamItem = new AudioStreamItem();
-                    audioStreamItem.setTitle(entry.title);
-                    audioStreamItem.setAlbum(entry.album);
-                    audioStreamItem.setArtist(entry.artist);
-                    audioStreamItem.setAudioUrl(entry.Url);
-                    audioStreamItem.setBitrate(entry.bitrate);
-                    audioStreamItem.setId(id);
-                    if (entry.Url != null) audioStreamItem.setAudioUrl(entry.Url);
-                    if (entry.albumArtUri != null) audioStreamItem.setImageBitmapUrl(new URL(entry.albumArtUri));
-                    audioStreamItem.setDuration(parseDuration(entry.duration));
-                    openhomePlaylistControl.putItem(id,audioStreamItem);
-                }
-                openhomePlaylistControl.setPlaylist(idArray);
+                AudioStreamItem audioStreamItem = new AudioStreamItem();
+                audioStreamItem.setTitle(entry.title);
+                audioStreamItem.setAlbum(entry.album);
+                audioStreamItem.setArtist(entry.artist);
+                audioStreamItem.setAudioUrl(entry.Url);
+                audioStreamItem.setBitrate(entry.bitrate);
+                audioStreamItem.setId(id);
+                if (entry.Url != null) audioStreamItem.setAudioUrl(entry.Url);
+                if (entry.albumArtUri != null) audioStreamItem.setImageBitmapUrl(new URL(entry.albumArtUri));
+                audioStreamItem.setDuration(parseDuration(entry.duration));
+                openhomePlaylistControl.putItem(id,audioStreamItem);
             }
+            openhomePlaylistControl.setPlaylist(idArray);
 
         } catch (Exception e) {
             e.printStackTrace();
