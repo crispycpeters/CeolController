@@ -22,7 +22,6 @@ public class CeolEngineWss extends CeolEngine {
     private ConnectivityManager connectivityManager;
     private boolean isDebugMode;
     private final WssClient wssClient;
-    private boolean isStarted = false;
 
     public CeolEngineWss(final Context context, final CeolModel ceolModel) {
         super(context, ceolModel);
@@ -44,28 +43,27 @@ public class CeolEngineWss extends CeolEngine {
             @Override
             public void onAvailable( Network network) {
                 Log.d(TAG, "WIFI is connected");
-                // Restart for quicker detection
-                if ( isOnWifi() ) {
-                    wssClient.start(getPrefs().getWssServer());
-                } else {
-                    wssClient.stop();
-                    ceolModel.notifyConnectionStatus(false);
-                }
+                // Retry for quicker connection
+                wssClient.start(getPrefs().getWssServer());
+//                if ( isOnWifi() ) {
+//                    wssClient.start(getPrefs().getWssServer());
+//                } else {
+//                    wssClient.stop();
+////                    ceolModel.notifyConnectionStatus(false);
+//                }
             }
 
             @Override
             public void onLost(Network network) {
                 Log.d(TAG, "WIFI is disconnected");
-                if ( isOnWifi()) {
-                    wssClient.start(getPrefs().getWssServer());
-                } else {
-                    wssClient.stop();
-                    ceolModel.notifyConnectionStatus(false);
-                }
+//                if ( isOnWifi()) {
+//                    wssClient.start(getPrefs().getWssServer());
+//                } else {
+//                    wssClient.stop();
+////                    ceolModel.notifyConnectionStatus(false);
+//                }
             }
         });
-//        wssClient.start( getPrefs().getWssServer() );
-        isStarted = true;
 
     }
 
@@ -96,8 +94,7 @@ public class CeolEngineWss extends CeolEngine {
     @Override
     public void stop() {
         wssClient.stop();
-        ceolModel.notifyConnectionStatus(false);
-        isStarted = false;
+//        ceolModel.notifyConnectionStatus(false);
     }
 
     @Override

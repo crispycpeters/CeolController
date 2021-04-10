@@ -322,14 +322,20 @@ public class WssClient implements ImageDownloaderResult {
         try {
             websocketUri = new URI("ws://" + wssServer + "/");
         } catch ( URISyntaxException e) {
-            Log.e(TAG, "Bad Websocket URL. We cannot start: " + wssServer+ " + " + IMAGEURLSPEC,e );
+            Log.e(TAG, "Bad Websocket URI. We cannot start: " + wssServer,e );
+            return;
+        }
+        try {
+            imageUrl = new URL("http://" + wssServer + IMAGEURLSPEC);
+        } catch ( MalformedURLException e) {
+            Log.e(TAG, "Bad Image URL. We cannot start: " + wssServer+ " + " + IMAGEURLSPEC,e );
             return;
         }
         synchronized ( this) {
             if ( webSocket == null ) {
                 Log.d(TAG, "Starting for the first time on: " + websocketUri);
                 websocketUriToUse = websocketUri;
-                connectToWebSocket();
+                retryConnectToWebSocket(false);
             } else {
                 if (!webSocket.getURI().equals(websocketUri)) {
                     // Need to initiate a new connection
@@ -337,6 +343,7 @@ public class WssClient implements ImageDownloaderResult {
                     websocketUriToUse = websocketUri;
                     webSocket.disconnect();
                 }
+                retryConnectToWebSocket(false);
             }
         }
     }
