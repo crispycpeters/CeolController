@@ -41,7 +41,11 @@ public class WssClient implements ImageDownloaderResult {
     private static final long BACKOFF_TIMEOUT_MSECS = 30000;
     private static final long BACKOFF_RECONNECT_WAITTIME = 300000;
     private final CeolModel ceolModel;
+
+    // synchronized for creation
     private WebSocket webSocket;
+    URI websocketUriToUse;              // URI to be used for connection
+
     private WebSocketFactory webSocketFactory;
     private ImageDownloaderTask imageDownloaderTask;
     private static final long IMAGE_LOAD_DELAY_MSECS = 10;
@@ -52,6 +56,10 @@ public class WssClient implements ImageDownloaderResult {
     private long backOffStartTime;
     private boolean isStarting = false;
 
+    // synchronized flag indicating that a thread is actively working on connection
+    // (only one thread at a time should be connecting/connected to Websocket)
+    public Boolean isActive = false;
+
     WssClient(CeolModel ceolModel) {
         this.ceolModel = ceolModel;
         // Create a WebSocketFactory instance.
@@ -59,10 +67,9 @@ public class WssClient implements ImageDownloaderResult {
         webSocketFactory.setConnectionTimeout(2000);
     }
 
-    private void connectToWebSocket( URI uri ) {
-        final URI furi = uri;
+    private void connectToWebSocket( ) {
         try {
-            webSocket = webSocketFactory.createSocket(uri);
+            webSocket = webSocketFactory.createSocket(websocketUriToUse);
             Log.i("WebSocket", "Socket created");
 
             // Register a listener to receive WebSocket events.
@@ -86,72 +93,38 @@ public class WssClient implements ImageDownloaderResult {
                 public void onConnectError(WebSocket websocket, WebSocketException exception) throws Exception {
 //                    super.onConnectError(websocket, exception);
                     Log.w(TAG, "Connection error. Retry after " + CONNECTION_RETRY_MSECS + " msecs");
-                    webSocket = null;
                     ceolModel.notifyConnectionStatus(false);
-                    retryConnectToWebSocket(furi);
+                    retryConnectToWebSocket();
                 }
 
                 @Override
                 public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
 //                    super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
-                    Log.i(TAG, "Disconnected");
-                    webSocket = null;
+                    Log.i(TAG, "Disconnected. Should not happen - retry immediately");
                     ceolModel.notifyConnectionStatus(false);
-                    retryConnectToWebSocket(furi);
+                    connectToWebSocket();
                 }
             });
 
         } catch (IOException e) {
+            Log.e(TAG, "Serious websocket issue. Could not create socket.");
             e.printStackTrace();
         }
-
         // Connect
         if ( webSocket != null) {
-            try {
-                // Connect to the server and perform an opening handshake.
-                // This method blocks until the opening handshake is finished.
-                webSocket.connectAsynchronously();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            webSocket.connectAsynchronously();
         }
 
     }
 
-    private void retryConnectToWebSocket(URI uri) {
-        if ( isStarting ) {
-
-            final URI furi = uri;
-            Handler handler = new Handler(Looper.getMainLooper());
-            final Runnable r = new Runnable() {
-                public void run() {
-                    connectToWebSocket(furi);
-                }
-            };
-            handler.postDelayed(r, CONNECTION_RETRY_MSECS);
-        }
-    }
-
-    private void startWebSocketClient(String server) {
-        if ( webSocket != null ) {
-            try {
-                webSocket.disconnect();
-                Log.i(TAG, "Socket disconnect performed");
-            } catch ( Exception e) {
-                Log.i(TAG, "startWebSocketClient: Closing any existing connection");
+    private void retryConnectToWebSocket() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        final Runnable r = new Runnable() {
+            public void run() {
+                connectToWebSocket();
             }
-        } else {
-            URI uri;
-//        resetBackOffCounters();
-            try {
-                // Connect to local host
-                uri = new URI(server);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-                return;
-            }
-            connectToWebSocket(uri);
-        }
+        };
+        handler.postDelayed(r, CONNECTION_RETRY_MSECS);
     }
 
     private StringBuilder fullmessage = null;
@@ -328,21 +301,42 @@ public class WssClient implements ImageDownloaderResult {
     }
 
     public void start(String wssServer) {
+        URI websocketUri;
         try {
-            imageUrl = new URL(new URL("http://" + wssServer ), IMAGEURLSPEC);
-        } catch ( MalformedURLException e) {
-            Log.e(TAG, "Image URL problem: Bad URL: " + wssServer+ " + " + IMAGEURLSPEC,e );
+            websocketUri = new URI("ws://" + wssServer + "/");
+        } catch ( URISyntaxException e) {
+            Log.e(TAG, "Bad Websocket URL. We cannot start: " + wssServer+ " + " + IMAGEURLSPEC,e );
+            return;
         }
-        isStarting = true;
-        startWebSocketClient("ws://" + wssServer + "/");
+        synchronized ( this) {
+            if ( webSocket == null ) {
+                Log.d(TAG, "Starting for the first time on: " + websocketUri);
+                websocketUriToUse = websocketUri;
+                connectToWebSocket();
+            } else {
+                if (!webSocket.getURI().equals(websocketUri)) {
+                    // Need to initiate a new connection
+                    Log.d(TAG, "URI has changed to: " + websocketUri);
+                    websocketUriToUse = websocketUri;
+                    webSocket.disconnect();
+                }
+            }
+        }
     }
 
     public void stop() {
-        Log.d(TAG, "In stop()");
-        isStarting = false;
-        if (webSocket != null) {
-            webSocket.disconnect();
-        }
+        Log.d(TAG, "In stop() - ignore");
+//        isStarting = false;
+//        synchronized ( isActive) {
+//            if ( !isActive) {
+//                return;
+//            } else {
+//                isActive = false;
+//            }
+//        }
+//        if (webSocket != null) {
+//            webSocket.disconnect();
+//        }
     }
 
     public void sendCommand(String commandString) {
