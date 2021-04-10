@@ -68,63 +68,80 @@ public class WssClient implements ImageDownloaderResult {
     }
 
     private void connectToWebSocket( ) {
-        try {
-            webSocket = webSocketFactory.createSocket(websocketUriToUse);
-            Log.i("WebSocket", "Socket created");
+        synchronized ( this) {
 
-            // Register a listener to receive WebSocket events.
-            webSocket.addListener(new WebSocketAdapter() {
-                @Override
-                public void onTextMessage(WebSocket websocket, String message) {
-                    Log.i(TAG, "Message received: " + message);
-                    updateCeolModel(message);
-                }
+            if ( isActive) {
+                // Only one thread at a time connecting
+                return;
+            }
 
-                @Override
-                public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
+            isActive = true;
+
+            try {
+                webSocket = webSocketFactory.createSocket(websocketUriToUse);
+                Log.i("WebSocket", "Socket created");
+
+                // Register a listener to receive WebSocket events.
+                webSocket.addListener(new WebSocketAdapter() {
+                    @Override
+                    public void onTextMessage(WebSocket websocket, String message) {
+                        Log.i(TAG, "Message received: " + message);
+                        updateCeolModel(message);
+                    }
+
+                    @Override
+                    public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
 //                    super.onConnected(websocket, headers);
 
-                    Log.i(TAG, "Connected. Session is starting");
-                    ceolModel.notifyConnectionStatus(true);
-                    websocket.sendText(UPDATE_REQUEST);
-                }
+                        Log.i(TAG, "Connected. Session is starting");
+                        ceolModel.notifyConnectionStatus(true);
+                        websocket.sendText(UPDATE_REQUEST);
+                    }
 
-                @Override
-                public void onConnectError(WebSocket websocket, WebSocketException exception) throws Exception {
+                    @Override
+                    public void onConnectError(WebSocket websocket, WebSocketException exception) throws Exception {
 //                    super.onConnectError(websocket, exception);
-                    Log.w(TAG, "Connection error. Retry after " + CONNECTION_RETRY_MSECS + " msecs");
-                    ceolModel.notifyConnectionStatus(false);
-                    retryConnectToWebSocket();
-                }
+                        Log.w(TAG, "Connection error. Retry after " + CONNECTION_RETRY_MSECS + " msecs");
+                        ceolModel.notifyConnectionStatus(false);
+                        retryConnectToWebSocket(true);
+                    }
 
-                @Override
-                public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
+                    @Override
+                    public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
 //                    super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
-                    Log.i(TAG, "Disconnected. Should not happen - retry immediately");
-                    ceolModel.notifyConnectionStatus(false);
-                    connectToWebSocket();
-                }
-            });
+                        Log.i(TAG, "Disconnected. Should not happen - retry immediately");
+                        ceolModel.notifyConnectionStatus(false);
+                        retryConnectToWebSocket(false);
+                    }
+                });
 
-        } catch (IOException e) {
-            Log.e(TAG, "Serious websocket issue. Could not create socket.");
-            e.printStackTrace();
-        }
-        // Connect
-        if ( webSocket != null) {
-            webSocket.connectAsynchronously();
+            } catch (IOException e) {
+                Log.e(TAG, "Serious websocket issue. Could not create socket.");
+                e.printStackTrace();
+            }
+            // Connect
+            if (webSocket != null) {
+                webSocket.connectAsynchronously();
+            }
         }
 
     }
 
-    private void retryConnectToWebSocket() {
-        Handler handler = new Handler(Looper.getMainLooper());
-        final Runnable r = new Runnable() {
-            public void run() {
+    private void retryConnectToWebSocket(boolean delay) {
+        synchronized (this) {
+            isActive = false;
+            if ( delay) {
+                Handler handler = new Handler(Looper.getMainLooper());
+                final Runnable r = new Runnable() {
+                    public void run() {
+                        connectToWebSocket();
+                    }
+                };
+                handler.postDelayed(r, CONNECTION_RETRY_MSECS);
+            } else {
                 connectToWebSocket();
             }
-        };
-        handler.postDelayed(r, CONNECTION_RETRY_MSECS);
+        }
     }
 
     private StringBuilder fullmessage = null;
