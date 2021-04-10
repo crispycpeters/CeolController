@@ -482,16 +482,16 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
             return true;
         }
-        if (id == R.id.action_rescan) {
-            ceolController.restart();
-            return true;
-        }
-        if (id == R.id.action_unbind) {
-            Intent intent = new Intent(this, CeolService.class);
-            intent.setAction(CeolService.STOP_CLING);
-            startService(intent);
-            return true;
-        }
+//        if (id == R.id.action_rescan) {
+//            ceolController.restart();
+//            return true;
+//        }
+//        if (id == R.id.action_unbind) {
+//            Intent intent = new Intent(this, CeolService.class);
+//            intent.setAction(CeolService.STOP_CLING);
+//            startService(intent);
+//            return true;
+//        }
         if (id == R.id.action_bind) {
             Intent intent = new Intent(this, CeolService.class);
             intent.setAction(CeolService.START_CLING);
