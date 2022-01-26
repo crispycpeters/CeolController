@@ -8,6 +8,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.candkpeters.ceol.cling.ClingGatherer2;
+import com.candkpeters.ceol.cling.OnClingListener;
 import com.candkpeters.ceol.device.command.Command;
 import com.candkpeters.ceol.device.wss.CeolEngineWss;
 import com.candkpeters.ceol.model.CeolModel;
@@ -29,6 +31,8 @@ public class CeolManager {
     private boolean isDebugMode;
     private MacroInflater macroInflater;
 
+    private final ClingGatherer2 clingGatherer;
+
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
 
     public CeolManager(final Context context) {
@@ -36,6 +40,11 @@ public class CeolManager {
         this.ceolModel = new CeolModel();
         this.ceolEngineWss = new CeolEngineWss(context,ceolModel);
 //        this.clingEngine = new ClingEngine(context,ceolModel);
+        clingGatherer = new ClingGatherer2(context, ceolModel, new OnClingListener() {
+            @Override
+            public void onClingDisconnected() {
+            }
+        });
 
     }
 
@@ -173,7 +182,10 @@ public class CeolManager {
      * ENGINE
      */
     public void engineResumeGatherers() {
+        Prefs prefs = new Prefs(context);
+
         ceolEngineWss.start();
+        clingGatherer.start(prefs);
     };
 
     public void engineStopGatherers() {
@@ -185,9 +197,14 @@ public class CeolManager {
         ceolEngineWss.sendCommandStr(commandString);
     };
 
+    public void sendOpenHomeCommand(String commandString) {
+        clingGatherer.sendOpenHomeCommand(commandString);
+    }
+
     public void sendOpenHomeSeekIdCommand(int id) {
         // TODO decide where to send command
-        ceolEngineWss.sendCommandSeekTrack( id);
+//        ceolEngineWss.sendCommandSeekTrack( id);
+        clingGatherer.sendOpenHomeSeekIdCommand(id);
     };
 
     public void nudgeGatherers() {

@@ -49,7 +49,12 @@
     <string name="pref_title_debug_openhome_name">Debug OpenHome name</string>
     <string name="pref_key_debug_openhome_name">com.candkpeters.ceol.Debug_OpenHome_Name</string>
 
-<!-- Category Macro settings -->
+    <string name="pref_default_contentsource_name">MinimServer[naspeters3]</string>
+    <string name="pref_summary_contentsource_name">Name of DLNA Content Source</string>
+    <string name="pref_title_contentsource_name">DLNA content source</string>
+    <string name="pref_key_contentsource_name">com.candkpeters.ceol.ContentSource_Name</string>
+
+    <!-- Category Macro settings -->
     <string name="pref_category_macro">Macros</string>
     <string name="pref_summary_macro">Enter macro commands</string>
 

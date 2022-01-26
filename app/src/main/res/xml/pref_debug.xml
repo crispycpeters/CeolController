@@ -28,4 +28,14 @@
         android:singleLine="true"
         android:title="@string/pref_title_debug_openhome_name" />
 
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_contentsource_name"
+        android:key="@string/pref_key_contentsource_name"
+        android:summary="@string/pref_summary_contentsource_name"
+        android:inputType="textCapWords"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_contentsource_name" />
+
 </PreferenceScreen>

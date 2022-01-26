@@ -1,0 +1,20 @@
+[versions]
+jetty = "8.1.8.v20121106"
+
+[libraries]
+cling-core = { module = "com.github.m3sv.cling:cling-core", version = "2.1.6" }
+cling-support = { module = "com.github.m3sv.cling:cling-support", version = "2.1.6" }
+seamless-xml = "com.github.m3sv.seamless:seamless-xml:1.1.5"
+jetty-client = { module = "org.eclipse.jetty:jetty-client", version.ref = "jetty" }
+jetty-server = { module = "org.eclipse.jetty:jetty-server", version.ref = "jetty" }
+jetty-servlet = { module = "org.eclipse.jetty:jetty-servlet", version.ref = "jetty" }
+
+[bundles]
+cling = [
+    "cling-core",
+    "cling-support",
+    "seamless-xml",
+    "jetty-client",
+    "jetty-server",
+    "jetty-servlet"
+]

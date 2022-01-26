@@ -158,15 +158,10 @@ public class Prefs {
         }
     }
 
-
-
-/*
-    public boolean getUseTelnet() {
-        return preferences.getBoolean(PREF_USE_TELNET,
-                context.getResources().getBoolean(R.bool.use_telnet) );
+    public String getContentSourceName() {
+        return preferences.getString(context.getResources().getString(R.string.pref_key_contentsource_name),
+                context.getResources().getString(R.string.pref_default_contentsource_name));
     }
-*/
-
 /*
     public boolean getUseWebservice() {
         return preferences.getBoolean(PREF_USE_WEBSERVICE,
