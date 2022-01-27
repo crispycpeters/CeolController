@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  */
 
 public class ClingGatherer2 extends GathererBase implements Runnable {
-    private static final long SEARCH_RETRY_MSECS = 15000;
+    private static final long SEARCH_RETRY_MSECS = 120000;
     private static String TAG = "ClingGatherer2";
     //    private BrowserUpnpService browserUpnpService;
     private UpnpService upnpService;
@@ -128,7 +128,7 @@ public class ClingGatherer2 extends GathererBase implements Runnable {
     private void checkSubscriptions() {
         if ( isClingServiceBound && !isPaused) {
             if ( !openHomeSubscriptionManager.hasDevice()) {
-                Log.d(TAG, "Initiating search...");
+                Log.d(TAG, "Initiating OpenHome search...");
                 upnpService.getControlPoint().search(10);
                 new Handler(context.getMainLooper()).postDelayed(new Runnable() {
                     @Override
@@ -137,7 +137,7 @@ public class ClingGatherer2 extends GathererBase implements Runnable {
                     }
                 }, SEARCH_RETRY_MSECS);
             } else if ( !openHomeSubscriptionManager.isSubscribed()) {
-                Log.d(TAG, "Setting up subscriptions...");
+                Log.d(TAG, "Setting up OpenHome subscriptions...");
                 openHomeSubscriptionManager.subscribe();
                 new Handler(context.getMainLooper()).postDelayed(new Runnable() {
                     @Override
@@ -147,7 +147,7 @@ public class ClingGatherer2 extends GathererBase implements Runnable {
                 }, SEARCH_RETRY_MSECS);
             }
             if ( !contentSourceSubscriptionManager.hasDevice()) {
-                Log.d(TAG, "Initiating search...");
+                Log.d(TAG, "Initiating ContentSource search...");
                 upnpService.getControlPoint().search(10);
                 new Handler(context.getMainLooper()).postDelayed(new Runnable() {
                     @Override
@@ -156,8 +156,8 @@ public class ClingGatherer2 extends GathererBase implements Runnable {
                     }
                 }, SEARCH_RETRY_MSECS);
             } else if ( !contentSourceSubscriptionManager.isSubscribed()) {
-                Log.d(TAG, "Setting up subscriptions...");
-                openHomeSubscriptionManager.subscribe();
+                Log.d(TAG, "Setting up ContentSource subscriptions...");
+                contentSourceSubscriptionManager.subscribe();
                 new Handler(context.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
