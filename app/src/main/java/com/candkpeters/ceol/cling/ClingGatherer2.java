@@ -113,15 +113,20 @@ public class ClingGatherer2 extends GathererBase implements Runnable {
             prefs = new Prefs(context);
 
             upnpService = new LocalUpnpServiceImpl(new LocalAndroidUpnpServiceConfiguration(context), registryListener);
+            upnpService.getRegistry().addListener(registryListener);
 
             isClingServiceBound = true;
 
             // Now add all devices to the list we already know about
             for (Device device : upnpService.getRegistry().getDevices()) {
+                Log.d(TAG, "bindToCling: found a device before search...");
                 registryListener.deviceAdded(device);
             }
 
-            checkSubscriptions();
+            Log.d(TAG, "bindToCling: search...");
+            upnpService.getControlPoint().search(180);
+
+//            checkSubscriptions();
         }
     }
 
@@ -267,9 +272,9 @@ public class ClingGatherer2 extends GathererBase implements Runnable {
         }
 
         void deviceAdded(final Device device) {
-//            Log.d(TAG, "Got device: " + device.toString());
+            Log.d(TAG, "deviceAdded: Got device " + device.toString());
             String friendlyName = device.getDetails().getFriendlyName();
-//            Log.d(TAG, "FriendlyName = " + friendlyName);
+            Log.d(TAG, "deviceAdded: FriendlyName = " + friendlyName);
             String prefOpenhomeNmae = prefs.getOpenhomeName();
 
             String prefContentSourceName = prefs.getContentSourceName();

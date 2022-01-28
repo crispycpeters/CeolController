@@ -53,7 +53,7 @@ import java.util.Map;
  * Created by crisp on 14/04/2017.
  */
 
-class OpenHomeSubscriptionManager implements ImageDownloaderResult {
+class OpenHomeSubscriptionManager extends SubscriptionManager implements ImageDownloaderResult {
     private static final String TAG = "OpenHomeSubManager";
 
     private static final int DEFAULT_EVENT_RENEWAL_SECS = 100;
@@ -91,6 +91,11 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
 //        addDevice();
     }
 
+    @Override
+    public void offerDevice(Device device) {
+
+    }
+
     void removeDevice() {
         device = null;
         isSubscribed = false;
@@ -108,10 +113,10 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
     }
 
     void subscribe() {
-        infoService = findService(infoServiceId);
-        playlistService = findService(playlistServiceId);
-        timeService = findService(timeServiceId);
-        volumeService = findService(volumeServiceId);
+        infoService = findService(device, infoServiceId);
+        playlistService = findService(device, playlistServiceId);
+        timeService = findService(device, timeServiceId);
+        volumeService = findService(device, volumeServiceId);
 
         setupVolumeEvents();
         setupTimeEvents();
@@ -128,14 +133,6 @@ class OpenHomeSubscriptionManager implements ImageDownloaderResult {
 //        DeviceIdentity di = device.getIdentity();
 //        Log.d(TAG, "Identity: " + di.toString());
         subscribe();
-    }
-
-    private Service findService( ServiceId serviceId) {
-        Service service;
-        if ((service = device.findService(serviceId)) == null) {
-            Log.e(TAG, "No service for " + serviceId);
-        }
-        return service;
     }
 
     void performPlaylistCommand(String command) {

@@ -55,7 +55,7 @@ import java.util.Map;
  * Created by crisp on 14/04/2017.
  */
 
-class ContentSourceSubscriptionManager implements ImageDownloaderResult {
+class ContentSourceSubscriptionManager extends SubscriptionManager implements ImageDownloaderResult {
     private static final String TAG = "ContentSrcSubMgr";
 
     private static final int DEFAULT_EVENT_RENEWAL_SECS = 100;
@@ -102,7 +102,7 @@ class ContentSourceSubscriptionManager implements ImageDownloaderResult {
     }
 
     void subscribe() {
-        contentDirectoryService = findService(new UDAServiceId("ContentDirectory"));
+        contentDirectoryService = findService(device, new UDAServiceId("ContentDirectory"));
     }
 
     void addDevice(UpnpService upnpService, Device device) {
@@ -114,14 +114,6 @@ class ContentSourceSubscriptionManager implements ImageDownloaderResult {
 //        DeviceIdentity di = device.getIdentity();
 //        Log.d(TAG, "Identity: " + di.toString());
         subscribe();
-    }
-
-    private Service findService( ServiceId serviceId) {
-        Service service;
-        if ((service = device.findService(serviceId)) == null) {
-            Log.e(TAG, "No service for " + serviceId);
-        }
-        return service;
     }
 
     @Override
@@ -223,6 +215,11 @@ class ContentSourceSubscriptionManager implements ImageDownloaderResult {
 
     private void setTotalTrackCount(long totalTrackCount) {
         this.totalTrackCount = totalTrackCount;
+    }
+
+    @Override
+    public void offerDevice(Device device) {
+
     }
 
     abstract class ContentSourceSubscriptionCallback extends SubscriptionCallback {
